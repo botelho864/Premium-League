@@ -390,9 +390,9 @@ function PremiumLeague() {
         <Countdown key={season.id + season.convDay + season.convTime + season.gameDay + season.gameTime} season={season} />
 
         <nav style={{ display: "flex", gap: 4, background: C.surface, border: `1px solid ${C.line}`, borderRadius: 8, padding: 4, marginBottom: 14 }}>
-          <button style={S.tabBtn(tab === "class")} onClick={() => setTab("class")}>Classificação</button>
-          <button style={S.tabBtn(tab === "weeks")} onClick={() => { setTab("weeks"); setOpenWeek(null); }}>Jornadas</button>
-          <button style={S.tabBtn(tab === "rules")} onClick={() => setTab("rules")}>Regulamento</button>
+          <button style={S.tabBtn(tab === "class")} onClick={() => { setTab("class"); setOpenWeek(null); }}>Classificação</button>
+          <button style={S.tabBtn(tab === "weeks")} onClick={() => setTab("weeks")}>Jornadas</button>
+          <button style={S.tabBtn(tab === "rules")} onClick={() => { setTab("rules"); setOpenWeek(null); }}>Regulamento</button>
         </nav>
 
         {tab === "class" && (
@@ -455,7 +455,7 @@ function PremiumLeague() {
                                   const bg = res === "V" ? "#DFF0E4" : res === "D" ? "#F9E3DE" : res === "E" ? "#EDEEEC" : "#FBF3DC";
                                   return (
                                     <span key={wi} style={{ background: bg, border: `1px solid ${C.line}`, borderRadius: 6, padding: "2px 6px", fontSize: 11, color: C.ink }}>
-                                      J{wi + 1} {mk === "B" ? "⚪" : mk === "P" ? "⚫" : mk}{res ? ` ${w.gB}–${w.gP} ${res}` : ""}
+                                      J{wi + 1} {mk === "B" ? "⚪" : mk === "P" ? "⚫" : mk}{res ? ` ${w.gB}–{w.gP} ${res}` : ""}
                                     </span>
                                   );
                                 })}
@@ -566,7 +566,7 @@ function PremiumLeague() {
           return (
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                <button onClick={() => setOpenWeek(null)} style={{ background: "none", border: "none", color: C.green, fontWeight: 600, fontSize: 14, cursor: "pointer", padding: 0 }}>← Jornadas</button>
+                <button onClick={() => setOpenWeek(null)} style={{ background: "none", border: "none", color: C.green, fontWeight: 600, fontSize: 14, cursor: "pointer", padding: 0 }}>← Voltar às Jornadas</button>
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                   {isSuper && (
                     <button onClick={() => {
