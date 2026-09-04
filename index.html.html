@@ -1,0 +1,937 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#16181A">
+<title>Premium League</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+<style>html,body{margin:0;background:#EDF0EC}</style>
+</head>
+<body>
+<div id="root"></div>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.10/babel.min.js"></script>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+const SEED = {"version": 3, "seasons": [{"id": "2026_2", "name": "2026/2", "venue": "Campo das Salésias", "points": {"V": 4, "E": 2, "D": 1, "D1": -1, "D2": -2}, "players": [{"name": "Jota", "guest": false}, {"name": "Botelho", "guest": false}, {"name": "Manel MA", "guest": false}, {"name": "Miguel Almeida", "guest": false}, {"name": "Lucas", "guest": false}, {"name": "PTP", "guest": false}, {"name": "Gui", "guest": false}, {"name": "Monteiro", "guest": false}, {"name": "Biu", "guest": false}, {"name": "Zanatti", "guest": false}, {"name": "Miguel Pereira", "guest": false}, {"name": "Ataide", "guest": false}, {"name": "Martim", "guest": false}, {"name": "Manel PS", "guest": false}, {"name": "Lou", "guest": false}, {"name": "Mendes", "guest": false}, {"name": "Cortes", "guest": false}, {"name": "Lourenço", "guest": false}, {"name": "António FC", "guest": false}, {"name": "Augusto", "guest": false}, {"name": "Tavares", "guest": false}, {"name": "Fernandes", "guest": false}, {"name": "Miguel Freitas", "guest": false}, {"name": "Aguiar", "guest": true}, {"name": "Am - Lucas", "guest": true}, {"name": "Amigo Zanatti", "guest": true}, {"name": "Anacoreta", "guest": true}, {"name": "Anahory", "guest": true}, {"name": "Figueira", "guest": true}, {"name": "Guy Gaign", "guest": true}, {"name": "Horta", "guest": true}, {"name": "Kanté", "guest": true}, {"name": "Lourenço Andrade", "guest": true}, {"name": "Manel Sampaio", "guest": true}, {"name": "Siqueira", "guest": true}, {"name": "Tomás", "guest": true}, {"name": "Treinador Belem", "guest": true}, {"name": "Zé PG", "guest": true}], "weeks": [{"date": "2026-04-20", "gB": 3, "gP": 3, "marks": {"António FC": "B", "Botelho": "B", "Lucas": "B", "Mendes": "B", "Monteiro": "B", "Tavares": "B", "Aguiar": "B", "Am - Lucas": "B", "Biu": "P", "Gui": "P", "Jota": "P", "Manel MA": "P", "Miguel Almeida": "P", "Miguel Pereira": "P", "PTP": "P", "Zanatti": "P", "Lou": "D2"}}, {"date": "2026-04-27", "gB": 6, "gP": 4, "marks": {"Gui": "B", "Jota": "B", "Miguel Pereira": "B", "Mendes": "B", "Manel MA": "B", "PTP": "B", "António FC": "B", "Siqueira": "B", "Lucas": "P", "Monteiro": "P", "Miguel Almeida": "P", "Zanatti": "P", "Ataide": "P", "Lourenço": "P", "Biu": "P", "Cortes": "P", "Botelho": "D1", "Tavares": "D2", "Fernandes": "D2"}}, {"date": "2026-05-04", "gB": 5, "gP": 6, "marks": {"Biu": "B", "Fernandes": "B", "Tavares": "B", "Lou": "B", "Lucas": "B", "António FC": "B", "Horta": "B", "Treinador Belem": "B", "Cortes": "P", "Jota": "P", "Monteiro": "P", "Mendes": "P", "Ataide": "P", "Aguiar": "P", "Siqueira": "P", "Manel Sampaio": "P", "Miguel Pereira": "D1", "Miguel Almeida": "D2"}}, {"date": "2026-05-11", "gB": 6, "gP": 5, "marks": {"Jota": "B", "Biu": "B", "Ataide": "B", "Gui": "B", "Miguel Pereira": "B", "Botelho": "B", "Manel MA": "B", "Manel Sampaio": "B", "Tavares": "P", "Zanatti": "P", "Monteiro": "P", "Lucas": "P", "Lou": "P", "Mendes": "P", "Fernandes": "P", "Siqueira": "P", "Manel PS": "D1"}}, {"date": "2026-05-18", "gB": 5, "gP": 5, "marks": {"Fernandes": "B", "Tavares": "B", "Ataide": "B", "Jota": "B", "Miguel Almeida": "B", "Manel MA": "B", "Monteiro": "B", "Manel PS": "B", "Lucas": "P", "Lou": "P", "Zanatti": "P", "Martim": "P", "Botelho": "P", "Gui": "P", "PTP": "P", "Miguel Pereira": "P", "Lourenço": "D2"}}, {"date": "2026-05-25", "gB": 4, "gP": 5, "marks": {"Tavares": "B", "Miguel Almeida": "B", "Monteiro": "B", "Martim": "B", "PTP": "B", "António FC": "B", "Miguel Pereira": "B", "Anacoreta": "B", "Lucas": "P", "Zanatti": "P", "Botelho": "P", "Gui": "P", "Ataide": "P", "Jota": "P", "Manel PS": "P", "Biu": "P", "Fernandes": "D1", "Manel MA": "DOE", "Mendes": "DOE", "Augusto": "DOE"}}, {"date": "2026-06-01", "gB": 5, "gP": 6, "marks": {"Gui": "B", "Miguel Pereira": "B", "Fernandes": "B", "Martim": "B", "Cortes": "B", "Augusto": "B", "Monteiro": "B", "Kanté": "B", "Miguel Almeida": "P", "Mendes": "P", "Jota": "P", "Manel MA": "P", "Manel PS": "P", "PTP": "P", "Botelho": "P", "Anahory": "P"}}, {"date": "2026-06-08", "gB": 3, "gP": 0, "marks": {"Martim": "B", "Zanatti": "B", "Miguel Almeida": "B", "Botelho": "B", "Lou": "B", "Manel MA": "B", "Gui": "B", "Figueira": "B", "Mendes": "P", "Monteiro": "P", "Biu": "P", "Lourenço": "P", "Jota": "P", "Miguel Pereira": "P", "Lucas": "P", "PTP": "P", "Augusto": "D1"}}, {"date": "2026-06-15", "gB": 3, "gP": 3, "marks": {"PTP": "B", "Manel MA": "B", "Fernandes": "B", "Miguel Almeida": "B", "Biu": "B", "Lucas": "B", "Manel PS": "B", "Cortes": "B", "Zanatti": "P", "Miguel Pereira": "P", "Augusto": "P", "Mendes": "P", "Monteiro": "P", "Lou": "P", "Botelho": "P", "Lourenço": "P", "Ataide": "D2", "Jota": "DOE"}}, {"date": "2026-06-22", "gB": 6, "gP": 3, "marks": {"PTP": "B", "Lou": "B", "Botelho": "B", "Miguel Pereira": "B", "Martim": "B", "Lucas": "B", "Jota": "B", "Augusto": "B", "Monteiro": "P", "Lourenço": "P", "Manel MA": "P", "Zanatti": "P", "Manel PS": "P", "Fernandes": "P", "Miguel Almeida": "P", "Aguiar": "P", "Ataide": "?"}}, {"date": "2026-06-29", "gB": 4, "gP": 8, "marks": {"Zanatti": "B", "Ataide": "B", "Monteiro": "B", "Lourenço": "B", "Lucas": "B", "Manel PS": "B", "PTP": "B", "Anacoreta": "B", "Manel MA": "P", "Miguel Freitas": "P", "Jota": "P", "Botelho": "P", "Biu": "P", "Miguel Almeida": "P", "Cortes": "P", "Aguiar": "P", "Martim": "?"}}, {"date": "2026-07-13", "gB": 4, "gP": 6, "marks": {"Lucas": "B", "Augusto": "B", "Jota": "B", "Martim": "B", "Cortes": "B", "Gui": "B", "Lourenço": "B", "Aguiar": "B", "Zanatti": "P", "Manel MA": "P", "Monteiro": "P", "PTP": "P", "Manel PS": "P", "Miguel Almeida": "P", "Biu": "P", "Anacoreta": "P", "Ataide": "D1"}}, {"date": "2026-07-20", "gB": 3, "gP": 0, "marks": {"Jota": "B", "Botelho": "B", "Miguel Almeida": "B", "Monteiro": "B", "Lucas": "B", "Martim": "B", "Ataide": "B", "Anacoreta": "B", "Manel MA": "P", "PTP": "P", "Gui": "P", "Zanatti": "P", "Lou": "P", "Lourenço": "P", "Lourenço Andrade": "P", "Guy Gaign": "P", "Mendes": "D2", "Augusto": "D2"}}, {"date": "2026-07-27", "gB": 5, "gP": 7, "marks": {"Biu": "B", "Martim": "B", "Miguel Almeida": "B", "PTP": "B", "Ataide": "B", "Augusto": "B", "Tomás": "B", "Siqueira": "B", "Lourenço": "P", "Jota": "P", "Lucas": "P", "Gui": "P", "Lou": "P", "Amigo Zanatti": "P", "Anacoreta": "P", "Zé PG": "P", "Zanatti": "D2"}}], "fines": [], "gameDay": 1, "gameTime": "21:45", "convDay": 5, "convTime": "13:00", "convSlots": 16, "fineAmount": 2.5, "fineTolerance": 1, "prizes": [{"pos": 1, "icon": "🏆", "label": "70€"}, {"pos": 2, "icon": "🥈", "label": "45€"}, {"pos": 3, "icon": "🥉", "label": "20€"}, {"pos": 4, "icon": "💶", "label": "10€"}, {"pos": 5, "icon": "⚽", "label": "bola da época (usada)"}], "convNotes": "Só conta a seguir à hora marcada! Estrangeiros (convidados) admitidos a partir de sábado, inclusive.", "fineNotes": "Chegar atrasado = o jogo já podia ter começado mas não começou porque estamos à tua espera, ou depois das 21:05. A multa tem de ser saldada antes da inscrição do jogo seguinte, sob pena de a inscrição não ser válida.", "notes": "Doença (DOE) não penaliza. Falta (F) vale 0 pontos."}, {"id": "2026_3", "name": "2026/3", "venue": "Campo Atlético Club", "points": {"V": 4, "E": 2, "D": 1, "D1": -1, "D2": -2}, "players": [], "weeks": [{"date": "2026-09-07", "gB": "", "gP": "", "marks": {}}, {"date": "2026-09-14", "gB": "", "gP": "", "marks": {}}, {"date": "2026-09-21", "gB": "", "gP": "", "marks": {}}, {"date": "2026-09-28", "gB": "", "gP": "", "marks": {}}, {"date": "2026-10-05", "gB": "", "gP": "", "marks": {}}, {"date": "2026-10-12", "gB": "", "gP": "", "marks": {}}, {"date": "2026-10-19", "gB": "", "gP": "", "marks": {}}, {"date": "2026-10-26", "gB": "", "gP": "", "marks": {}}, {"date": "2026-11-02", "gB": "", "gP": "", "marks": {}}, {"date": "2026-11-09", "gB": "", "gP": "", "marks": {}}, {"date": "2026-11-16", "gB": "", "gP": "", "marks": {}}, {"date": "2026-11-23", "gB": "", "gP": "", "marks": {}}, {"date": "2026-11-30", "gB": "", "gP": "", "marks": {}}, {"date": "2026-12-07", "gB": "", "gP": "", "marks": {}}], "fines": [], "gameDay": 1, "gameTime": "21:45", "convDay": 5, "convTime": "13:00", "convSlots": 16, "fineAmount": 2.5, "fineTolerance": 1, "prizes": [{"pos": 1, "icon": "🏆", "label": "70€"}, {"pos": 2, "icon": "🥈", "label": "45€"}, {"pos": 3, "icon": "🥉", "label": "20€"}, {"pos": 4, "icon": "💶", "label": "10€"}, {"pos": 5, "icon": "⚽", "label": "bola da época (usada)"}], "convNotes": "Só conta a seguir à hora marcada! Estrangeiros (convidados) admitidos a partir de sábado, inclusive.", "fineNotes": "Chegar atrasado = o jogo já podia ter começado mas não começou porque estamos à tua espera, ou depois das 21:05. A multa tem de ser saldada antes da inscrição do jogo seguinte, sob pena de a inscrição não ser válida.", "notes": "Doença (DOE) não penaliza. Falta (F) vale 0 pontos."}]};
+const DEF = {"gameDay": 1, "gameTime": "21:45", "convDay": 5, "convTime": "13:00", "convSlots": 16, "fineAmount": 2.5, "fineTolerance": 1, "prizes": [{"pos": 1, "icon": "🏆", "label": "70€"}, {"pos": 2, "icon": "🥈", "label": "45€"}, {"pos": 3, "icon": "🥉", "label": "20€"}, {"pos": 4, "icon": "💶", "label": "10€"}, {"pos": 5, "icon": "⚽", "label": "bola da época (usada)"}], "convNotes": "Só conta a seguir à hora marcada! Estrangeiros (convidados) admitidos a partir de sábado, inclusive.", "fineNotes": "Chegar atrasado = o jogo já podia ter começado mas não começou porque estamos à tua espera, ou depois das 21:05. A multa tem de ser saldada antes da inscrição do jogo seguinte, sob pena de a inscrição não ser válida.", "notes": "Doença (DOE) não penaliza. Falta (F) vale 0 pontos."};
+
+// ============================================================
+// CONFIGURAÇÃO DO FIREBASE — preencher UMA vez (ver instruções no ecrã inicial)
+// Cola aqui os valores do teu projeto Firebase (Consola > Definições do projeto > As tuas apps > Config)
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyB1III4bABwJCuliFiQbo6tRV5m3aqoues",
+  authDomain: "premium-league-212ee.firebaseapp.com",
+  databaseURL: "https://premium-league-212ee-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "premium-league-212ee",
+};
+const DB_PATH = "premium_league";
+// ============================================================
+
+function normalize(d) {
+  d.seasons = (d.seasons || []).map(s => {
+    s = withDefaults(s);
+    s.players = s.players || [];
+    s.fines = s.fines || [];
+    s.weeks = (s.weeks || []).map(w => ({ date: w.date || "", gB: (w.gB === undefined || w.gB === null) ? "" : w.gB, gP: (w.gP === undefined || w.gP === null) ? "" : w.gP, marks: w.marks || {} }));
+    return s;
+  });
+  return d;
+}
+const KEY = "premium_league_2026_2";
+const CODES = ["B", "P", "F", "D1", "D2", "DOE", "?"];
+const DAYS = ["domingo", "2ª feira", "3ª feira", "4ª feira", "5ª feira", "6ª feira", "sábado"];
+const C = {
+  bg: "#EDF0EC", surface: "#FFFFFF", ink: "#16181A", sub: "#6B7069",
+  line: "#DCE0DA", green: "#1E6B40", gold: "#C99700", red: "#B3372B",
+  preta: "#141414", brancaBorder: "#C4C7C1", blue: "#3A6EA5",
+};
+const FONT_NUM = "'Barlow Condensed','Arial Narrow','Helvetica Neue',sans-serif";
+const FONT = "'Barlow','Helvetica Neue',Arial,sans-serif";
+
+const eur = (n) => `${Number(n).toFixed(2).replace(".", ",")}€`;
+function fmtDate(iso) {
+  if (!iso) return "sem data";
+  const [y, m, d] = iso.split("-");
+  return `${d}/${m}/${y}`;
+}
+const withDefaults = (s) => ({ ...DEF, fines: [], ...s, prizes: s.prizes || DEF.prizes });
+
+function migrate(raw) {
+  if (raw.version === 3) return { ...raw, seasons: raw.seasons.map(withDefaults) };
+  if (raw.version === 2) return { version: 3, seasons: raw.seasons.map(withDefaults) };
+  // v1: época única
+  return {
+    version: 3,
+    seasons: [
+      withDefaults({ id: "2026_2", name: "2026/2", venue: "Campo das Salésias", points: raw.points, players: raw.players, weeks: raw.weeks }),
+      JSON.parse(JSON.stringify(SEED.seasons[1])),
+    ],
+  };
+}
+
+function computeStats(season) {
+  const rows = season.players.filter(p => !p.guest).map((p, idx) => {
+    let V = 0, E = 0, D = 0, D1 = 0, D2 = 0, F = 0, J = 0, golos = 0;
+    const form = [];
+    season.weeks.forEach(w => {
+      const mk = w.marks[p.name];
+      if (!mk) return;
+      if (mk === "D1") D1++;
+      if (mk === "D2") D2++;
+      if (mk === "F") F++;
+      if (mk === "B" || mk === "P") {
+        J++;
+        const hasScore = w.gB !== null && w.gB !== "" && w.gP !== null && w.gP !== "";
+        if (hasScore) {
+          const mine = mk === "B" ? Number(w.gB) : Number(w.gP);
+          const theirs = mk === "B" ? Number(w.gP) : Number(w.gB);
+          golos += mine;
+          if (mine > theirs) { V++; form.push("V"); }
+          else if (mine === theirs) { E++; form.push("E"); }
+          else { D++; form.push("D"); }
+        }
+      }
+    });
+    const pts = V * season.points.V + E * season.points.E + D * season.points.D + D1 * season.points.D1 + D2 * season.points.D2;
+    const lost = D1 * Math.abs(season.points.D1) + D2 * Math.abs(season.points.D2);
+    let streak = 0;
+    for (let i = form.length - 1; i >= 0 && form[i] === "V"; i--) streak++;
+    return { name: p.name, pts, J, V, E, D, D1, D2, F, golos, lost, form: form.slice(-5), streak, idx };
+  });
+  // Desempate: pontos → assiduidade → vitórias → menos pontos perdidos por desistências
+  rows.sort((a, b) => b.pts - a.pts || b.J - a.J || b.V - a.V || a.lost - b.lost || a.idx - b.idx);
+  rows.forEach((r, i) => { r.pos = i + 1; });
+  return rows;
+}
+
+function weekSummary(w) {
+  const nB = Object.values(w.marks).filter(m => m === "B").length;
+  const nP = Object.values(w.marks).filter(m => m === "P").length;
+  const hasScore = w.gB !== null && w.gB !== "" && w.gP !== null && w.gP !== "";
+  let winner = null;
+  if (hasScore) winner = Number(w.gB) > Number(w.gP) ? "Branca" : Number(w.gP) > Number(w.gB) ? "Preta" : "Empate";
+  return { nB, nP, hasScore, winner };
+}
+
+function parseHM(t) { const [h, m] = (t || "0:0").split(":").map(Number); return [h || 0, m || 0]; }
+function nextOccurrence(dow, timeStr) {
+  const [h, m] = parseHM(timeStr);
+  const now = new Date();
+  const t = new Date(now);
+  t.setHours(h, m, 0, 0);
+  let delta = (dow - now.getDay() + 7) % 7;
+  if (delta === 0 && t <= now) delta = 7;
+  t.setDate(t.getDate() + delta);
+  return t;
+}
+function fmtDelta(target, now) {
+  const s = Math.max(0, Math.floor((target - now) / 1000));
+  const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), mi = Math.floor((s % 3600) / 60);
+  return d > 0 ? `${d}d ${h}h ${mi}m` : `${h}h ${mi}m`;
+}
+
+function Countdown({ season }) {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => { const id = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(id); }, []);
+  const conv = nextOccurrence(season.convDay, season.convTime);
+  const jogo = nextOccurrence(season.gameDay, season.gameTime);
+  const convOpen = jogo < conv;
+  const chip = (icon, top, bottom, hot) => (
+    <div style={{
+      flex: 1, background: hot ? C.ink : C.surface, color: hot ? "#fff" : C.ink,
+      border: `1px solid ${hot ? C.ink : C.line}`, borderRadius: 10, padding: "8px 10px",
+      display: "flex", alignItems: "center", gap: 8, minWidth: 0,
+    }}>
+      <span style={{ fontSize: 20 }}>{icon}</span>
+      <div style={{ minWidth: 0 }}>
+        <div style={{ fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, lineHeight: 1.1 }}>{top}</div>
+        <div style={{ fontSize: 11, opacity: 0.75, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{bottom}</div>
+      </div>
+    </div>
+  );
+  return (
+    <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+      {chip("📣", convOpen ? "Convocatória aberta" : `abre em ${fmtDelta(conv, now)}`,
+        convOpen ? `primeiros ${season.convSlots} a mandar "." contam` : `${DAYS[season.convDay]} às ${season.convTime}`, convOpen)}
+      {chip("⚽", `jogo em ${fmtDelta(jogo, now)}`, `${DAYS[season.gameDay]} às ${season.gameTime}`, false)}
+    </div>
+  );
+}
+
+function FormDots({ form }) {
+  if (!form.length) return null;
+  const col = { V: C.green, E: "#9AA096", D: C.red };
+  return (
+    <span style={{ display: "inline-flex", gap: 3, marginLeft: 6, verticalAlign: "middle" }}>
+      {form.map((f, i) => (
+        <span key={i} title={f} style={{ width: 7, height: 7, borderRadius: 7, background: col[f], display: "inline-block" }} />
+      ))}
+    </span>
+  );
+}
+
+function PremiumLeague() {
+  const [data, setData] = useState(null);
+  const [sIdx, setSIdx] = useState(0);
+  const [tab, setTab] = useState("class");
+  const [openWeek, setOpenWeek] = useState(null);
+  const [openPlayer, setOpenPlayer] = useState(null);
+  const [newSeason, setNewSeason] = useState(false);
+  const [saveState, setSaveState] = useState("idle");
+  const [storageOk, setStorageOk] = useState(true);
+  const timer = useRef(null);
+
+  const [demo, setDemo] = useState(false);
+  const dbRef = useRef(null);
+  const lastJson = useRef("");
+  const firstLoad = useRef(true);
+  const configured = !!FIREBASE_CONFIG.databaseURL;
+
+  useEffect(() => {
+    if (!configured) {
+      if (demo) { setStorageOk(false); setData(JSON.parse(JSON.stringify(SEED))); setSIdx(SEED.seasons.length - 1); }
+      return;
+    }
+    try {
+      const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG);
+      dbRef.current = firebase.database().ref(DB_PATH);
+      dbRef.current.on("value", (snap) => {
+        const val = snap.val();
+        if (!val) {
+          const v = JSON.parse(JSON.stringify(SEED));
+          lastJson.current = JSON.stringify(v);
+          dbRef.current.set(v);
+          setData(v); setSIdx(v.seasons.length - 1); firstLoad.current = false;
+          return;
+        }
+        const json = JSON.stringify(val);
+        if (json === lastJson.current) return; // eco da nossa própria gravação
+        lastJson.current = json;
+        const v3 = normalize(migrate(val));
+        setData(v3);
+        if (firstLoad.current) { setSIdx(v3.seasons.length - 1); firstLoad.current = false; }
+        else { setSIdx(i => Math.min(i, v3.seasons.length - 1)); setSaveState("saved"); }
+      }, (err) => { setStorageOk(false); setData(prev => prev || JSON.parse(JSON.stringify(SEED))); });
+    } catch (e) { setStorageOk(false); setData(JSON.parse(JSON.stringify(SEED))); }
+    return () => { if (dbRef.current) dbRef.current.off(); };
+  }, [demo]);
+
+  const update = (next) => {
+    setData(next);
+    lastJson.current = JSON.stringify(next);
+    if (!dbRef.current || !storageOk) { setSaveState("local"); return; }
+    setSaveState("saving");
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      dbRef.current.set(JSON.parse(lastJson.current))
+        .then(() => setSaveState("saved"))
+        .catch(() => setSaveState("local"));
+    }, 500);
+  };
+
+  if (!configured && !demo) return <Setup onDemo={() => setDemo(true)} />;
+
+  if (!data) return (
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONT, color: C.sub }}>
+      A carregar a liga…
+    </div>
+  );
+
+  const season = data.seasons[Math.min(sIdx, data.seasons.length - 1)];
+  const setSeason = (patch) => {
+    const seasons = data.seasons.map((s, i) => i === sIdx ? { ...s, ...patch } : s);
+    update({ ...data, seasons });
+  };
+  const stats = computeStats(season);
+  const leaguePlayers = season.players.filter(p => !p.guest);
+  const guests = season.players.filter(p => p.guest);
+  const played = season.weeks.filter(w => weekSummary(w).hasScore);
+  const winB = played.filter(w => Number(w.gB) > Number(w.gP)).length;
+  const winP = played.filter(w => Number(w.gP) > Number(w.gB)).length;
+  const emp = played.length - winB - winP;
+  const totGolos = played.reduce((s, w) => s + Number(w.gB) + Number(w.gP), 0);
+  const finesPaid = (season.fines || []).filter(f => f.paid).length;
+  const finesOwed = (season.fines || []).length - finesPaid;
+
+  const S = {
+    tabBtn: (on) => ({
+      flex: 1, padding: "10px 0", border: "none", cursor: "pointer",
+      background: on ? C.ink : "transparent", color: on ? "#fff" : C.ink,
+      fontFamily: FONT_NUM, fontSize: 16, fontWeight: 600, letterSpacing: "0.02em", borderRadius: 6,
+    }),
+    card: { background: C.surface, border: `1px solid ${C.line}`, borderRadius: 10, overflow: "hidden" },
+    input: { border: `1px solid ${C.line}`, borderRadius: 6, padding: "6px 8px", fontFamily: FONT, fontSize: 14, background: "#fff" },
+    lbl: { fontSize: 12, color: C.sub, display: "block", marginBottom: 2 },
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.ink, paddingBottom: 40 }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap');
+        input:focus, button:focus, select:focus, textarea:focus { outline: 2px solid ${C.green}; outline-offset: 1px; }
+      `}</style>
+
+      <div style={{ maxWidth: 520, margin: "0 auto", padding: "0 12px" }}>
+        <header style={{ padding: "18px 2px 10px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+            <h1 style={{ margin: 0, fontFamily: FONT_NUM, fontWeight: 700, fontSize: 30, letterSpacing: "0.01em", whiteSpace: "nowrap" }}>
+              Premium League
+            </h1>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <select value={sIdx} onChange={e => { setSIdx(Number(e.target.value)); setOpenWeek(null); setOpenPlayer(null); }}
+                style={{ fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: C.green, border: `1px solid ${C.line}`, borderRadius: 8, padding: "4px 6px", background: "#fff", maxWidth: 110 }}>
+                {data.seasons.map((s, i) => <option key={s.id} value={i}>{s.name}</option>)}
+              </select>
+              <button onClick={() => setNewSeason(v => !v)} title="Nova época" style={{
+                fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, width: 34, height: 34, borderRadius: 8,
+                border: `1.5px solid ${newSeason ? C.ink : C.green}`, background: newSeason ? C.ink : "transparent",
+                color: newSeason ? "#fff" : C.green, cursor: "pointer", lineHeight: 1,
+              }}>{newSeason ? "×" : "+"}</button>
+            </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <p style={{ margin: "2px 0 0", fontSize: 13, color: C.sub }}>
+              {season.venue} · {DAYS[season.gameDay]} às {season.gameTime}
+            </p>
+            <span style={{ fontSize: 11, color: saveState === "local" ? C.red : C.sub }}>
+              {saveState === "saving" ? "a sincronizar…" : saveState === "saved" ? "sincronizado ✓" : saveState === "local" ? "sem ligação — não gravado" : ""}
+            </span>
+          </div>
+        </header>
+
+        {!storageOk && (
+          <div style={{ background: "#FCEFEA", border: `1px solid ${C.red}`, color: C.red, borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 10 }}>
+            Modo demonstração / sem ligação à base de dados — as alterações não ficam gravadas. Verifica a configuração do Firebase no topo do ficheiro.
+          </div>
+        )}
+
+        {newSeason && (
+          <NewSeasonForm base={season} S={S} onCreate={(ns) => {
+            update({ ...data, seasons: [...data.seasons, ns] });
+            setSIdx(data.seasons.length); setNewSeason(false); setTab("rules"); setOpenWeek(null);
+          }} />
+        )}
+
+        <Countdown key={season.id + season.convDay + season.convTime + season.gameDay + season.gameTime} season={season} />
+
+        <nav style={{ display: "flex", gap: 4, background: C.surface, border: `1px solid ${C.line}`, borderRadius: 8, padding: 4, marginBottom: 14 }}>
+          <button style={S.tabBtn(tab === "class")} onClick={() => setTab("class")}>Classificação</button>
+          <button style={S.tabBtn(tab === "weeks")} onClick={() => { setTab("weeks"); setOpenWeek(null); }}>Jornadas</button>
+          <button style={S.tabBtn(tab === "rules")} onClick={() => setTab("rules")}>Regulamento</button>
+        </nav>
+
+        {tab === "class" && (
+          <>
+            {stats.length === 0 ? (
+              <div style={{ ...S.card, padding: 20, textAlign: "center", color: C.sub, fontSize: 14 }}>
+                Ainda não há jogadores na época {season.name}.<br />
+                Adiciona-os no separador <b>Regulamento → Jogadores</b> — dá para importar os da época anterior num clique.
+              </div>
+            ) : (
+              <div style={S.card}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontVariantNumeric: "tabular-nums" }}>
+                  <thead>
+                    <tr style={{ background: C.ink, color: "#fff", fontFamily: FONT_NUM, fontSize: 15 }}>
+                      {["", "Jogador", "Pts", "J", "V", "E", "D", "Golos"].map((h, i) => (
+                        <th key={i} style={{ padding: "7px 4px", textAlign: i === 1 ? "left" : "center", fontWeight: 600 }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.map((r, i) => {
+                      const prize = (season.prizes || []).find(p => p.pos === r.pos);
+                      const open = openPlayer === r.name;
+                      return [
+                        <tr key={r.name} onClick={() => setOpenPlayer(open ? null : r.name)} style={{
+                          borderTop: `1px solid ${C.line}`, cursor: "pointer",
+                          background: open ? "#EAF2EC" : i === 0 ? "#FBF3DC" : i === 1 ? "#F1F2F0" : i === 2 ? "#F6EBDD" : "transparent",
+                        }}>
+                          <td style={{ padding: "6px 4px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: i < 3 ? C.gold : C.sub, width: 28 }}>{r.pos}</td>
+                          <td style={{ padding: "6px 4px" }}>
+                            <span style={{ fontWeight: prize ? 600 : 400, fontSize: 14 }}>{r.name}</span>
+                            {r.streak >= 3 && <span title={`${r.streak} vitórias seguidas`} style={{ fontSize: 12, marginLeft: 4 }}>🔥{r.streak}</span>}
+                            <br />
+                            <span style={{ fontSize: 10.5, color: C.gold, fontWeight: 700 }}>
+                              {prize ? `${prize.icon} ${prize.label}` : ""}
+                            </span>
+                            <FormDots form={r.form} />
+                          </td>
+                          <td style={{ padding: "6px 4px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 19, fontWeight: 700 }}>{r.pts}</td>
+                          {[r.J, r.V, r.E, r.D].map((v, k) => (
+                            <td key={k} style={{ padding: "6px 3px", textAlign: "center", fontSize: 13, color: C.sub }}>{v}</td>
+                          ))}
+                          <td style={{ padding: "6px 3px", textAlign: "center", fontSize: 13, fontWeight: 600, color: C.green }}>{r.golos}</td>
+                        </tr>,
+                        open && (
+                          <tr key={r.name + "_d"} style={{ background: "#F6F8F5" }}>
+                            <td colSpan={8} style={{ padding: "8px 12px", fontSize: 12, color: C.sub }}>
+                              <b style={{ color: C.ink }}>{r.name}</b> — desistências: {r.D1} × D1, {r.D2} × D2 (−{r.lost} pts) · faltas: {r.F}
+                              <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 6 }}>
+                                {season.weeks.map((w, wi) => {
+                                  const mk = w.marks[r.name];
+                                  if (!mk) return null;
+                                  const s = weekSummary(w);
+                                  let res = "";
+                                  if ((mk === "B" || mk === "P") && s.hasScore) {
+                                    const mine = mk === "B" ? Number(w.gB) : Number(w.gP);
+                                    const theirs = mk === "B" ? Number(w.gP) : Number(w.gB);
+                                    res = mine > theirs ? "V" : mine === theirs ? "E" : "D";
+                                  }
+                                  const bg = res === "V" ? "#DFF0E4" : res === "D" ? "#F9E3DE" : res === "E" ? "#EDEEEC" : "#FBF3DC";
+                                  return (
+                                    <span key={wi} style={{ background: bg, border: `1px solid ${C.line}`, borderRadius: 6, padding: "2px 6px", fontSize: 11, color: C.ink }}>
+                                      J{wi + 1} {mk === "B" ? "⚪" : mk === "P" ? "⚫" : mk}{res ? ` ${w.gB}–${w.gP} ${res}` : ""}
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                            </td>
+                          </tr>
+                        ),
+                      ];
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {stats.length > 0 && (
+              <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+                {[["Jornadas", `${played.length}/${season.weeks.length}`], ["Branca", `${winB} vit.`], ["Preta", `${winP} vit.`], ["Empates", `${emp}`], ["Golos", `${totGolos}`]].map(([l, v]) => (
+                  <div key={l} style={{ ...S.card, flex: "1 1 80px", padding: "8px 10px", textAlign: "center" }}>
+                    <div style={{ fontFamily: FONT_NUM, fontSize: 22, fontWeight: 700 }}>{v}</div>
+                    <div style={{ fontSize: 11, color: C.sub }}>{l}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <p style={{ fontSize: 12, color: C.sub, marginTop: 10 }}>
+              Toca num jogador para ver o percurso jornada a jornada. Desempate: pontos → assiduidade → vitórias → menos pontos perdidos em desistências.
+            </p>
+          </>
+        )}
+
+        {tab === "weeks" && openWeek === null && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {season.weeks.map((w, i) => {
+              const s = weekSummary(w);
+              return (
+                <button key={i} onClick={() => setOpenWeek(i)} style={{
+                  ...S.card, display: "flex", alignItems: "center", justifyContent: "space-between",
+                  padding: "10px 14px", cursor: "pointer", textAlign: "left", fontFamily: FONT, width: "100%",
+                }}>
+                  <div>
+                    <div style={{ fontFamily: FONT_NUM, fontWeight: 600, fontSize: 18 }}>Jornada {i + 1}</div>
+                    <div style={{ fontSize: 12, color: C.sub }}>{fmtDate(w.date)} · {s.nB} Branca / {s.nP} Preta</div>
+                  </div>
+                  {s.hasScore ? (
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontFamily: FONT_NUM, fontSize: 24, fontWeight: 700 }}>{w.gB}–{w.gP}</span>
+                      <span style={{
+                        fontSize: 11, padding: "3px 8px", borderRadius: 20, fontWeight: 600,
+                        background: s.winner === "Preta" ? C.preta : s.winner === "Branca" ? "#fff" : C.bg,
+                        color: s.winner === "Preta" ? "#fff" : C.ink,
+                        border: `1px solid ${s.winner === "Branca" ? C.brancaBorder : "transparent"}`,
+                      }}>{s.winner}</span>
+                    </div>
+                  ) : (
+                    <span style={{ fontSize: 12, color: C.green, fontWeight: 600 }}>por jogar →</span>
+                  )}
+                </button>
+              );
+            })}
+            <button onClick={() => {
+              setSeason({ weeks: [...season.weeks, { date: "", gB: "", gP: "", marks: {} }] });
+              setOpenWeek(season.weeks.length);
+            }} style={{ padding: "12px", border: `1.5px dashed ${C.green}`, borderRadius: 10, background: "transparent", color: C.green, fontFamily: FONT_NUM, fontSize: 17, fontWeight: 600, cursor: "pointer" }}>
+              + Nova jornada
+            </button>
+          </div>
+        )}
+
+        {tab === "weeks" && openWeek !== null && season.weeks[openWeek] && (() => {
+          const w = season.weeks[openWeek];
+          const s = weekSummary(w);
+          const setWeek = (patch) => {
+            const weeks = season.weeks.map((x, i) => i === openWeek ? { ...x, ...patch } : x);
+            setSeason({ weeks });
+          };
+          const setMark = (name, code) => {
+            const marks = { ...w.marks };
+            if (marks[name] === code) delete marks[name]; else marks[name] = code;
+            setWeek({ marks });
+          };
+          const conv = s.nB + s.nP;
+          return (
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <button onClick={() => setOpenWeek(null)} style={{ background: "none", border: "none", color: C.green, fontWeight: 600, fontSize: 14, cursor: "pointer", padding: 0 }}>← Jornadas</button>
+                <button onClick={() => {
+                  if (confirm(`Apagar a jornada ${openWeek + 1}?`)) {
+                    setSeason({ weeks: season.weeks.filter((_, i) => i !== openWeek) });
+                    setOpenWeek(null);
+                  }
+                }} style={{ background: "none", border: "none", color: C.red, fontSize: 13, cursor: "pointer" }}>Apagar jornada</button>
+              </div>
+
+              <div style={{ ...S.card, padding: 14, marginBottom: 12 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                  <div style={{ fontFamily: FONT_NUM, fontSize: 22, fontWeight: 700 }}>Jornada {openWeek + 1}</div>
+                  <input type="date" value={w.date || ""} onChange={e => setWeek({ date: e.target.value })} style={S.input} />
+                </div>
+                <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+                  {[["Branca", "gB", "#fff", C.ink, C.brancaBorder], ["Preta", "gP", C.preta, "#fff", C.preta]].map(([lab, key, bg, fg, bd]) => (
+                    <div key={key} style={{ flex: 1, background: bg, color: fg, border: `1.5px solid ${bd}`, borderRadius: 10, padding: "10px 8px", textAlign: "center" }}>
+                      <div style={{ fontFamily: FONT_NUM, fontSize: 16, fontWeight: 600, marginBottom: 4 }}>{lab}</div>
+                      <input type="number" min="0" max="60" inputMode="numeric" placeholder="–"
+                        value={w[key] === null ? "" : w[key]}
+                        onChange={e => setWeek({ [key]: e.target.value === "" ? "" : Number(e.target.value) })}
+                        style={{ width: 70, fontFamily: FONT_NUM, fontSize: 34, fontWeight: 700, textAlign: "center", background: "transparent", color: fg, border: "none", borderBottom: `2px solid ${fg === "#fff" ? "#555" : C.line}` }} />
+                      <div style={{ fontSize: 11, opacity: 0.75, marginTop: 4 }}>golos da equipa</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ textAlign: "center", marginTop: 8, fontSize: 13, color: C.sub }}>
+                  {s.nB} na Branca · {s.nP} na Preta {s.winner ? `· venceu: ${s.winner}` : ""}
+                  {(conv > 0 && conv < season.convSlots) ? ` · faltam ${season.convSlots - conv} para os ${season.convSlots}` : conv === season.convSlots ? " · convocatória cheia ✓" : ""}
+                </div>
+              </div>
+
+              {season.players.length === 0 ? (
+                <div style={{ ...S.card, padding: 16, textAlign: "center", fontSize: 14, color: C.sub }}>
+                  Ainda não há jogadores nesta época — adiciona-os em <b>Regulamento → Jogadores</b>.
+                </div>
+              ) : (
+                <div style={{ ...S.card }}>
+                  {[...leaguePlayers, ...guests].map((p, i) => {
+                    const mk = w.marks[p.name];
+                    return (
+                      <div key={p.name} style={{
+                        display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6,
+                        padding: "7px 8px", borderTop: i ? `1px solid ${C.line}` : "none",
+                        background: p.guest ? "#FAFAF7" : "transparent",
+                      }}>
+                        <span style={{ fontSize: 13.5, color: p.guest ? C.sub : C.ink, fontStyle: p.guest ? "italic" : "normal", flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {p.name}
+                        </span>
+                        <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
+                          {CODES.map(code => {
+                            const on = mk === code;
+                            const isTeam = code === "B" || code === "P";
+                            const accent = code === "B" ? C.brancaBorder : code === "P" ? C.preta : code === "DOE" ? C.blue : code === "?" ? C.gold : code === "F" ? "#7A5C00" : C.red;
+                            const onBg = code === "B" ? "#fff" : code === "P" ? C.preta : code === "DOE" ? "#E3EDF7" : code === "?" ? "#FBF3DC" : code === "F" ? "#F3E9C8" : "#FCE4DC";
+                            return (
+                              <button key={code} onClick={() => setMark(p.name, code)} aria-pressed={on} style={{
+                                minWidth: code.length > 1 ? 30 : 26, padding: "5px 3px", borderRadius: 6, cursor: "pointer",
+                                fontFamily: FONT_NUM, fontSize: 13, fontWeight: 700,
+                                border: `1.5px solid ${on ? accent : C.line}`,
+                                background: on ? onBg : "transparent",
+                                color: on ? (code === "P" ? "#fff" : code === "DOE" ? C.blue : code === "?" ? C.gold : code === "F" ? "#7A5C00" : isTeam ? C.ink : C.red) : "#A9ADA6",
+                              }}>{code}</button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              <p style={{ fontSize: 12, color: C.sub, marginTop: 8 }}>
+                B/P = equipa · F = falta (0 pts) · D1/D2 = desistência · DOE = doença (sem penalização) · ? = por classificar. Tocar outra vez limpa.
+              </p>
+            </div>
+          );
+        })()}
+
+        {tab === "rules" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+
+            <div style={{ ...S.card, padding: 14, background: C.ink, color: "#fff", border: "none" }}>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 10 }}>🏆 Prémios — se a época acabasse hoje</div>
+              {(season.prizes || []).map(p => {
+                const holder = stats[p.pos - 1];
+                return (
+                  <div key={p.pos} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0", borderTop: "1px solid #333" }}>
+                    <span style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, width: 26, color: p.pos <= 3 ? "#F0C64B" : "#bbb" }}>{p.pos}º</span>
+                    <span style={{ fontSize: 18 }}>{p.icon}</span>
+                    <span style={{ flex: 1, fontSize: 14, fontWeight: 600 }}>{holder ? holder.name : "—"}</span>
+                    <span style={{ fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: "#F0C64B" }}>{p.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div style={{ ...S.card, padding: 14 }}>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 6 }}>📣 Convocatória</div>
+              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.7 }}>
+                <li>Sai <b>{DAYS[season.convDay]} às {season.convTime}</b> (hora de Portugal continental).</li>
+                <li>Os <b>primeiros {season.convSlots}</b> a enviar "." estão convocados.</li>
+                <li>Jogos <b>{DAYS[season.gameDay]} às {season.gameTime}</b>, {season.venue}.</li>
+              </ul>
+              {season.convNotes && <p style={{ fontSize: 13, color: C.sub, margin: "6px 0 0", lineHeight: 1.6 }}>{season.convNotes}</p>}
+            </div>
+
+            <div style={{ ...S.card, padding: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700 }}>💸 Imposto do atraso</div>
+                <div style={{ fontSize: 13, color: C.sub }}>
+                  pote: <b style={{ color: C.green }}>{eur(finesPaid * season.fineAmount)}</b>
+                  {finesOwed > 0 && <span style={{ color: C.red }}> · por cobrar: {eur(finesOwed * season.fineAmount)}</span>}
+                </div>
+              </div>
+              <p style={{ fontSize: 12.5, color: C.sub, margin: "0 0 8px", lineHeight: 1.6 }}>
+                <b style={{ color: C.ink }}>{eur(season.fineAmount)}</b> a quem chegar atrasado (tolerância de <b>{season.fineTolerance}</b> atraso{season.fineTolerance === 1 ? "" : "s"} para todos). {season.fineNotes}
+              </p>
+              {leaguePlayers.length > 0 && (
+                <AddFine players={leaguePlayers} amount={season.fineAmount} onAdd={(name) => {
+                  setSeason({ fines: [...(season.fines || []), { id: Date.now(), name, date: new Date().toISOString().slice(0, 10), paid: false }] });
+                }} />
+              )}
+              {(season.fines || []).map(f => (
+                <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 0", borderTop: `1px solid ${C.line}`, fontSize: 13 }}>
+                  <span style={{ flex: 1 }}>{f.name} <span style={{ color: C.sub, fontSize: 11 }}>({fmtDate(f.date)})</span></span>
+                  <button onClick={() => setSeason({ fines: season.fines.map(x => x.id === f.id ? { ...x, paid: !x.paid } : x) })} style={{
+                    fontSize: 12, padding: "3px 10px", borderRadius: 20, cursor: "pointer", fontWeight: 600,
+                    border: `1px solid ${f.paid ? C.green : C.red}`, background: f.paid ? "#DFF0E4" : "#FCE4DC", color: f.paid ? C.green : C.red,
+                  }}>{f.paid ? "pago ✓" : "por pagar"}</button>
+                  <button onClick={() => setSeason({ fines: season.fines.filter(x => x.id !== f.id) })} style={{ border: "none", background: "none", color: C.sub, cursor: "pointer" }}>×</button>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ ...S.card, padding: 14 }}>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Pontuação</div>
+              {[["V", "Vitória"], ["E", "Empate"], ["D", "Derrota"], ["D1", "Desistência desde sábado (inclusive)"], ["D2", "Desistência desde 2ª às 00h"]].map(([k, lab]) => (
+                <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderTop: `1px solid ${C.line}` }}>
+                  <span style={{ fontSize: 14 }}>{lab} ({k})</span>
+                  <input type="number" value={season.points[k]}
+                    onChange={e => setSeason({ points: { ...season.points, [k]: Number(e.target.value) } })}
+                    style={{ ...S.input, width: 60, textAlign: "center", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700 }} />
+                </div>
+              ))}
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", borderTop: `1px solid ${C.line}`, fontSize: 14, color: C.sub }}>
+                <span>Falta (F)</span><span style={{ fontFamily: FONT_NUM, fontWeight: 700 }}>0</span>
+              </div>
+              <p style={{ fontSize: 12.5, color: C.sub, margin: "8px 0 0", lineHeight: 1.6 }}>
+                Em caso de empate: <b>1ª</b> assiduidade, <b>2ª</b> mais vitórias, <b>3ª</b> menos pontos perdidos por desistências.
+              </p>
+              {season.notes && <p style={{ fontSize: 12.5, color: C.sub, margin: "4px 0 0", lineHeight: 1.6 }}>{season.notes}</p>}
+            </div>
+
+            <div style={{ ...S.card, padding: 14 }}>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Jogadores — {season.name}</div>
+              <AddPlayer onAdd={(name, guest) => {
+                const nm = name.trim();
+                if (!nm || season.players.some(p => p.name === nm)) return;
+                if (/[.#$\[\]\/]/.test(nm)) { alert("O nome não pode conter . # $ [ ] /"); return; }
+                setSeason({ players: [...season.players, { name: nm, guest }] });
+              }} />
+              {data.seasons.some((s, i) => i !== sIdx && s.players.length > 0) && (
+                <button onClick={() => {
+                  const others = data.seasons.filter((s, i) => i !== sIdx && s.players.length > 0);
+                  const src = others[others.length - 1];
+                  const existing = new Set(season.players.map(p => p.name));
+                  const add = src.players.filter(p => !p.guest && !existing.has(p.name)).map(p => ({ name: p.name, guest: false }));
+                  setSeason({ players: [...season.players, ...add] });
+                }} style={{ width: "100%", marginBottom: 8, padding: "9px", border: `1.5px dashed ${C.green}`, borderRadius: 8, background: "transparent", color: C.green, fontWeight: 600, fontSize: 13.5, cursor: "pointer" }}>
+                  ⤵ Importar os jogadores da época anterior
+                </button>
+              )}
+              {[...leaguePlayers, ...guests].map(p => (
+                <div key={p.name} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderTop: `1px solid ${C.line}` }}>
+                  <span style={{ fontSize: 14, fontStyle: p.guest ? "italic" : "normal", color: p.guest ? C.sub : C.ink }}>{p.name}</span>
+                  <div style={{ display: "flex", gap: 6 }}>
+                    <button onClick={() => setSeason({ players: season.players.map(x => x.name === p.name ? { ...x, guest: !x.guest } : x) })}
+                      style={{ fontSize: 12, border: `1px solid ${C.line}`, background: "transparent", borderRadius: 6, padding: "3px 8px", cursor: "pointer", color: C.sub }}>
+                      {p.guest ? "tornar da liga" : "tornar convidado"}
+                    </button>
+                    <button onClick={() => {
+                      if (confirm(`Remover ${p.name} da época ${season.name}? Apaga também as marcações dele nas jornadas.`)) {
+                        const weeks = season.weeks.map(w => { const m = { ...w.marks }; delete m[p.name]; return { ...w, marks: m }; });
+                        setSeason({ weeks, players: season.players.filter(x => x.name !== p.name) });
+                      }
+                    }} style={{ fontSize: 12, border: "none", background: "transparent", color: C.red, cursor: "pointer" }}>remover</button>
+                  </div>
+                </div>
+              ))}
+              <p style={{ fontSize: 12, color: C.sub, margin: "8px 0 0" }}>
+                Convidados (estrangeiros) contam para os golos da equipa mas não entram na classificação.
+              </p>
+            </div>
+
+            <SeasonSettings season={season} setSeason={setSeason} S={S}
+              canDelete={data.seasons.length > 1}
+              onDelete={() => {
+                if (confirm(`Apagar a época ${season.name} e todos os seus dados? Isto não se desfaz.`)) {
+                  const seasons = data.seasons.filter((_, i) => i !== sIdx);
+                  update({ ...data, seasons });
+                  setSIdx(Math.max(0, sIdx - 1));
+                }
+              }} />
+
+            <div style={{ ...S.card, padding: 14, fontSize: 12.5, color: C.sub, lineHeight: 1.6 }}>
+              Os dados são partilhados em tempo real: qualquer pessoa com o link vê e pode editar tudo, sem precisar de conta nenhuma. A última alteração prevalece.
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SeasonSettings({ season, setSeason, S, canDelete, onDelete }) {
+  const [open, setOpen] = useState(false);
+  const num = (v, fb) => { const n = Number(v); return isNaN(n) ? fb : n; };
+  const row = { display: "flex", gap: 8, marginBottom: 8, flexWrap: "wrap" };
+  const daySelect = (val, onCh) => (
+    <select value={val} onChange={onCh} style={{ ...S.input, flex: 1 }}>
+      {DAYS.map((d, i) => <option key={i} value={i}>{d}</option>)}
+    </select>
+  );
+  return (
+    <div style={{ ...S.card, padding: 14 }}>
+      <button onClick={() => setOpen(o => !o)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: FONT_NUM }}>
+        <span style={{ fontSize: 20, fontWeight: 700, color: C.ink }}>⚙️ Definições da época</span>
+        <span style={{ fontSize: 18, color: C.sub }}>{open ? "▴" : "▾"}</span>
+      </button>
+      {!open && <p style={{ fontSize: 12, color: C.sub, margin: "4px 0 0" }}>Nome, campo, horários, convocatória, multa, prémios e notas — tudo editável aqui.</p>}
+      {open && (
+        <div style={{ marginTop: 12 }}>
+          <div style={row}>
+            <div style={{ flex: 1, minWidth: 120 }}>
+              <label style={S.lbl}>Nome da época</label>
+              <input value={season.name} onChange={e => setSeason({ name: e.target.value })} style={{ ...S.input, width: "100%", boxSizing: "border-box" }} />
+            </div>
+            <div style={{ flex: 2, minWidth: 160 }}>
+              <label style={S.lbl}>Campo</label>
+              <input value={season.venue} onChange={e => setSeason({ venue: e.target.value })} style={{ ...S.input, width: "100%", boxSizing: "border-box" }} />
+            </div>
+          </div>
+          <div style={row}>
+            <div style={{ flex: 1 }}>
+              <label style={S.lbl}>Dia do jogo</label>
+              {daySelect(season.gameDay, e => setSeason({ gameDay: Number(e.target.value) }))}
+            </div>
+            <div>
+              <label style={S.lbl}>Hora do jogo</label>
+              <input type="time" value={season.gameTime} onChange={e => setSeason({ gameTime: e.target.value })} style={S.input} />
+            </div>
+          </div>
+          <div style={row}>
+            <div style={{ flex: 1 }}>
+              <label style={S.lbl}>Dia da convocatória</label>
+              {daySelect(season.convDay, e => setSeason({ convDay: Number(e.target.value) }))}
+            </div>
+            <div>
+              <label style={S.lbl}>Hora</label>
+              <input type="time" value={season.convTime} onChange={e => setSeason({ convTime: e.target.value })} style={S.input} />
+            </div>
+            <div>
+              <label style={S.lbl}>Convocados</label>
+              <input type="number" min="2" value={season.convSlots} onChange={e => setSeason({ convSlots: num(e.target.value, 16) })} style={{ ...S.input, width: 64, textAlign: "center" }} />
+            </div>
+          </div>
+          <div style={row}>
+            <div>
+              <label style={S.lbl}>Multa (€)</label>
+              <input type="number" step="0.5" min="0" value={season.fineAmount} onChange={e => setSeason({ fineAmount: num(e.target.value, 2.5) })} style={{ ...S.input, width: 80, textAlign: "center" }} />
+            </div>
+            <div>
+              <label style={S.lbl}>Tolerância (atrasos)</label>
+              <input type="number" min="0" value={season.fineTolerance} onChange={e => setSeason({ fineTolerance: num(e.target.value, 1) })} style={{ ...S.input, width: 80, textAlign: "center" }} />
+            </div>
+          </div>
+          <div style={{ marginBottom: 8 }}>
+            <label style={S.lbl}>Prémios (um por posição)</label>
+            {(season.prizes || []).map((p, i) => (
+              <div key={i} style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 4 }}>
+                <span style={{ fontFamily: FONT_NUM, fontWeight: 700, width: 24 }}>{p.pos}º</span>
+                <input value={p.icon} onChange={e => setSeason({ prizes: season.prizes.map((x, j) => j === i ? { ...x, icon: e.target.value } : x) })}
+                  style={{ ...S.input, width: 44, textAlign: "center" }} />
+                <input value={p.label} onChange={e => setSeason({ prizes: season.prizes.map((x, j) => j === i ? { ...x, label: e.target.value } : x) })}
+                  style={{ ...S.input, flex: 1, minWidth: 0 }} />
+                <button onClick={() => setSeason({ prizes: season.prizes.filter((_, j) => j !== i).map((x, j) => ({ ...x, pos: j + 1 })) })}
+                  style={{ border: "none", background: "none", color: C.sub, cursor: "pointer", fontSize: 16 }}>×</button>
+              </div>
+            ))}
+            <button onClick={() => setSeason({ prizes: [...(season.prizes || []), { pos: (season.prizes || []).length + 1, icon: "🎁", label: "" }] })}
+              style={{ fontSize: 12.5, border: `1px dashed ${C.green}`, color: C.green, background: "none", borderRadius: 6, padding: "4px 10px", cursor: "pointer" }}>
+              + prémio
+            </button>
+          </div>
+          {[["convNotes", "Notas da convocatória"], ["fineNotes", "Definição de atraso / regra da multa"], ["notes", "Outras notas do regulamento"]].map(([k, lab]) => (
+            <div key={k} style={{ marginBottom: 8 }}>
+              <label style={S.lbl}>{lab}</label>
+              <textarea value={season[k] || ""} onChange={e => setSeason({ [k]: e.target.value })} rows={2}
+                style={{ ...S.input, width: "100%", boxSizing: "border-box", resize: "vertical", fontFamily: FONT, lineHeight: 1.5 }} />
+            </div>
+          ))}
+          {canDelete && (
+            <button onClick={onDelete} style={{ fontSize: 12.5, border: `1px solid ${C.red}`, color: C.red, background: "none", borderRadius: 6, padding: "6px 12px", cursor: "pointer", marginTop: 4 }}>
+              Apagar esta época
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function NewSeasonForm({ base, S, onCreate }) {
+  const [name, setName] = useState("");
+  const [venue, setVenue] = useState(base.venue);
+  const [start, setStart] = useState("");
+  const [n, setN] = useState(14);
+  const [copyPlayers, setCopyPlayers] = useState(true);
+  const [copyRules, setCopyRules] = useState(true);
+  const chk = { display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.ink };
+  return (
+    <div style={{ ...S.card, padding: 14, marginBottom: 14, border: `1.5px solid ${C.green}` }}>
+      <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 10 }}>Nova época</div>
+      <div style={{ display: "flex", gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
+        <div style={{ flex: 1, minWidth: 110 }}>
+          <label style={S.lbl}>Nome (ex.: 2026/4)</label>
+          <input value={name} onChange={e => setName(e.target.value)} placeholder="2026/4" style={{ ...S.input, width: "100%", boxSizing: "border-box" }} />
+        </div>
+        <div style={{ flex: 2, minWidth: 150 }}>
+          <label style={S.lbl}>Campo</label>
+          <input value={venue} onChange={e => setVenue(e.target.value)} style={{ ...S.input, width: "100%", boxSizing: "border-box" }} />
+        </div>
+      </div>
+      <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap", alignItems: "flex-end" }}>
+        <div>
+          <label style={S.lbl}>Data da 1ª jornada</label>
+          <input type="date" value={start} onChange={e => setStart(e.target.value)} style={S.input} />
+        </div>
+        <div>
+          <label style={S.lbl}>Nº de jornadas</label>
+          <input type="number" min="1" max="52" value={n} onChange={e => setN(Number(e.target.value) || 14)} style={{ ...S.input, width: 70, textAlign: "center" }} />
+        </div>
+      </div>
+      <div style={{ display: "flex", gap: 16, marginBottom: 12, flexWrap: "wrap" }}>
+        <label style={chk}><input type="checkbox" checked={copyPlayers} onChange={e => setCopyPlayers(e.target.checked)} /> copiar jogadores de {base.name}</label>
+        <label style={chk}><input type="checkbox" checked={copyRules} onChange={e => setCopyRules(e.target.checked)} /> copiar regras e prémios</label>
+      </div>
+      <button onClick={() => {
+        if (!name.trim()) { alert("Dá um nome à época (ex.: 2026/4)."); return; }
+        const src = copyRules ? base : DEF;
+        let gameDay = src.gameDay;
+        const weeks = [];
+        if (start) {
+          const d0 = new Date(start + "T12:00:00");
+          gameDay = d0.getDay();
+          for (let i = 0; i < n; i++) {
+            const d = new Date(d0); d.setDate(d0.getDate() + i * 7);
+            weeks.push({ date: d.toISOString().slice(0, 10), gB: "", gP: "", marks: {} });
+          }
+        } else {
+          for (let i = 0; i < n; i++) weeks.push({ date: "", gB: "", gP: "", marks: {} });
+        }
+        onCreate({
+          id: "s_" + Date.now(),
+          name: name.trim(), venue: venue.trim() || base.venue,
+          gameDay, gameTime: src.gameTime, convDay: src.convDay, convTime: src.convTime, convSlots: src.convSlots,
+          fineAmount: src.fineAmount, fineTolerance: src.fineTolerance,
+          prizes: JSON.parse(JSON.stringify(src.prizes || DEF.prizes)),
+          convNotes: src.convNotes, fineNotes: src.fineNotes, notes: src.notes,
+          points: { ...(copyRules ? base.points : { V: 4, E: 2, D: 1, D1: -1, D2: -2 }) },
+          players: copyPlayers ? base.players.filter(p => !p.guest).map(p => ({ name: p.name, guest: false })) : [],
+          weeks, fines: [],
+        });
+      }} style={{ width: "100%", background: C.green, color: "#fff", border: "none", borderRadius: 8, padding: "11px", fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, cursor: "pointer" }}>
+        Criar época{start ? ` (${n} jornadas semanais a partir de ${fmtDate(start)})` : ""}
+      </button>
+      <p style={{ fontSize: 11.5, color: C.sub, margin: "8px 0 0" }}>
+        As jornadas são criadas semanalmente no dia da semana da 1ª jornada. Tudo é ajustável depois em Regulamento → Definições da época.
+      </p>
+    </div>
+  );
+}
+
+
+function Setup({ onDemo }) {
+  const box = { background: "#FFFFFF", border: "1px solid #DCE0DA", borderRadius: 10, padding: 16, marginBottom: 12 };
+  const code = { background: "#F2F2EE", borderRadius: 4, padding: "1px 5px", fontFamily: "monospace", fontSize: 12.5 };
+  return (
+    <div style={{ minHeight: "100vh", background: "#EDF0EC", fontFamily: FONT, color: "#16181A", padding: "24px 12px" }}>
+      <div style={{ maxWidth: 560, margin: "0 auto" }}>
+        <h1 style={{ fontFamily: FONT_NUM, fontWeight: 700, fontSize: 32, margin: "0 0 4px" }}>Premium League — configuração inicial</h1>
+        <p style={{ fontSize: 14, color: "#6B7069", margin: "0 0 16px" }}>
+          Só é preciso fazer isto <b>uma vez</b>, por <b>um</b> dos organizadores. Depois disto, toda a gente usa a app só com o link — sem contas, sem logins.
+        </p>
+        <div style={box}>
+          <b>1. Criar a base de dados (grátis)</b>
+          <ol style={{ margin: "8px 0 0", paddingLeft: 20, fontSize: 13.5, lineHeight: 1.8 }}>
+            <li>Vai a <b>console.firebase.google.com</b> e entra com uma conta Google (o site está em inglês — os nomes abaixo são os dos botões).</li>
+            <li><b>Create a project</b> (ou <b>Add project</b>) → nome ex.: premium-league → desliga o Google Analytics → <b>Create project</b>.</li>
+            <li>Menu lateral: <b>Build → Realtime Database → Create Database</b> → localização <b>Belgium (europe-west1)</b> → <b>Start in test mode</b> → Enable.</li>
+            <li>No separador <b>Rules</b>, apaga o que lá está, cola <span style={code}>{'{ "rules": { ".read": true, ".write": true } }'}</span> e carrega em <b>Publish</b>. (O test mode expira em 30 dias — isto torna-o permanente. Como não há senha, não ponham lá dados sensíveis.)</li>
+          </ol>
+        </div>
+        <div style={box}>
+          <b>2. Ligar a app à base de dados</b>
+          <ol style={{ margin: "8px 0 0", paddingLeft: 20, fontSize: 13.5, lineHeight: 1.8 }}>
+            <li>Na consola: roda dentada ⚙ → <b>Project settings</b> → desce até <b>Your apps</b> → ícone <b>{"</>"}</b> (Web) → dá um nome qualquer → <b>Register app</b> (não é preciso marcar Firebase Hosting).</li>
+            <li>Aparece um bloco <span style={code}>const firebaseConfig = {'{...}'}</span> com <b>apiKey</b>, <b>authDomain</b>, <b>databaseURL</b> e <b>projectId</b> — são esses 4 que interessam.</li>
+            <li>Abre este ficheiro (<b>premium_league.html</b>) num editor de texto (Notepad/TextEdit) e cola esses 4 valores no topo, onde diz <span style={code}>FIREBASE_CONFIG</span>, entre as aspas. Se o bloco não mostrar <b>databaseURL</b>, copia o endereço que aparece no topo da página do Realtime Database (algo como https://….firebasedatabase.app).</li>
+          </ol>
+        </div>
+        <div style={box}>
+          <b>3. Pôr online e partilhar</b>
+          <ol style={{ margin: "8px 0 0", paddingLeft: 20, fontSize: 13.5, lineHeight: 1.8 }}>
+            <li>Cria conta em <b>github.com</b> → botão <b>New repository</b> → nome ex.: premium-league → <b>Public</b> → <b>Create repository</b> → link <b>uploading an existing file</b> → arrasta o ficheiro já renomeado para <b>index.html</b> → <b>Commit changes</b>.</li>
+            <li>No repositório: <b>Settings → Pages</b> → em <b>Build and deployment / Source</b> escolhe <b>Deploy from a branch</b> → Branch: <b>main</b> e <b>/ (root)</b> → <b>Save</b>. Passado ~1 minuto o link aparece no topo dessa página: <span style={code}>oteunome.github.io/premium-league</span>.</li>
+            <li>Manda o link no grupo. Cada um abre no browser e faz "Adicionar ao ecrã principal" para ficar com ícone de app. Fim — livre e grátis para sempre.</li>
+          </ol>
+        </div>
+        <button onClick={onDemo} style={{ width: "100%", padding: "12px", borderRadius: 8, border: "1.5px solid #1E6B40", background: "transparent", color: "#1E6B40", fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, cursor: "pointer" }}>
+          Ver a app em modo demonstração (sem gravar)
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function AddPlayer({ onAdd }) {
+  const [name, setName] = useState("");
+  const [guest, setGuest] = useState(false);
+  return (
+    <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 8 }}>
+      <input value={name} onChange={e => setName(e.target.value)} placeholder="Nome do jogador"
+        onKeyDown={e => { if (e.key === "Enter") { onAdd(name, guest); setName(""); } }}
+        style={{ flex: 1, minWidth: 0, border: "1px solid #DCE0DA", borderRadius: 6, padding: "7px 10px", fontSize: 14, fontFamily: "'Barlow',sans-serif" }} />
+      <label style={{ fontSize: 12, color: "#6B7069", display: "flex", alignItems: "center", gap: 4, whiteSpace: "nowrap" }}>
+        <input type="checkbox" checked={guest} onChange={e => setGuest(e.target.checked)} /> conv.
+      </label>
+      <button onClick={() => { onAdd(name, guest); setName(""); }}
+        style={{ background: "#1E6B40", color: "#fff", border: "none", borderRadius: 6, padding: "7px 12px", fontWeight: 600, cursor: "pointer", fontSize: 14 }}>
+        Adicionar
+      </button>
+    </div>
+  );
+}
+
+function AddFine({ players, amount, onAdd }) {
+  const [name, setName] = useState(players[0]?.name || "");
+  return (
+    <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
+      <select value={name} onChange={e => setName(e.target.value)}
+        style={{ flex: 1, border: "1px solid #DCE0DA", borderRadius: 6, padding: "7px 8px", fontSize: 14, fontFamily: "'Barlow',sans-serif", background: "#fff" }}>
+        {players.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
+      </select>
+      <button onClick={() => name && onAdd(name)}
+        style={{ background: "#B3372B", color: "#fff", border: "none", borderRadius: 6, padding: "7px 12px", fontWeight: 600, cursor: "pointer", fontSize: 13, whiteSpace: "nowrap" }}>
+        Multar {`${Number(amount).toFixed(2).replace(".", ",")}€`}
+      </button>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(PremiumLeague));
+</script>
+</body>
+</html>
