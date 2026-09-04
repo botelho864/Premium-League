@@ -188,6 +188,9 @@ function PremiumLeague() {
   const timer = useRef(null);
 
   const [demo, setDemo] = useState(false);
+  const [pin, setPin] = useState(() => { try { return localStorage.getItem("pl_pin") || ""; } catch (e) { return ""; } });
+  const pinRef = useRef("");
+  pinRef.current = pin;
   const dbRef = useRef(null);
   const lastJson = useRef("");
   const firstLoad = useRef(true);
@@ -201,12 +204,12 @@ function PremiumLeague() {
     try {
       const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG);
       dbRef.current = firebase.database().ref(DB_PATH);
-      dbRef.current.on("value", (snap) => {
+      dbRef.current.child("data").on("value", (snap) => {
         const val = snap.val();
         if (!val) {
           const v = JSON.parse(JSON.stringify(SEED));
           lastJson.current = JSON.stringify(v);
-          dbRef.current.set(v);
+          dbRef.current.set({ _pin: pinRef.current || "", data: v }).then(() => setSaveState("saved")).catch(() => setSaveState("denied"));
           setData(v); setSIdx(v.seasons.length - 1); firstLoad.current = false;
           return;
         }
@@ -219,7 +222,7 @@ function PremiumLeague() {
         else { setSIdx(i => Math.min(i, v3.seasons.length - 1)); setSaveState("saved"); }
       }, (err) => { setStorageOk(false); setData(prev => prev || JSON.parse(JSON.stringify(SEED))); });
     } catch (e) { setStorageOk(false); setData(JSON.parse(JSON.stringify(SEED))); }
-    return () => { if (dbRef.current) dbRef.current.off(); };
+    return () => { if (dbRef.current) dbRef.current.child("data").off(); };
   }, [demo]);
 
   const update = (next) => {
@@ -229,10 +232,28 @@ function PremiumLeague() {
     setSaveState("saving");
     clearTimeout(timer.current);
     timer.current = setTimeout(() => {
-      dbRef.current.set(JSON.parse(lastJson.current))
+      dbRef.current.set({ _pin: pinRef.current || "", data: JSON.parse(lastJson.current) })
         .then(() => setSaveState("saved"))
-        .catch(() => setSaveState("local"));
+        .catch((err) => {
+          const denied = err && String(err.code || err.message || "").toUpperCase().includes("PERMISSION");
+          setSaveState(denied ? "denied" : "local");
+          dbRef.current.child("data").once("value").then(s => {
+            const v = s.val();
+            if (v) { lastJson.current = JSON.stringify(v); setData(normalize(migrate(v))); }
+          }).catch(() => {});
+        });
     }, 500);
+  };
+
+  const askPin = () => {
+    const v = prompt("PIN de organizador (pede a quem criou a liga; deixa vazio para modo espectador):", pin || "");
+    if (v === null) return;
+    const nv = v.trim();
+    pinRef.current = nv;
+    setPin(nv);
+    try { localStorage.setItem("pl_pin", nv); } catch (e) {}
+    if (nv && dbRef.current && data && (saveState === "denied" || saveState === "local")) update(data);
+    else if (saveState === "denied") setSaveState("idle");
   };
 
   if (!configured && !demo) return <Setup onDemo={() => setDemo(true)} />;
@@ -292,14 +313,18 @@ function PremiumLeague() {
                 border: `1.5px solid ${newSeason ? C.ink : C.green}`, background: newSeason ? C.ink : "transparent",
                 color: newSeason ? "#fff" : C.green, cursor: "pointer", lineHeight: 1,
               }}>{newSeason ? "×" : "+"}</button>
+              <button onClick={askPin} title="PIN de organizador" style={{
+                fontSize: 16, width: 34, height: 34, borderRadius: 8, border: `1.5px solid ${pin ? C.green : C.line}`,
+                background: "transparent", cursor: "pointer", lineHeight: 1,
+              }}>{pin ? "🔓" : "🔒"}</button>
             </div>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
             <p style={{ margin: "2px 0 0", fontSize: 13, color: C.sub }}>
               {season.venue} · {DAYS[season.gameDay]} às {season.gameTime}
             </p>
-            <span style={{ fontSize: 11, color: saveState === "local" ? C.red : C.sub }}>
-              {saveState === "saving" ? "a sincronizar…" : saveState === "saved" ? "sincronizado ✓" : saveState === "local" ? "sem ligação — não gravado" : ""}
+            <span style={{ fontSize: 11, color: (saveState === "local" || saveState === "denied") ? C.red : C.sub }}>
+              {saveState === "saving" ? "a sincronizar…" : saveState === "saved" ? "sincronizado ✓" : saveState === "denied" ? "🔒 sem permissão" : saveState === "local" ? "sem ligação — não gravado" : ""}
             </span>
           </div>
         </header>
@@ -307,6 +332,12 @@ function PremiumLeague() {
         {!storageOk && (
           <div style={{ background: "#FCEFEA", border: `1px solid ${C.red}`, color: C.red, borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 10 }}>
             Modo demonstração / sem ligação à base de dados — as alterações não ficam gravadas. Verifica a configuração do Firebase no topo do ficheiro.
+          </div>
+        )}
+
+        {saveState === "denied" && (
+          <div style={{ background: "#FCEFEA", border: `1px solid ${C.red}`, color: C.red, borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 10 }}>
+            A alteração foi recusada: só organizadores com PIN podem editar. Toca no cadeado 🔒 lá em cima e introduz o PIN correto.
           </div>
         )}
 
@@ -674,7 +705,16 @@ function PremiumLeague() {
               }} />
 
             <div style={{ ...S.card, padding: 14, fontSize: 12.5, color: C.sub, lineHeight: 1.6 }}>
-              Os dados são partilhados em tempo real: qualquer pessoa com o link vê e pode editar tudo, sem precisar de conta nenhuma. A última alteração prevalece.
+              Qualquer pessoa com o link pode <b>ver</b> em tempo real, sem conta nenhuma. Para <b>alterar</b> é preciso o PIN de organizador (cadeado 🔒 no topo, fica guardado no teu telemóvel). O PIN muda-se na consola do Firebase, no campo <b>secret</b>.
+              <button onClick={() => {
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(blob);
+                a.download = "premium_league_backup_" + new Date().toISOString().slice(0, 10) + ".json";
+                a.click();
+              }} style={{ display: "block", marginTop: 8, fontSize: 12.5, border: `1px solid ${C.line}`, color: C.ink, background: "transparent", borderRadius: 6, padding: "6px 12px", cursor: "pointer" }}>
+                📥 Descarregar cópia de segurança (JSON)
+              </button>
             </div>
           </div>
         )}
@@ -869,7 +909,9 @@ function Setup({ onDemo }) {
             <li>Vai a <b>console.firebase.google.com</b> e entra com uma conta Google (o site está em inglês — os nomes abaixo são os dos botões).</li>
             <li><b>Create a project</b> (ou <b>Add project</b>) → nome ex.: premium-league → desliga o Google Analytics → <b>Create project</b>.</li>
             <li>Menu lateral: <b>Build → Realtime Database → Create Database</b> → localização <b>Belgium (europe-west1)</b> → <b>Start in test mode</b> → Enable.</li>
-            <li>No separador <b>Rules</b>, apaga o que lá está, cola <span style={code}>{'{ "rules": { ".read": true, ".write": true } }'}</span> e carrega em <b>Publish</b>. (O test mode expira em 30 dias — isto torna-o permanente. Como não há senha, não ponham lá dados sensíveis.)</li>
+            <li>No separador <b>Rules</b>, apaga o que lá está, cola o seguinte e carrega em <b>Publish</b> (torna a leitura pública e a escrita protegida por PIN, sem prazo de expiração):<br/>
+              <span style={code}>{`{ "rules": { "secret": { ".read": false, ".write": false }, "premium_league": { ".read": false, ".write": "newData.child('_pin').val() === root.child('secret').val() && newData.child('_pin').val() != null", "data": { ".read": true } } } }`}</span></li>
+            <li>No separador <b>Data</b>: passa o rato por cima do endereço da base (linha de topo) → clica no <b>+</b> → Name: <span style={code}>secret</span> · Value: o PIN que quiseres (ex.: <span style={code}>golo2026</span>) → <b>Add</b>. Esse PIN é o que os organizadores introduzem na app (cadeado 🔒). Quem não o tiver só consegue ver.</li>
           </ol>
         </div>
         <div style={box}>
