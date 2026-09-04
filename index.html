@@ -25,10 +25,10 @@ const DEF = {"gameDay": 1, "gameTime": "21:45", "convDay": 5, "convTime": "13:00
 // CONFIGURAÇÃO DO FIREBASE — preencher UMA vez (ver instruções no ecrã inicial)
 // Cola aqui os valores do teu projeto Firebase (Consola > Definições do projeto > As tuas apps > Config)
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyB1III4bABwJCuliFiQbo6tRV5m3aqoues",
-  authDomain: "premium-league-212ee.firebaseapp.com",
-  databaseURL: "https://premium-league-212ee-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "premium-league-212ee",
+  apiKey: "",
+  authDomain: "",
+  databaseURL: "",   // ex.: "https://premium-league-default-rtdb.europe-west1.firebasedatabase.app"
+  projectId: "",
 };
 const DB_PATH = "premium_league";
 // ============================================================
@@ -39,6 +39,14 @@ function normalize(d) {
     s.players = s.players || [];
     s.fines = s.fines || [];
     s.weeks = (s.weeks || []).map(w => ({ date: w.date || "", gB: (w.gB === undefined || w.gB === null) ? "" : w.gB, gP: (w.gP === undefined || w.gP === null) ? "" : w.gP, marks: w.marks || {}, convOrder: w.convOrder || [], format: w.format || 8 }));
+    // uniformizar: qualquer jogador com marca (equipas antigas, ex.: 2026/2) passa a constar da convocatória
+    s.weeks.forEach(w => {
+      const inCo = new Set(w.convOrder);
+      const add = [];
+      ["B", "P", "R", "C"].forEach(t => Object.keys(w.marks).filter(n => w.marks[n] === t && !inCo.has(n)).sort().forEach(n => add.push(n)));
+      ["D1", "D2", "DOE", "F", "?"].forEach(t => Object.keys(w.marks).filter(n => w.marks[n] === t && !inCo.has(n)).sort().forEach(n => add.push(n)));
+      if (add.length) w.convOrder = [...w.convOrder, ...add];
+    });
     if (s.archived === undefined) s.archived = (s.id === "2026_2");
     return s;
   });
@@ -575,6 +583,12 @@ function PremiumLeague() {
         {tab === "rules" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
 
+            {!superOk && (
+              <div style={{ background: "#FBF3DC", border: `1px solid ${C.gold}`, color: "#7A5C00", borderRadius: 8, padding: "8px 12px", fontSize: 13 }}>
+                Modo consulta — a edição do regulamento é exclusiva da password de gestor{role === "admin" ? " (estás com o PIN de administrador: só jornadas)" : ""}. Para editar, toca no cadeado 🔒 e usa a password de gestor.
+              </div>
+            )}
+
             <div style={{ ...S.card, padding: 14, background: C.ink, color: "#fff", border: "none" }}>
               <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 10 }}>🏆 Prémios — se a época acabasse hoje</div>
               {(season.prizes || []).map(p => {
@@ -598,6 +612,16 @@ function PremiumLeague() {
                 <li>Jogos <b>{DAYS[season.gameDay]} às {season.gameTime}</b>, {season.venue}.</li>
               </ul>
               {season.convNotes && <p style={{ fontSize: 13, color: C.sub, margin: "6px 0 0", lineHeight: 1.6 }}>{season.convNotes}</p>}
+            </div>
+
+            <div style={{ ...S.card, padding: 14 }}>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 6 }}>⚖️ Como se formam as equipas</div>
+              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.7 }}>
+                <li>A ordem de inscrição na convocatória define os titulares: os primeiros <b>{season.convSlots}</b> contam; os seguintes ficam como <b>reservas</b>.</li>
+                <li>As equipas <b>Branca</b> e <b>Preta</b> são geradas automaticamente de forma equilibrada, com base no índice de cada jogador — a média de pontos por jogo em todas as épocas (jogadores sem histórico recebem a média da liga).</li>
+                <li>Os organizadores podem ajustar manualmente qualquer jogador entre Branca, Preta e reservas antes do jogo.</li>
+                <li>Formatos suportados: <b>8v8</b> (16 titulares) ou <b>11v11</b> (22 titulares). Estrangeiros (ᶜ) contam para a equipa mas não para a classificação.</li>
+              </ul>
             </div>
 
             <div style={{ ...S.card, padding: 14 }}>
@@ -914,6 +938,7 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
   const [copied, setCopied] = useState(false);
   const [nName, setNName] = useState("");
   const [nGuest, setNGuest] = useState(false);
+  const [addSel, setAddSel] = useState("");
 
   const superOk = role === "super";
   const canW = superOk || (role === "admin" && !season.archived && !locked);
@@ -925,10 +950,10 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
   const desist = convOrder.filter(n => ["D1", "D2", "DOE", "F"].includes(w.marks[n]));
   const titulares = activeConv.slice(0, cap);
   const reservasAuto = activeConv.slice(cap);
-  const oIdx = (n) => { const k = convOrder.indexOf(n); return k < 0 ? 999 : k; };
-  const Bs = Object.keys(w.marks).filter(n => w.marks[n] === "B").sort((a, b) => oIdx(a) - oIdx(b));
-  const Ps = Object.keys(w.marks).filter(n => w.marks[n] === "P").sort((a, b) => oIdx(a) - oIdx(b));
-  const Rs = Object.keys(w.marks).filter(n => w.marks[n] === "R").sort((a, b) => oIdx(a) - oIdx(b));
+  const Bs = activeConv.filter(n => w.marks[n] === "B");
+  const Ps = activeConv.filter(n => w.marks[n] === "P");
+  const Rs = activeConv.filter(n => w.marks[n] === "R");
+  const naoConv = alpha.filter(pl => !convOrder.includes(pl.name));
 
   const card = { background: C.surface, border: `1px solid ${C.line}`, borderRadius: 10, overflow: "hidden" };
   const inp = { border: `1px solid ${C.line}`, borderRadius: 6, padding: "6px 8px", fontFamily: FONT, fontSize: 14, background: "#fff" };
@@ -964,6 +989,15 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
     if (/[.#$\[\]\/]/.test(nm)) { alert("O nome não pode conter . # $ [ ] /"); return; }
     setSeason({ players: [...season.players, { name: nm, guest: nGuest }] });
     setNName(""); setNGuest(false);
+  };
+  const quickAdd = (team) => {
+    if (!canW) return;
+    const name = addSel || (naoConv[0] && naoConv[0].name);
+    if (!name) return;
+    const marks = { ...w.marks };
+    marks[name] = team;
+    setWeek({ convOrder: [...convOrder, name], marks });
+    setAddSel("");
   };
   const ratings = buildRatings(data.seasons);
   const sum = (arr) => arr.reduce((t, n) => t + ratings.get(n), 0);
@@ -1029,14 +1063,20 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
     );
   };
   const teamChip = (name, mk) => (
-    <button key={name} onClick={() => cycleTeam(name)} disabled={!canW} style={{
-      display: "block", width: "100%", textAlign: "left", marginBottom: 4, padding: "6px 8px",
-      borderRadius: 8, cursor: canW ? "pointer" : "default", fontFamily: FONT, fontSize: 13.5,
-      background: mk === "P" ? C.preta : mk === "B" ? "#fff" : "#FBF3DC",
-      color: mk === "P" ? "#fff" : C.ink,
-      border: `1.5px solid ${mk === "P" ? C.preta : mk === "B" ? C.brancaBorder : C.gold}`,
-      fontStyle: isGuest(name) ? "italic" : "normal",
-    }}>{name}{isGuest(name) ? " ᶜ" : ""}</button>
+    <div key={name} style={{ display: "flex", gap: 4, marginBottom: 4 }}>
+      <button onClick={() => cycleTeam(name)} disabled={!canW} title="Tocar para mover: Branca → Preta → Reserva" style={{
+        flex: 1, minWidth: 0, textAlign: "left", padding: "6px 8px",
+        borderRadius: 8, cursor: canW ? "pointer" : "default", fontFamily: FONT, fontSize: 13.5,
+        background: mk === "P" ? C.preta : mk === "B" ? "#fff" : "#FBF3DC",
+        color: mk === "P" ? "#fff" : C.ink,
+        border: `1.5px solid ${mk === "P" ? C.preta : mk === "B" ? C.brancaBorder : C.gold}`,
+        fontStyle: isGuest(name) ? "italic" : "normal",
+        overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+      }}>{name}{isGuest(name) ? " ᶜ" : ""}</button>
+      {canW && <button onClick={() => toggleConv(name)} title="Remover da convocatória" style={{
+        width: 26, borderRadius: 8, border: `1px solid ${C.line}`, background: "transparent", color: C.sub, cursor: "pointer", fontSize: 14, flexShrink: 0,
+      }}>×</button>}
+    </div>
   );
 
   return (
@@ -1159,6 +1199,15 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
             </div>
             {titulares.length === 0 && <p style={{ fontSize: 12.5, color: C.sub, margin: "8px 0 0" }}>Ainda não há convocados — começa no passo 1·Convocatória.</p>}
           </div>
+          {canW && naoConv.length > 0 && (
+            <div style={{ ...card, padding: 10, marginBottom: 10, display: "flex", gap: 6, alignItems: "center" }}>
+              <select value={addSel || (naoConv[0] && naoConv[0].name) || ""} onChange={e => setAddSel(e.target.value)} style={{ ...inp, flex: 1, minWidth: 0 }}>
+                {naoConv.map(pl => <option key={pl.name} value={pl.name}>{pl.name}{pl.guest ? " (conv.)" : ""}</option>)}
+              </select>
+              <button onClick={() => quickAdd("B")} title="Convocar para a Branca" style={{ padding: "7px 10px", borderRadius: 8, border: `1.5px solid ${C.brancaBorder}`, background: "#fff", cursor: "pointer", fontWeight: 700 }}>⚪</button>
+              <button onClick={() => quickAdd("P")} title="Convocar para a Preta" style={{ padding: "7px 10px", borderRadius: 8, border: `1.5px solid ${C.preta}`, background: C.preta, color: "#fff", cursor: "pointer", fontWeight: 700 }}>⚫</button>
+            </div>
+          )}
           {(Bs.length + Ps.length) > 0 && (
             <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
               {[["⚪ Branca", Bs], ["⚫ Preta", Ps]].map(([lab, arr]) => (
@@ -1186,7 +1235,7 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
             }}>{copied ? "✓ Copiado!" : "📋 Copiar equipas para o WhatsApp"}</button>
           )}
           <p style={{ fontSize: 12, color: C.sub, marginTop: 8 }}>
-            O gerador equilibra pelo histórico (média de pontos por jogo em todas as épocas; sem histórico = média da liga). Toca num jogador para o mover: Branca → Preta → Reserva. O índice ao lado do nome da equipa deve ficar parecido nas duas.
+            Convocatória e equipas estão ligadas: só entram nas equipas jogadores convocados, e o × remove-os de ambas. O gerador equilibra pelo histórico (média de pontos por jogo em todas as épocas; sem histórico = média da liga). Toca num jogador para o mover: Branca → Preta → Reserva.
           </p>
         </div>
       )}
