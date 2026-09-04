@@ -322,6 +322,27 @@ function PremiumLeague() {
     setWithPin(locksDb.current, next).catch(() => {});
   };
 
+  const renamePlayer = (oldName) => {
+    if (role !== "super") return;
+    const v = prompt(`Novo nome para "${oldName}":`, oldName);
+    if (v === null) return;
+    const nm = v.trim();
+    if (!nm || nm === oldName) return;
+    if (/[.#$\[\]\/]/.test(nm)) { alert("O nome não pode conter . # $ [ ] /"); return; }
+    if (data.seasons.some(se => se.players.some(x => x.name === nm))) { alert("Já existe um jogador com esse nome."); return; }
+    const seasons = data.seasons.map(se => ({
+      ...se,
+      players: se.players.map(x => x.name === oldName ? { ...x, name: nm } : x),
+      fines: (se.fines || []).map(f => f.name === oldName ? { ...f, name: nm } : f),
+      weeks: se.weeks.map(w => {
+        const marks = {};
+        Object.keys(w.marks).forEach(k => { marks[k === oldName ? nm : k] = w.marks[k]; });
+        return { ...w, marks, convOrder: (w.convOrder || []).map(n => n === oldName ? nm : n) };
+      }),
+    }));
+    update({ ...data, seasons });
+  };
+
   const askPin = () => {
     const v = prompt("PIN de organizador (pede a quem criou a liga; deixa vazio para modo espectador):", pin || "");
     if (v === null) return;
@@ -672,7 +693,12 @@ function PremiumLeague() {
             </div>
 
             <div style={{ ...S.card, padding: 14 }}>
-              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Jogadores — {season.name}</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+                <span style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700 }}>Jogadores — {season.name}</span>
+                <span style={{ fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, color: C.green }}>
+                  {leaguePlayers.length} da liga{guests.length ? ` + ${guests.length} conv.` : ""}
+                </span>
+              </div>
               {superOk && <AddPlayer onAdd={(name, guest) => {
                 const nm = name.trim();
                 if (!nm || season.players.some(p => p.name === nm)) return;
@@ -690,17 +716,22 @@ function PremiumLeague() {
                   ⤵ Importar os jogadores da época anterior
                 </button>
               )}
-              {[...leaguePlayers, ...guests].map(p => (
+              {[...leaguePlayers].sort((a, b) => a.name.localeCompare(b.name, "pt")).concat([...guests].sort((a, b) => a.name.localeCompare(b.name, "pt"))).map(p => (
                 <div key={p.name} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderTop: `1px solid ${C.line}` }}>
                   <span style={{ fontSize: 14, fontStyle: p.guest ? "italic" : "normal", color: p.guest ? C.sub : C.ink }}>{p.name}</span>
                   {superOk && <div style={{ display: "flex", gap: 6 }}>
+                    <button onClick={() => renamePlayer(p.name)} title="Editar nome"
+                      style={{ fontSize: 12, border: `1px solid ${C.line}`, background: "transparent", borderRadius: 6, padding: "3px 8px", cursor: "pointer", color: C.sub }}>✎</button>
                     <button onClick={() => setSeason({ players: season.players.map(x => x.name === p.name ? { ...x, guest: !x.guest } : x) })}
                       style={{ fontSize: 12, border: `1px solid ${C.line}`, background: "transparent", borderRadius: 6, padding: "3px 8px", cursor: "pointer", color: C.sub }}>
                       {p.guest ? "tornar da liga" : "tornar convidado"}
                     </button>
                     <button onClick={() => {
                       if (confirm(`Remover ${p.name} da época ${season.name}? Apaga também as marcações dele nas jornadas.`)) {
-                        const weeks = season.weeks.map(w => { const m = { ...w.marks }; delete m[p.name]; return { ...w, marks: m }; });
+                        const weeks = season.weeks.map(w => {
+                          const m = { ...w.marks }; delete m[p.name];
+                          return { ...w, marks: m, convOrder: (w.convOrder || []).filter(n => n !== p.name) };
+                        });
                         setSeason({ weeks, players: season.players.filter(x => x.name !== p.name) });
                       }
                     }} style={{ fontSize: 12, border: "none", background: "transparent", color: C.red, cursor: "pointer" }}>remover</button>
