@@ -194,6 +194,9 @@ function PremiumLeague() {
   const dbRef = useRef(null);
   const lastJson = useRef("");
   const firstLoad = useRef(true);
+  const seedTried = useRef(false);
+  const backupDone = useRef(false);
+  const [lastBackup, setLastBackup] = useState("");
   const configured = !!FIREBASE_CONFIG.databaseURL;
 
   useEffect(() => {
@@ -207,6 +210,8 @@ function PremiumLeague() {
       dbRef.current.child("data").on("value", (snap) => {
         const val = snap.val();
         if (!val) {
+          if (seedTried.current) { setSaveState("denied"); return; } // escrita recusada e revertida — manter o que está no ecrã
+          seedTried.current = true;
           const v = JSON.parse(JSON.stringify(SEED));
           lastJson.current = JSON.stringify(v);
           dbRef.current.set({ _pin: pinRef.current || "", data: v }).then(() => setSaveState("saved")).catch(() => setSaveState("denied"));
@@ -245,6 +250,28 @@ function PremiumLeague() {
     }, 500);
   };
 
+  useEffect(() => {
+    if (!configured || demo || !data || !pinRef.current || backupDone.current) return;
+    if (saveState !== "saved") return; // só depois de confirmarmos que o PIN funciona
+    backupDone.current = true;
+    try {
+      const bref = firebase.database().ref("backups");
+      bref.child("data").once("value").then(s => {
+        const cur = s.val() || {};
+        const keys = Object.keys(cur).sort();
+        const today = new Date().toISOString().slice(0, 10);
+        const last = keys[keys.length - 1] || "";
+        if (last && (new Date(today) - new Date(last)) < 7 * 86400000) { setLastBackup(last); return; }
+        cur[today] = JSON.parse(JSON.stringify(data));
+        const trimmed = {};
+        Object.keys(cur).sort().slice(-10).forEach(k => { trimmed[k] = cur[k]; });
+        bref.set({ _pin: pinRef.current, data: trimmed })
+          .then(() => setLastBackup(today))
+          .catch(() => {});
+      }).catch(() => {});
+    } catch (e) {}
+  }, [saveState, data]);
+
   const askPin = () => {
     const v = prompt("PIN de organizador (pede a quem criou a liga; deixa vazio para modo espectador):", pin || "");
     if (v === null) return;
@@ -252,7 +279,7 @@ function PremiumLeague() {
     pinRef.current = nv;
     setPin(nv);
     try { localStorage.setItem("pl_pin", nv); } catch (e) {}
-    if (nv && dbRef.current && data && (saveState === "denied" || saveState === "local")) update(data);
+    if (nv && dbRef.current && data && (saveState === "denied" || saveState === "local")) { seedTried.current = true; update(data); }
     else if (saveState === "denied") setSaveState("idle");
   };
 
@@ -314,9 +341,9 @@ function PremiumLeague() {
                 color: newSeason ? "#fff" : C.green, cursor: "pointer", lineHeight: 1,
               }}>{newSeason ? "×" : "+"}</button>
               <button onClick={askPin} title="PIN de organizador" style={{
-                fontSize: 16, width: 34, height: 34, borderRadius: 8, border: `1.5px solid ${pin ? C.green : C.line}`,
+                fontSize: 16, width: 34, height: 34, borderRadius: 8, border: `1.5px solid ${pin && saveState !== "denied" ? C.green : saveState === "denied" ? C.red : C.line}`,
                 background: "transparent", cursor: "pointer", lineHeight: 1,
-              }}>{pin ? "🔓" : "🔒"}</button>
+              }}>{pin && saveState !== "denied" ? "🔓" : "🔒"}</button>
             </div>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
@@ -705,7 +732,7 @@ function PremiumLeague() {
               }} />
 
             <div style={{ ...S.card, padding: 14, fontSize: 12.5, color: C.sub, lineHeight: 1.6 }}>
-              Qualquer pessoa com o link pode <b>ver</b> em tempo real, sem conta nenhuma. Para <b>alterar</b> é preciso o PIN de organizador (cadeado 🔒 no topo, fica guardado no teu telemóvel). O PIN muda-se na consola do Firebase, no campo <b>secret</b>.
+              Qualquer pessoa com o link pode <b>ver</b> em tempo real, sem conta nenhuma. Para <b>alterar</b> é preciso o PIN de organizador (cadeado 🔒 no topo, fica guardado no teu telemóvel). O PIN muda-se na consola do Firebase, no campo <b>secret</b>. A app guarda sozinha uma cópia de segurança semanal na base de dados (últimas 10){lastBackup ? <span> · última: <b>{fmtDate(lastBackup)}</b></span> : null}.
               <button onClick={() => {
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
                 const a = document.createElement("a");
@@ -910,7 +937,7 @@ function Setup({ onDemo }) {
             <li><b>Create a project</b> (ou <b>Add project</b>) → nome ex.: premium-league → desliga o Google Analytics → <b>Create project</b>.</li>
             <li>Menu lateral: <b>Build → Realtime Database → Create Database</b> → localização <b>Belgium (europe-west1)</b> → <b>Start in test mode</b> → Enable.</li>
             <li>No separador <b>Rules</b>, apaga o que lá está, cola o seguinte e carrega em <b>Publish</b> (torna a leitura pública e a escrita protegida por PIN, sem prazo de expiração):<br/>
-              <span style={code}>{`{ "rules": { "secret": { ".read": false, ".write": false }, "premium_league": { ".read": false, ".write": "newData.child('_pin').val() === root.child('secret').val() && newData.child('_pin').val() != null", "data": { ".read": true } } } }`}</span></li>
+              <span style={code}>{`{ "rules": { "secret": { ".read": false, ".write": false }, "premium_league": { ".read": false, ".write": "newData.child('_pin').val() === root.child('secret').val() && newData.child('_pin').val() != null", "data": { ".read": true } }, "backups": { ".read": false, ".write": "newData.child('_pin').val() === root.child('secret').val() && newData.child('_pin').val() != null", "data": { ".read": true } } } }`}</span></li>
             <li>No separador <b>Data</b>: passa o rato por cima do endereço da base (linha de topo) → clica no <b>+</b> → Name: <span style={code}>secret</span> · Value: o PIN que quiseres (ex.: <span style={code}>golo2026</span>) → <b>Add</b>. Esse PIN é o que os organizadores introduzem na app (cadeado 🔒). Quem não o tiver só consegue ver.</li>
           </ol>
         </div>
