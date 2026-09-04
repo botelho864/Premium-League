@@ -557,6 +557,57 @@ function PremiumLeague() {
                   {s.nB} na Branca · {s.nP} na Preta {s.winner ? `· venceu: ${s.winner}` : ""}
                   {(conv > 0 && conv < season.convSlots) ? ` · faltam ${season.convSlots - conv} para os ${season.convSlots}` : conv === season.convSlots ? " · convocatória cheia ✓" : ""}
                 </div>
+
+                {/* BOTÃO PARA GERAR EQUIPAS EQUILIBRADAS AUTOMATICAMENTE */}
+                <div style={{ marginTop: 12, textAlign: "center" }}>
+                  <button onClick={() => {
+                    const activePlayers = Object.keys(w.marks).filter(name => {
+                      const m = w.marks[name];
+                      return m === "B" || m === "P" || m === "?";
+                    });
+                    if (activePlayers.length < 4) {
+                      alert("São necessários pelo menos 4 jogadores marcados na convocatória para gerar equipas.");
+                      return;
+                    }
+                    const mode = activePlayers.length >= 20 && confirm("Tens 20 ou mais jogadores convocados. Pretendes fazer 11v11?\n(Clica OK para 11v11, ou Cancelar para 8v8)") ? 22 : 16;
+                    
+                    const playerPts = activePlayers.map(name => {
+                      const st = stats.find(r => r.name === name);
+                      return { name, pts: st ? st.pts : 0, j: st ? st.J : 0 };
+                    });
+                    playerPts.sort((a, b) => b.pts - a.pts || b.j - a.j);
+
+                    const targetSize = mode === 22 ? 11 : 8;
+                    const marks = { ...w.marks };
+                    
+                    let teamB = [];
+                    let teamP = [];
+                    
+                    playerPts.forEach((p, idx) => {
+                      if (idx >= targetSize * 2) {
+                        marks[p.name] = "?"; // Reservas
+                        return;
+                      }
+                      const turn = Math.floor(idx / 2);
+                      const isEven = turn % 2 === 0;
+                      const assignB = (idx % 2 === 0) ? isEven : !isEven;
+                      if (assignB) {
+                        teamB.push(p.name);
+                        marks[p.name] = "B";
+                      } else {
+                        teamP.push(p.name);
+                        marks[p.name] = "P";
+                      }
+                    });
+                    setWeek({ marks });
+                  }} style={{
+                    width: "100%", background: C.green, color: "#fff", border: "none", borderRadius: 8,
+                    padding: "10px", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700, cursor: "pointer",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+                  }}>
+                    ⚖️ Gerar Equipas Equilibradas Automaticamente
+                  </button>
+                </div>
               </div>
 
               {season.players.length === 0 ? (
@@ -599,7 +650,7 @@ function PremiumLeague() {
                 </div>
               )}
               <p style={{ fontSize: 12, color: C.sub, marginTop: 8 }}>
-                B/P = equipa · F = falta (0 pts) · D1/D2 = desistência · DOE = doença (sem penalização) · ? = por classificar. Tocar outra vez limpa.
+                B/P = equipa · F = falta (0 pts) · D1/D2 = desistência · DOE = doença (sem penalização) · ? = reserva / por classificar. Tocar outra vez limpa.
               </p>
             </div>
           );
