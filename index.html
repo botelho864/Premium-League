@@ -38,7 +38,8 @@ function normalize(d) {
     s = withDefaults(s);
     s.players = s.players || [];
     s.fines = s.fines || [];
-    s.weeks = (s.weeks || []).map(w => ({ date: w.date || "", gB: (w.gB === undefined || w.gB === null) ? "" : w.gB, gP: (w.gP === undefined || w.gP === null) ? "" : w.gP, marks: w.marks || {} }));
+    s.weeks = (s.weeks || []).map(w => ({ date: w.date || "", gB: (w.gB === undefined || w.gB === null) ? "" : w.gB, gP: (w.gP === undefined || w.gP === null) ? "" : w.gP, marks: w.marks || {}, convOrder: w.convOrder || [], format: w.format || 8 }));
+    if (s.archived === undefined) s.archived = (s.id === "2026_2");
     return s;
   });
   return d;
@@ -185,6 +186,10 @@ function PremiumLeague() {
   const [newSeason, setNewSeason] = useState(false);
   const [saveState, setSaveState] = useState("idle");
   const [storageOk, setStorageOk] = useState(true);
+  const [role, setRole] = useState("viewer");
+  const [locks, setLocks] = useState({});
+  const locksDb = useRef(null);
+  const probeFor = useRef("");
   const timer = useRef(null);
 
   const [demo, setDemo] = useState(false);
@@ -195,6 +200,16 @@ function PremiumLeague() {
   const lastJson = useRef("");
   const firstLoad = useRef(true);
   const seedTried = useRef(false);
+  const goodPin = useRef(null); // formato do PIN aceite pelo servidor (texto ou número)
+  const setWithPin = (ref, obj) => {
+    const p = pinRef.current || "";
+    const variants = goodPin.current !== null ? [goodPin.current]
+      : (/^\d+$/.test(p) ? [p, Number(p)] : [p]);
+    const attempt = (i) => ref.set({ _pin: variants[i], data: obj })
+      .then(() => { goodPin.current = variants[i]; })
+      .catch((err) => { if (i + 1 < variants.length) return attempt(i + 1); throw err; });
+    return attempt(0);
+  };
   const backupDone = useRef(false);
   const [lastBackup, setLastBackup] = useState("");
   const configured = !!FIREBASE_CONFIG.databaseURL;
@@ -207,6 +222,8 @@ function PremiumLeague() {
     try {
       const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG);
       dbRef.current = firebase.database().ref(DB_PATH);
+      locksDb.current = firebase.database().ref("locks");
+      locksDb.current.child("data").on("value", (s) => setLocks(s.val() || {}));
       dbRef.current.child("data").on("value", (snap) => {
         const val = snap.val();
         if (!val) {
@@ -214,7 +231,7 @@ function PremiumLeague() {
           seedTried.current = true;
           const v = JSON.parse(JSON.stringify(SEED));
           lastJson.current = JSON.stringify(v);
-          dbRef.current.set({ _pin: pinRef.current || "", data: v }).then(() => setSaveState("saved")).catch(() => setSaveState("denied"));
+          setWithPin(dbRef.current, v).then(() => setSaveState("saved")).catch(() => setSaveState("denied"));
           setData(v); setSIdx(v.seasons.length - 1); firstLoad.current = false;
           return;
         }
@@ -227,7 +244,10 @@ function PremiumLeague() {
         else { setSIdx(i => Math.min(i, v3.seasons.length - 1)); setSaveState("saved"); }
       }, (err) => { setStorageOk(false); setData(prev => prev || JSON.parse(JSON.stringify(SEED))); });
     } catch (e) { setStorageOk(false); setData(JSON.parse(JSON.stringify(SEED))); }
-    return () => { if (dbRef.current) dbRef.current.child("data").off(); };
+    return () => {
+      if (dbRef.current) dbRef.current.child("data").off();
+      if (locksDb.current) locksDb.current.child("data").off();
+    };
   }, [demo]);
 
   const update = (next) => {
@@ -237,7 +257,7 @@ function PremiumLeague() {
     setSaveState("saving");
     clearTimeout(timer.current);
     timer.current = setTimeout(() => {
-      dbRef.current.set({ _pin: pinRef.current || "", data: JSON.parse(lastJson.current) })
+      setWithPin(dbRef.current, JSON.parse(lastJson.current))
         .then(() => setSaveState("saved"))
         .catch((err) => {
           const denied = err && String(err.code || err.message || "").toUpperCase().includes("PERMISSION");
@@ -265,18 +285,43 @@ function PremiumLeague() {
         cur[today] = JSON.parse(JSON.stringify(data));
         const trimmed = {};
         Object.keys(cur).sort().slice(-10).forEach(k => { trimmed[k] = cur[k]; });
-        bref.set({ _pin: pinRef.current, data: trimmed })
+        setWithPin(bref, trimmed)
           .then(() => setLastBackup(today))
           .catch(() => {});
       }).catch(() => {});
     } catch (e) {}
   }, [saveState, data]);
 
+  useEffect(() => {
+    if (!configured || demo) return;
+    if (!pin) { setRole("viewer"); probeFor.current = ""; return; }
+    if (!data || !locksDb.current || !dbRef.current || !lastJson.current) return;
+    if (probeFor.current === pin) return;
+    probeFor.current = pin;
+    locksDb.current.child("data").once("value").then((s0) => {
+      const cur = s0.val() || {};
+      setWithPin(locksDb.current, cur).then(() => setRole("super")).catch(() => {
+        setWithPin(dbRef.current, JSON.parse(lastJson.current)).then(() => { setRole("admin"); setSaveState("saved"); }).catch(() => setRole("viewer"));
+      });
+    }).catch(() => setRole("viewer"));
+  }, [pin, data === null]);
+
+  const toggleLock = (key) => {
+    if (role !== "super" || !locksDb.current) return;
+    const next = { ...locks };
+    if (next[key]) delete next[key]; else next[key] = true;
+    setLocks(next);
+    setWithPin(locksDb.current, next).catch(() => {});
+  };
+
   const askPin = () => {
     const v = prompt("PIN de organizador (pede a quem criou a liga; deixa vazio para modo espectador):", pin || "");
     if (v === null) return;
     const nv = v.trim();
     pinRef.current = nv;
+    goodPin.current = null;
+    probeFor.current = "";
+    setRole("viewer");
     setPin(nv);
     try { localStorage.setItem("pl_pin", nv); } catch (e) {}
     if (nv && dbRef.current && data && (saveState === "denied" || saveState === "local")) { seedTried.current = true; update(data); }
@@ -306,6 +351,7 @@ function PremiumLeague() {
   const totGolos = played.reduce((s, w) => s + Number(w.gB) + Number(w.gP), 0);
   const finesPaid = (season.fines || []).filter(f => f.paid).length;
   const finesOwed = (season.fines || []).length - finesPaid;
+  const superOk = role === "super";
 
   const S = {
     tabBtn: (on) => ({
@@ -335,11 +381,11 @@ function PremiumLeague() {
                 style={{ fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: C.green, border: `1px solid ${C.line}`, borderRadius: 8, padding: "4px 6px", background: "#fff", maxWidth: 110 }}>
                 {data.seasons.map((s, i) => <option key={s.id} value={i}>{s.name}</option>)}
               </select>
-              <button onClick={() => setNewSeason(v => !v)} title="Nova época" style={{
+              {superOk && <button onClick={() => setNewSeason(v => !v)} title="Nova época" style={{
                 fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, width: 34, height: 34, borderRadius: 8,
                 border: `1.5px solid ${newSeason ? C.ink : C.green}`, background: newSeason ? C.ink : "transparent",
                 color: newSeason ? "#fff" : C.green, cursor: "pointer", lineHeight: 1,
-              }}>{newSeason ? "×" : "+"}</button>
+              }}>{newSeason ? "×" : "+"}</button>}
               <button onClick={askPin} title="PIN de organizador" style={{
                 fontSize: 16, width: 34, height: 34, borderRadius: 8, border: `1.5px solid ${pin && saveState !== "denied" ? C.green : saveState === "denied" ? C.red : C.line}`,
                 background: "transparent", cursor: "pointer", lineHeight: 1,
@@ -348,7 +394,7 @@ function PremiumLeague() {
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
             <p style={{ margin: "2px 0 0", fontSize: 13, color: C.sub }}>
-              {season.venue} · {DAYS[season.gameDay]} às {season.gameTime}
+              {season.venue} · {DAYS[season.gameDay]} às {season.gameTime}{role === "super" ? " · acesso total" : role === "admin" ? " · acesso: jornadas" : ""}
             </p>
             <span style={{ fontSize: 11, color: (saveState === "local" || saveState === "denied") ? C.red : C.sub }}>
               {saveState === "saving" ? "a sincronizar…" : saveState === "saved" ? "sincronizado ✓" : saveState === "denied" ? "🔒 sem permissão" : saveState === "local" ? "sem ligação — não gravado" : ""}
@@ -364,11 +410,11 @@ function PremiumLeague() {
 
         {saveState === "denied" && (
           <div style={{ background: "#FCEFEA", border: `1px solid ${C.red}`, color: C.red, borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 10 }}>
-            A alteração foi recusada: só organizadores com PIN podem editar. Toca no cadeado 🔒 lá em cima e introduz o PIN correto.
+            A alteração foi recusada. Toca no cadeado 🔒 lá em cima e introduz um PIN válido (gestor ou administrador).
           </div>
         )}
 
-        {newSeason && (
+        {newSeason && superOk && (
           <NewSeasonForm base={season} S={S} onCreate={(ns) => {
             update({ ...data, seasons: [...data.seasons, ns] });
             setSIdx(data.seasons.length); setNewSeason(false); setTab("rules"); setOpenWeek(null);
@@ -502,108 +548,29 @@ function PremiumLeague() {
                 </button>
               );
             })}
-            <button onClick={() => {
-              setSeason({ weeks: [...season.weeks, { date: "", gB: "", gP: "", marks: {} }] });
+            {(superOk || (role === "admin" && !season.archived)) && <button onClick={() => {
+              setSeason({ weeks: [...season.weeks, { date: "", gB: "", gP: "", marks: {}, convOrder: [], format: 8 }] });
               setOpenWeek(season.weeks.length);
             }} style={{ padding: "12px", border: `1.5px dashed ${C.green}`, borderRadius: 10, background: "transparent", color: C.green, fontFamily: FONT_NUM, fontSize: 17, fontWeight: 600, cursor: "pointer" }}>
               + Nova jornada
-            </button>
+            </button>}
           </div>
         )}
 
-        {tab === "weeks" && openWeek !== null && season.weeks[openWeek] && (() => {
-          const w = season.weeks[openWeek];
-          const s = weekSummary(w);
-          const setWeek = (patch) => {
-            const weeks = season.weeks.map((x, i) => i === openWeek ? { ...x, ...patch } : x);
-            setSeason({ weeks });
-          };
-          const setMark = (name, code) => {
-            const marks = { ...w.marks };
-            if (marks[name] === code) delete marks[name]; else marks[name] = code;
-            setWeek({ marks });
-          };
-          const conv = s.nB + s.nP;
-          return (
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                <button onClick={() => setOpenWeek(null)} style={{ background: "none", border: "none", color: C.green, fontWeight: 600, fontSize: 14, cursor: "pointer", padding: 0 }}>← Jornadas</button>
-                <button onClick={() => {
-                  if (confirm(`Apagar a jornada ${openWeek + 1}?`)) {
-                    setSeason({ weeks: season.weeks.filter((_, i) => i !== openWeek) });
-                    setOpenWeek(null);
-                  }
-                }} style={{ background: "none", border: "none", color: C.red, fontSize: 13, cursor: "pointer" }}>Apagar jornada</button>
-              </div>
-
-              <div style={{ ...S.card, padding: 14, marginBottom: 12 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                  <div style={{ fontFamily: FONT_NUM, fontSize: 22, fontWeight: 700 }}>Jornada {openWeek + 1}</div>
-                  <input type="date" value={w.date || ""} onChange={e => setWeek({ date: e.target.value })} style={S.input} />
-                </div>
-                <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
-                  {[["Branca", "gB", "#fff", C.ink, C.brancaBorder], ["Preta", "gP", C.preta, "#fff", C.preta]].map(([lab, key, bg, fg, bd]) => (
-                    <div key={key} style={{ flex: 1, background: bg, color: fg, border: `1.5px solid ${bd}`, borderRadius: 10, padding: "10px 8px", textAlign: "center" }}>
-                      <div style={{ fontFamily: FONT_NUM, fontSize: 16, fontWeight: 600, marginBottom: 4 }}>{lab}</div>
-                      <input type="number" min="0" max="60" inputMode="numeric" placeholder="–"
-                        value={w[key] === null ? "" : w[key]}
-                        onChange={e => setWeek({ [key]: e.target.value === "" ? "" : Number(e.target.value) })}
-                        style={{ width: 70, fontFamily: FONT_NUM, fontSize: 34, fontWeight: 700, textAlign: "center", background: "transparent", color: fg, border: "none", borderBottom: `2px solid ${fg === "#fff" ? "#555" : C.line}` }} />
-                      <div style={{ fontSize: 11, opacity: 0.75, marginTop: 4 }}>golos da equipa</div>
-                    </div>
-                  ))}
-                </div>
-                <div style={{ textAlign: "center", marginTop: 8, fontSize: 13, color: C.sub }}>
-                  {s.nB} na Branca · {s.nP} na Preta {s.winner ? `· venceu: ${s.winner}` : ""}
-                  {(conv > 0 && conv < season.convSlots) ? ` · faltam ${season.convSlots - conv} para os ${season.convSlots}` : conv === season.convSlots ? " · convocatória cheia ✓" : ""}
-                </div>
-              </div>
-
-              {season.players.length === 0 ? (
-                <div style={{ ...S.card, padding: 16, textAlign: "center", fontSize: 14, color: C.sub }}>
-                  Ainda não há jogadores nesta época — adiciona-os em <b>Regulamento → Jogadores</b>.
-                </div>
-              ) : (
-                <div style={{ ...S.card }}>
-                  {[...leaguePlayers, ...guests].map((p, i) => {
-                    const mk = w.marks[p.name];
-                    return (
-                      <div key={p.name} style={{
-                        display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6,
-                        padding: "7px 8px", borderTop: i ? `1px solid ${C.line}` : "none",
-                        background: p.guest ? "#FAFAF7" : "transparent",
-                      }}>
-                        <span style={{ fontSize: 13.5, color: p.guest ? C.sub : C.ink, fontStyle: p.guest ? "italic" : "normal", flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                          {p.name}
-                        </span>
-                        <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
-                          {CODES.map(code => {
-                            const on = mk === code;
-                            const isTeam = code === "B" || code === "P";
-                            const accent = code === "B" ? C.brancaBorder : code === "P" ? C.preta : code === "DOE" ? C.blue : code === "?" ? C.gold : code === "F" ? "#7A5C00" : C.red;
-                            const onBg = code === "B" ? "#fff" : code === "P" ? C.preta : code === "DOE" ? "#E3EDF7" : code === "?" ? "#FBF3DC" : code === "F" ? "#F3E9C8" : "#FCE4DC";
-                            return (
-                              <button key={code} onClick={() => setMark(p.name, code)} aria-pressed={on} style={{
-                                minWidth: code.length > 1 ? 30 : 26, padding: "5px 3px", borderRadius: 6, cursor: "pointer",
-                                fontFamily: FONT_NUM, fontSize: 13, fontWeight: 700,
-                                border: `1.5px solid ${on ? accent : C.line}`,
-                                background: on ? onBg : "transparent",
-                                color: on ? (code === "P" ? "#fff" : code === "DOE" ? C.blue : code === "?" ? C.gold : code === "F" ? "#7A5C00" : isTeam ? C.ink : C.red) : "#A9ADA6",
-                              }}>{code}</button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-              <p style={{ fontSize: 12, color: C.sub, marginTop: 8 }}>
-                B/P = equipa · F = falta (0 pts) · D1/D2 = desistência · DOE = doença (sem penalização) · ? = por classificar. Tocar outra vez limpa.
-              </p>
-            </div>
-          );
-        })()}
+        {tab === "weeks" && openWeek !== null && season.weeks[openWeek] && (
+          <WeekEditor key={season.id + "_" + openWeek + "_" + role}
+            data={data} season={season} openWeek={openWeek}
+            setOpenWeek={setOpenWeek} setSeason={setSeason}
+            role={role} locked={!!locks[season.id + "_w" + openWeek]}
+            onToggleLock={() => toggleLock(season.id + "_w" + openWeek)}
+            onDelete={() => {
+              if (!superOk) return;
+              if (confirm(`Apagar a jornada ${openWeek + 1}?`)) {
+                setSeason({ weeks: season.weeks.filter((_, k) => k !== openWeek) });
+                setOpenWeek(null);
+              }
+            }} />
+        )}
 
         {tab === "rules" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -644,7 +611,7 @@ function PremiumLeague() {
               <p style={{ fontSize: 12.5, color: C.sub, margin: "0 0 8px", lineHeight: 1.6 }}>
                 <b style={{ color: C.ink }}>{eur(season.fineAmount)}</b> a quem chegar atrasado (tolerância de <b>{season.fineTolerance}</b> atraso{season.fineTolerance === 1 ? "" : "s"} para todos). {season.fineNotes}
               </p>
-              {leaguePlayers.length > 0 && (
+              {superOk && leaguePlayers.length > 0 && (
                 <AddFine players={leaguePlayers} amount={season.fineAmount} onAdd={(name) => {
                   setSeason({ fines: [...(season.fines || []), { id: Date.now(), name, date: new Date().toISOString().slice(0, 10), paid: false }] });
                 }} />
@@ -652,11 +619,11 @@ function PremiumLeague() {
               {(season.fines || []).map(f => (
                 <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 0", borderTop: `1px solid ${C.line}`, fontSize: 13 }}>
                   <span style={{ flex: 1 }}>{f.name} <span style={{ color: C.sub, fontSize: 11 }}>({fmtDate(f.date)})</span></span>
-                  <button onClick={() => setSeason({ fines: season.fines.map(x => x.id === f.id ? { ...x, paid: !x.paid } : x) })} style={{
+                  <button onClick={() => { if (!superOk) return; setSeason({ fines: season.fines.map(x => x.id === f.id ? { ...x, paid: !x.paid } : x) }); }} style={{
                     fontSize: 12, padding: "3px 10px", borderRadius: 20, cursor: "pointer", fontWeight: 600,
                     border: `1px solid ${f.paid ? C.green : C.red}`, background: f.paid ? "#DFF0E4" : "#FCE4DC", color: f.paid ? C.green : C.red,
                   }}>{f.paid ? "pago ✓" : "por pagar"}</button>
-                  <button onClick={() => setSeason({ fines: season.fines.filter(x => x.id !== f.id) })} style={{ border: "none", background: "none", color: C.sub, cursor: "pointer" }}>×</button>
+                  {superOk && <button onClick={() => setSeason({ fines: season.fines.filter(x => x.id !== f.id) })} style={{ border: "none", background: "none", color: C.sub, cursor: "pointer" }}>×</button>}
                 </div>
               ))}
             </div>
@@ -666,7 +633,7 @@ function PremiumLeague() {
               {[["V", "Vitória"], ["E", "Empate"], ["D", "Derrota"], ["D1", "Desistência desde sábado (inclusive)"], ["D2", "Desistência desde 2ª às 00h"]].map(([k, lab]) => (
                 <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderTop: `1px solid ${C.line}` }}>
                   <span style={{ fontSize: 14 }}>{lab} ({k})</span>
-                  <input type="number" value={season.points[k]}
+                  <input type="number" value={season.points[k]} disabled={!superOk}
                     onChange={e => setSeason({ points: { ...season.points, [k]: Number(e.target.value) } })}
                     style={{ ...S.input, width: 60, textAlign: "center", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700 }} />
                 </div>
@@ -682,13 +649,13 @@ function PremiumLeague() {
 
             <div style={{ ...S.card, padding: 14 }}>
               <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Jogadores — {season.name}</div>
-              <AddPlayer onAdd={(name, guest) => {
+              {superOk && <AddPlayer onAdd={(name, guest) => {
                 const nm = name.trim();
                 if (!nm || season.players.some(p => p.name === nm)) return;
                 if (/[.#$\[\]\/]/.test(nm)) { alert("O nome não pode conter . # $ [ ] /"); return; }
                 setSeason({ players: [...season.players, { name: nm, guest }] });
-              }} />
-              {data.seasons.some((s, i) => i !== sIdx && s.players.length > 0) && (
+              }} />}
+              {superOk && data.seasons.some((s, i) => i !== sIdx && s.players.length > 0) && (
                 <button onClick={() => {
                   const others = data.seasons.filter((s, i) => i !== sIdx && s.players.length > 0);
                   const src = others[others.length - 1];
@@ -702,7 +669,7 @@ function PremiumLeague() {
               {[...leaguePlayers, ...guests].map(p => (
                 <div key={p.name} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderTop: `1px solid ${C.line}` }}>
                   <span style={{ fontSize: 14, fontStyle: p.guest ? "italic" : "normal", color: p.guest ? C.sub : C.ink }}>{p.name}</span>
-                  <div style={{ display: "flex", gap: 6 }}>
+                  {superOk && <div style={{ display: "flex", gap: 6 }}>
                     <button onClick={() => setSeason({ players: season.players.map(x => x.name === p.name ? { ...x, guest: !x.guest } : x) })}
                       style={{ fontSize: 12, border: `1px solid ${C.line}`, background: "transparent", borderRadius: 6, padding: "3px 8px", cursor: "pointer", color: C.sub }}>
                       {p.guest ? "tornar da liga" : "tornar convidado"}
@@ -713,7 +680,7 @@ function PremiumLeague() {
                         setSeason({ weeks, players: season.players.filter(x => x.name !== p.name) });
                       }
                     }} style={{ fontSize: 12, border: "none", background: "transparent", color: C.red, cursor: "pointer" }}>remover</button>
-                  </div>
+                  </div>}
                 </div>
               ))}
               <p style={{ fontSize: 12, color: C.sub, margin: "8px 0 0" }}>
@@ -721,7 +688,7 @@ function PremiumLeague() {
               </p>
             </div>
 
-            <SeasonSettings season={season} setSeason={setSeason} S={S}
+            {superOk && <SeasonSettings season={season} setSeason={setSeason} S={S}
               canDelete={data.seasons.length > 1}
               onDelete={() => {
                 if (confirm(`Apagar a época ${season.name} e todos os seus dados? Isto não se desfaz.`)) {
@@ -729,7 +696,7 @@ function PremiumLeague() {
                   update({ ...data, seasons });
                   setSIdx(Math.max(0, sIdx - 1));
                 }
-              }} />
+              }} />}
 
             <div style={{ ...S.card, padding: 14, fontSize: 12.5, color: C.sub, lineHeight: 1.6 }}>
               Qualquer pessoa com o link pode <b>ver</b> em tempo real, sem conta nenhuma. Para <b>alterar</b> é preciso o PIN de organizador (cadeado 🔒 no topo, fica guardado no teu telemóvel). O PIN muda-se na consola do Firebase, no campo <b>secret</b>. A app guarda sozinha uma cópia de segurança semanal na base de dados (últimas 10){lastBackup ? <span> · última: <b>{fmtDate(lastBackup)}</b></span> : null}.
@@ -778,6 +745,10 @@ function SeasonSettings({ season, setSeason, S, canDelete, onDelete }) {
               <input value={season.venue} onChange={e => setSeason({ venue: e.target.value })} style={{ ...S.input, width: "100%", boxSizing: "border-box" }} />
             </div>
           </div>
+          <label style={{ fontSize: 13, display: "flex", gap: 6, alignItems: "center", marginBottom: 8 }}>
+            <input type="checkbox" checked={!!season.archived} onChange={e => setSeason({ archived: e.target.checked })} />
+            Época arquivada (os administradores deixam de poder editar as jornadas)
+          </label>
           <div style={row}>
             <div style={{ flex: 1 }}>
               <label style={S.lbl}>Dia do jogo</label>
@@ -893,13 +864,14 @@ function NewSeasonForm({ base, S, onCreate }) {
           gameDay = d0.getDay();
           for (let i = 0; i < n; i++) {
             const d = new Date(d0); d.setDate(d0.getDate() + i * 7);
-            weeks.push({ date: d.toISOString().slice(0, 10), gB: "", gP: "", marks: {} });
+            weeks.push({ date: d.toISOString().slice(0, 10), gB: "", gP: "", marks: {}, convOrder: [], format: 8 });
           }
         } else {
-          for (let i = 0; i < n; i++) weeks.push({ date: "", gB: "", gP: "", marks: {} });
+          for (let i = 0; i < n; i++) weeks.push({ date: "", gB: "", gP: "", marks: {}, convOrder: [], format: 8 });
         }
         onCreate({
           id: "s_" + Date.now(),
+          archived: false,
           name: name.trim(), venue: venue.trim() || base.venue,
           gameDay, gameTime: src.gameTime, convDay: src.convDay, convTime: src.convTime, convSlots: src.convSlots,
           fineAmount: src.fineAmount, fineTolerance: src.fineTolerance,
@@ -920,6 +892,339 @@ function NewSeasonForm({ base, S, onCreate }) {
 }
 
 
+
+function buildRatings(allSeasons) {
+  const acc = {};
+  allSeasons.forEach(se => {
+    computeStats(se).forEach(r => {
+      const a = acc[r.name] || (acc[r.name] = { pts: 0, J: 0 });
+      a.pts += r.pts; a.J += r.J;
+    });
+  });
+  const map = {}; const vals = [];
+  Object.keys(acc).forEach(n => { if (acc[n].J > 0) { map[n] = acc[n].pts / acc[n].J; vals.push(map[n]); } });
+  const avg = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 2;
+  return { get: (n) => (map[n] !== undefined ? map[n] : avg) };
+}
+
+function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, locked, onToggleLock, onDelete }) {
+  const w = season.weeks[openWeek];
+  const s = weekSummary(w);
+  const [sub, setSub] = useState(() => (s.hasScore ? 3 : (s.nB + s.nP > 0 ? 2 : 1)));
+  const [copied, setCopied] = useState(false);
+  const [nName, setNName] = useState("");
+  const [nGuest, setNGuest] = useState(false);
+
+  const superOk = role === "super";
+  const canW = superOk || (role === "admin" && !season.archived && !locked);
+  const cap = (w.format || 8) * 2;
+  const convOrder = w.convOrder || [];
+  const isGuest = (n) => { const pl = season.players.find(x => x.name === n); return pl ? !!pl.guest : false; };
+  const alpha = [...season.players].sort((a, b) => a.name.localeCompare(b.name, "pt"));
+  const activeConv = convOrder.filter(n => ["C", "B", "P", "R"].includes(w.marks[n]));
+  const desist = convOrder.filter(n => ["D1", "D2", "DOE", "F"].includes(w.marks[n]));
+  const titulares = activeConv.slice(0, cap);
+  const reservasAuto = activeConv.slice(cap);
+  const oIdx = (n) => { const k = convOrder.indexOf(n); return k < 0 ? 999 : k; };
+  const Bs = Object.keys(w.marks).filter(n => w.marks[n] === "B").sort((a, b) => oIdx(a) - oIdx(b));
+  const Ps = Object.keys(w.marks).filter(n => w.marks[n] === "P").sort((a, b) => oIdx(a) - oIdx(b));
+  const Rs = Object.keys(w.marks).filter(n => w.marks[n] === "R").sort((a, b) => oIdx(a) - oIdx(b));
+
+  const card = { background: C.surface, border: `1px solid ${C.line}`, borderRadius: 10, overflow: "hidden" };
+  const inp = { border: `1px solid ${C.line}`, borderRadius: 6, padding: "6px 8px", fontFamily: FONT, fontSize: 14, background: "#fff" };
+
+  const setWeek = (patch) => {
+    if (!canW) return;
+    setSeason({ weeks: season.weeks.map((x, k) => k === openWeek ? { ...x, ...patch } : x) });
+  };
+  const toggleConv = (name) => {
+    if (!canW) return;
+    const marks = { ...w.marks };
+    let order = [...convOrder];
+    if (order.includes(name)) { order = order.filter(n => n !== name); delete marks[name]; }
+    else { order.push(name); marks[name] = "C"; }
+    setWeek({ convOrder: order, marks });
+  };
+  const setStatus = (name, code) => {
+    if (!canW) return;
+    const marks = { ...w.marks };
+    marks[name] = marks[name] === code ? "C" : code;
+    setWeek({ marks });
+  };
+  const cycleTeam = (name) => {
+    if (!canW) return;
+    const marks = { ...w.marks };
+    marks[name] = marks[name] === "B" ? "P" : marks[name] === "P" ? "R" : "B";
+    setWeek({ marks });
+  };
+  const addPlayer = () => {
+    if (!canW) return;
+    const nm = nName.trim();
+    if (!nm || season.players.some(x => x.name === nm)) return;
+    if (/[.#$\[\]\/]/.test(nm)) { alert("O nome não pode conter . # $ [ ] /"); return; }
+    setSeason({ players: [...season.players, { name: nm, guest: nGuest }] });
+    setNName(""); setNGuest(false);
+  };
+  const ratings = buildRatings(data.seasons);
+  const sum = (arr) => arr.reduce((t, n) => t + ratings.get(n), 0);
+  const gerarEquipas = () => {
+    if (!canW || titulares.length < 2) return;
+    const sorted = [...titulares].sort((a, b) => ratings.get(b) - ratings.get(a));
+    const A = [], Bt = [];
+    sorted.forEach((n, k) => { const m = k % 4; (m === 0 || m === 3 ? A : Bt).push(n); });
+    let improved = true;
+    while (improved) {
+      improved = false;
+      for (let a = 0; a < A.length; a++) for (let b = 0; b < Bt.length; b++) {
+        const d0 = Math.abs(sum(A) - sum(Bt));
+        const x = A[a], y = Bt[b];
+        A[a] = y; Bt[b] = x;
+        if (Math.abs(sum(A) - sum(Bt)) + 1e-9 < d0) { improved = true; }
+        else { A[a] = x; Bt[b] = y; }
+      }
+    }
+    const marks = { ...w.marks };
+    A.forEach(n => { marks[n] = "B"; });
+    Bt.forEach(n => { marks[n] = "P"; });
+    reservasAuto.forEach(n => { marks[n] = "R"; });
+    setWeek({ marks });
+  };
+  const copyWhats = () => {
+    const g = (n) => isGuest(n) ? `${n} (conv.)` : n;
+    const fmt = w.format || 8;
+    const lines = [
+      `⚽ Premium League ${season.name} — Jornada ${openWeek + 1}${w.date ? ` · ${fmtDate(w.date)}` : ""}`,
+      `${season.venue} · ${DAYS[season.gameDay]} às ${season.gameTime} · ${fmt}v${fmt}`,
+      "",
+      `⚪ BRANCA (${Bs.length})`, ...Bs.map((n, k) => `${k + 1}. ${g(n)}`),
+      "",
+      `⚫ PRETA (${Ps.length})`, ...Ps.map((n, k) => `${k + 1}. ${g(n)}`),
+    ];
+    if (Rs.length) lines.push("", `🪑 Reservas: ${Rs.map(g).join(", ")}`);
+    if (desist.length) lines.push(`🚫 Fora: ${desist.map(n => `${n} (${w.marks[n] === "DOE" ? "just." : w.marks[n]})`).join(", ")}`);
+    const txt = lines.join("\n");
+    const done = () => { setCopied(true); setTimeout(() => setCopied(false), 2500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done).catch(() => prompt("Copia o texto:", txt));
+    else prompt("Copia o texto:", txt);
+  };
+
+  const subBtn = (n, lab, badge) => (
+    <button onClick={() => setSub(n)} style={{
+      flex: 1, padding: "8px 2px", border: "none", cursor: "pointer", borderRadius: 6,
+      background: sub === n ? C.green : "transparent", color: sub === n ? "#fff" : C.ink,
+      fontFamily: FONT_NUM, fontSize: 14.5, fontWeight: 600,
+    }}>{lab}{badge ? ` (${badge})` : ""}</button>
+  );
+  const statusBtn = (name, code, lab) => {
+    const on = w.marks[name] === code;
+    const color = code === "DOE" ? C.blue : code === "F" ? "#7A5C00" : C.red;
+    return (
+      <button key={code} onClick={(e) => { e.stopPropagation(); setStatus(name, code); }} disabled={!canW} style={{
+        minWidth: 30, padding: "4px 4px", borderRadius: 6, cursor: canW ? "pointer" : "default",
+        fontFamily: FONT_NUM, fontSize: 12, fontWeight: 700,
+        border: `1.5px solid ${on ? color : C.line}`,
+        background: on ? (code === "DOE" ? "#E3EDF7" : code === "F" ? "#F3E9C8" : "#FCE4DC") : "transparent",
+        color: on ? color : "#A9ADA6",
+      }}>{lab}</button>
+    );
+  };
+  const teamChip = (name, mk) => (
+    <button key={name} onClick={() => cycleTeam(name)} disabled={!canW} style={{
+      display: "block", width: "100%", textAlign: "left", marginBottom: 4, padding: "6px 8px",
+      borderRadius: 8, cursor: canW ? "pointer" : "default", fontFamily: FONT, fontSize: 13.5,
+      background: mk === "P" ? C.preta : mk === "B" ? "#fff" : "#FBF3DC",
+      color: mk === "P" ? "#fff" : C.ink,
+      border: `1.5px solid ${mk === "P" ? C.preta : mk === "B" ? C.brancaBorder : C.gold}`,
+      fontStyle: isGuest(name) ? "italic" : "normal",
+    }}>{name}{isGuest(name) ? " ᶜ" : ""}</button>
+  );
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+        <button onClick={() => setOpenWeek(null)} style={{ background: "none", border: "none", color: C.green, fontWeight: 600, fontSize: 14, cursor: "pointer", padding: 0 }}>← Jornadas</button>
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          {superOk && (
+            <button onClick={onToggleLock} style={{
+              fontSize: 12.5, fontWeight: 600, padding: "4px 10px", borderRadius: 20, cursor: "pointer",
+              border: `1.5px solid ${locked ? C.red : C.line}`, background: locked ? "#FCE4DC" : "transparent", color: locked ? C.red : C.sub,
+            }}>{locked ? "🔒 Desbloquear" : "🔓 Bloquear jornada"}</button>
+          )}
+          {superOk && <button onClick={onDelete} style={{ background: "none", border: "none", color: C.red, fontSize: 13, cursor: "pointer" }}>Apagar</button>}
+        </div>
+      </div>
+
+      {locked && !superOk && (
+        <div style={{ background: "#FCE4DC", border: `1px solid ${C.red}`, color: C.red, borderRadius: 8, padding: "7px 12px", fontSize: 13, marginBottom: 10 }}>
+          🔒 Jornada fechada pelo gestor — apenas consulta.
+        </div>
+      )}
+      {!locked && !canW && role !== "viewer" && (
+        <div style={{ background: "#FBF3DC", border: `1px solid ${C.gold}`, color: "#7A5C00", borderRadius: 8, padding: "7px 12px", fontSize: 13, marginBottom: 10 }}>
+          Época arquivada — apenas o gestor principal pode editar.
+        </div>
+      )}
+
+      <div style={{ ...card, padding: 12, marginBottom: 10 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ fontFamily: FONT_NUM, fontSize: 22, fontWeight: 700 }}>
+            Jornada {openWeek + 1} {locked && "🔒"}
+          </div>
+          <input type="date" value={w.date || ""} disabled={!canW} onChange={e => setWeek({ date: e.target.value })} style={inp} />
+        </div>
+        <div style={{ display: "flex", gap: 4, marginTop: 10, background: "#F2F4F0", borderRadius: 8, padding: 3 }}>
+          {subBtn(1, "1·Convocatória", activeConv.length)}
+          {subBtn(2, "2·Equipas")}
+          {subBtn(3, "3·Resultado")}
+        </div>
+      </div>
+
+      {sub === 1 && (
+        <div>
+          <div style={{ ...card, padding: "10px 12px", marginBottom: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 700, color: activeConv.length >= cap ? C.green : C.ink }}>
+              {Math.min(activeConv.length, cap)}/{cap} convocados
+            </span>
+            <span style={{ fontSize: 12, color: C.sub }}>
+              {reservasAuto.length > 0 ? `+ ${reservasAuto.length} reserva${reservasAuto.length > 1 ? "s" : ""}` : "toca no nome para convocar"}
+            </span>
+          </div>
+          <div style={{ ...card }}>
+            {alpha.map((pl, k) => {
+              const mk = w.marks[pl.name];
+              const inConv = convOrder.includes(pl.name);
+              const pos = activeConv.indexOf(pl.name);
+              const isRes = pos >= cap;
+              return (
+                <div key={pl.name} onClick={() => toggleConv(pl.name)} style={{
+                  display: "flex", alignItems: "center", gap: 8, padding: "7px 10px",
+                  borderTop: k ? `1px solid ${C.line}` : "none", cursor: canW ? "pointer" : "default",
+                  background: inConv ? (isRes ? "#FBF3DC" : "#EAF2EC") : "transparent",
+                }}>
+                  <span style={{
+                    width: 26, height: 26, borderRadius: 13, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+                    fontFamily: FONT_NUM, fontSize: 13, fontWeight: 700,
+                    background: pos >= 0 ? (isRes ? C.gold : C.green) : "transparent",
+                    border: pos >= 0 ? "none" : `1.5px dashed ${C.line}`,
+                    color: pos >= 0 ? "#fff" : "#C0C4BD",
+                  }}>{pos >= 0 ? (isRes ? "R" : pos + 1) : "+"}</span>
+                  <span style={{ flex: 1, minWidth: 0, fontSize: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontStyle: pl.guest ? "italic" : "normal", color: pl.guest ? C.sub : C.ink }}>
+                    {pl.name}{pl.guest ? " ᶜ" : ""}
+                  </span>
+                  {inConv && (
+                    <span style={{ display: "flex", gap: 3, flexShrink: 0 }} onClick={e => e.stopPropagation()}>
+                      {statusBtn(pl.name, "D1", "D1")}
+                      {statusBtn(pl.name, "D2", "D2")}
+                      {statusBtn(pl.name, "DOE", "Just")}
+                      {statusBtn(pl.name, "F", "F")}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          {canW && (
+            <div style={{ display: "flex", gap: 6, alignItems: "center", marginTop: 10 }}>
+              <input value={nName} onChange={e => setNName(e.target.value)} placeholder="Novo jogador…"
+                onKeyDown={e => { if (e.key === "Enter") addPlayer(); }}
+                style={{ ...inp, flex: 1, minWidth: 0 }} />
+              <label style={{ fontSize: 12, color: C.sub, display: "flex", alignItems: "center", gap: 4, whiteSpace: "nowrap" }}>
+                <input type="checkbox" checked={nGuest} onChange={e => setNGuest(e.target.checked)} /> estrangeiro
+              </label>
+              <button onClick={addPlayer} style={{ background: C.green, color: "#fff", border: "none", borderRadius: 6, padding: "7px 12px", fontWeight: 600, cursor: "pointer", fontSize: 13 }}>Adicionar</button>
+            </div>
+          )}
+          <p style={{ fontSize: 12, color: C.sub, marginTop: 8 }}>
+            A ordem de clique é a ordem da convocatória (primeiros {cap} são titulares, o resto reservas). D1 −1 pt · D2 −2 pts · Just = justificada (doença, sem penalização) · F = falta (0 pts). Novos jogadores entram logo na lista do regulamento.
+          </p>
+        </div>
+      )}
+
+      {sub === 2 && (
+        <div>
+          <div style={{ ...card, padding: 12, marginBottom: 10 }}>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+              <span style={{ fontSize: 13, color: C.sub }}>Formato:</span>
+              {[8, 11].map(f => (
+                <button key={f} onClick={() => setWeek({ format: f })} disabled={!canW} style={{
+                  padding: "5px 12px", borderRadius: 20, cursor: canW ? "pointer" : "default", fontFamily: FONT_NUM, fontSize: 14, fontWeight: 700,
+                  border: `1.5px solid ${(w.format || 8) === f ? C.ink : C.line}`,
+                  background: (w.format || 8) === f ? C.ink : "transparent", color: (w.format || 8) === f ? "#fff" : C.sub,
+                }}>{f}v{f}</button>
+              ))}
+              <button onClick={gerarEquipas} disabled={!canW || titulares.length < 2} style={{
+                marginLeft: "auto", padding: "7px 12px", borderRadius: 8, border: "none", cursor: canW ? "pointer" : "default",
+                background: canW && titulares.length >= 2 ? C.green : "#C9CFC6", color: "#fff", fontFamily: FONT_NUM, fontSize: 14.5, fontWeight: 700,
+              }}>⚖️ Gerar equipas</button>
+            </div>
+            {titulares.length === 0 && <p style={{ fontSize: 12.5, color: C.sub, margin: "8px 0 0" }}>Ainda não há convocados — começa no passo 1·Convocatória.</p>}
+          </div>
+          {(Bs.length + Ps.length) > 0 && (
+            <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+              {[["⚪ Branca", Bs], ["⚫ Preta", Ps]].map(([lab, arr]) => (
+                <div key={lab} style={{ ...card, flex: 1, padding: 8 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, marginBottom: 6 }}>
+                    <span>{lab} ({arr.length})</span>
+                    <span title="índice de força (média de pontos por jogo)" style={{ color: C.sub }}>{sum(arr).toFixed(1)}</span>
+                  </div>
+                  {arr.map(n => teamChip(n, w.marks[n]))}
+                </div>
+              ))}
+            </div>
+          )}
+          {Rs.length > 0 && (
+            <div style={{ ...card, padding: 8, marginBottom: 10 }}>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 14, fontWeight: 700, color: C.sub, marginBottom: 6 }}>🪑 Reservas ({Rs.length})</div>
+              {Rs.map(n => teamChip(n, "R"))}
+            </div>
+          )}
+          {(Bs.length + Ps.length) > 0 && (
+            <button onClick={copyWhats} style={{
+              width: "100%", padding: "11px", borderRadius: 8, border: `1.5px solid ${C.green}`,
+              background: copied ? C.green : "transparent", color: copied ? "#fff" : C.green,
+              fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700, cursor: "pointer",
+            }}>{copied ? "✓ Copiado!" : "📋 Copiar equipas para o WhatsApp"}</button>
+          )}
+          <p style={{ fontSize: 12, color: C.sub, marginTop: 8 }}>
+            O gerador equilibra pelo histórico (média de pontos por jogo em todas as épocas; sem histórico = média da liga). Toca num jogador para o mover: Branca → Preta → Reserva. O índice ao lado do nome da equipa deve ficar parecido nas duas.
+          </p>
+        </div>
+      )}
+
+      {sub === 3 && (
+        <div>
+          <div style={{ ...card, padding: 14, marginBottom: 10 }}>
+            <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+              {[["Branca", "gB", "#fff", C.ink, C.brancaBorder], ["Preta", "gP", C.preta, "#fff", C.preta]].map(([lab, key, bg, fg, bd]) => (
+                <div key={key} style={{ flex: 1, background: bg, color: fg, border: `1.5px solid ${bd}`, borderRadius: 10, padding: "10px 8px", textAlign: "center" }}>
+                  <div style={{ fontFamily: FONT_NUM, fontSize: 16, fontWeight: 600, marginBottom: 4 }}>{lab}</div>
+                  <input type="number" min="0" max="60" inputMode="numeric" placeholder="–" disabled={!canW}
+                    value={w[key] === null ? "" : w[key]}
+                    onChange={e => setWeek({ [key]: e.target.value === "" ? "" : Number(e.target.value) })}
+                    style={{ width: 70, fontFamily: FONT_NUM, fontSize: 34, fontWeight: 700, textAlign: "center", background: "transparent", color: fg, border: "none", borderBottom: `2px solid ${fg === "#fff" ? "#555" : C.line}` }} />
+                  <div style={{ fontSize: 11, opacity: 0.75, marginTop: 4 }}>golos da equipa</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ textAlign: "center", marginTop: 8, fontSize: 13, color: C.sub }}>
+              {s.nB} na Branca · {s.nP} na Preta {s.winner ? `· venceu: ${s.winner}` : ""}
+            </div>
+          </div>
+          <div style={{ ...card, padding: 12, fontSize: 13, lineHeight: 1.8, color: C.sub }}>
+            <b style={{ color: C.ink }}>⚪ Branca:</b> {Bs.map(n => isGuest(n) ? n + " ᶜ" : n).join(", ") || "—"}<br />
+            <b style={{ color: C.ink }}>⚫ Preta:</b> {Ps.map(n => isGuest(n) ? n + " ᶜ" : n).join(", ") || "—"}<br />
+            {Rs.length > 0 && <span><b style={{ color: C.ink }}>🪑 Reservas:</b> {Rs.join(", ")}<br /></span>}
+            {desist.length > 0 && <span><b style={{ color: C.ink }}>🚫 Fora:</b> {desist.map(n => `${n} (${w.marks[n] === "DOE" ? "just." : w.marks[n]})`).join(", ")}</span>}
+          </div>
+          <p style={{ fontSize: 12, color: C.sub, marginTop: 8 }}>
+            Os pontos e golos individuais recalculam-se automaticamente na Classificação assim que o resultado é gravado.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Setup({ onDemo }) {
   const box = { background: "#FFFFFF", border: "1px solid #DCE0DA", borderRadius: 10, padding: 16, marginBottom: 12 };
   const code = { background: "#F2F2EE", borderRadius: 4, padding: "1px 5px", fontFamily: "monospace", fontSize: 12.5 };
@@ -937,8 +1242,8 @@ function Setup({ onDemo }) {
             <li><b>Create a project</b> (ou <b>Add project</b>) → nome ex.: premium-league → desliga o Google Analytics → <b>Create project</b>.</li>
             <li>Menu lateral: <b>Build → Realtime Database → Create Database</b> → localização <b>Belgium (europe-west1)</b> → <b>Start in test mode</b> → Enable.</li>
             <li>No separador <b>Rules</b>, apaga o que lá está, cola o seguinte e carrega em <b>Publish</b> (torna a leitura pública e a escrita protegida por PIN, sem prazo de expiração):<br/>
-              <span style={code}>{`{ "rules": { "secret": { ".read": false, ".write": false }, "premium_league": { ".read": false, ".write": "newData.child('_pin').val() === root.child('secret').val() && newData.child('_pin').val() != null", "data": { ".read": true } }, "backups": { ".read": false, ".write": "newData.child('_pin').val() === root.child('secret').val() && newData.child('_pin').val() != null", "data": { ".read": true } } } }`}</span></li>
-            <li>No separador <b>Data</b>: passa o rato por cima do endereço da base (linha de topo) → clica no <b>+</b> → Name: <span style={code}>secret</span> · Value: o PIN que quiseres (ex.: <span style={code}>golo2026</span>) → <b>Add</b>. Esse PIN é o que os organizadores introduzem na app (cadeado 🔒). Quem não o tiver só consegue ver.</li>
+              <span style={code}>{`{ "rules": { "secret": { ".read": false, ".write": false }, "secret_admin": { ".read": false, ".write": false }, "premium_league": { ".read": false, ".write": "newData.child('_pin').val() != null && (newData.child('_pin').val() === root.child('secret').val() || newData.child('_pin').val() === root.child('secret_admin').val())", "data": { ".read": true } }, "backups": { ".read": false, ".write": "newData.child('_pin').val() != null && (newData.child('_pin').val() === root.child('secret').val() || newData.child('_pin').val() === root.child('secret_admin').val())", "data": { ".read": true } }, "locks": { ".read": false, ".write": "newData.child('_pin').val() != null && newData.child('_pin').val() === root.child('secret').val()", "data": { ".read": true } } } }`}</span></li>
+            <li>No separador <b>Data</b>: passa o rato por cima do endereço da base (linha de topo) → clica no <b>+</b> e cria DOIS campos: <span style={code}>secret</span> = a password do <b>gestor principal</b> (acesso total, bloqueios, regulamento) e <span style={code}>secret_admin</span> = o PIN dos <b>administradores</b> (só podem editar jornadas de épocas ativas). Ambos se introduzem no cadeado 🔒 da app; quem não tiver nenhum só consegue ver.</li>
           </ol>
         </div>
         <div style={box}>
