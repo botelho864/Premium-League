@@ -188,7 +188,6 @@ function PremiumLeague() {
   const [demo, setDemo] = useState(false);
   const [pin, setPin] = useState(() => { try { return localStorage.getItem("pl_pin") || ""; } catch (e) { return ""; } });
   
-  // Super Password fixa para ti ("superadmin2026" por defeito, podes mudar aqui se quiseres)
   const SUPER_PIN = "superadmin2026";
   const isSuper = pin === SUPER_PIN;
 
@@ -296,22 +295,19 @@ function PremiumLeague() {
 
   const season = data.seasons[Math.min(sIdx, data.seasons.length - 1)];
   
-  // Regras de permissões por época e tipo de utilizador
-  // Época 2026/2: Apenas Super Admin pode alterar. Outros admins e público = view-only.
-  // Época 2026/3: Super Admin pode tudo. Admins normais só podem editar jornadas. Público = view-only.
   const is2026_2 = season.name === "2026/2" || season.id === "2026_2";
   const is2026_3 = season.name === "2026/3" || season.id === "2026_3";
   
+  // Regras estritas pedidas:
+  // - Época 2026/2: Off limits total para admins normais. Apenas Super Admin.
+  // - Época 2026/3 e futuras: Admins normais só podem alterar a secção de Jornadas. Tudo o resto (regulamento, definições, jogadores fora das jornadas) é off limits para eles.
   const hasEditPermission = (actionType) => {
-    if (isSuper) return true; // Super admin tem acesso total em tudo
-    if (!pin) return false; // Sem PIN é visitante
-    if (is2026_2) return false; // Admins normais não mexem na 2026/2
-    if (is2026_3) {
-      // Admins normais na 2026/3 só podem mexer em jornadas
-      if (actionType === "weeks") return true;
-      return false;
-    }
-    return true;
+    if (isSuper) return true;
+    if (!pin) return false;
+    if (is2026_2) return false; // 2026/2 é inteiramente proibido a admins normais
+    // Para 2026/3 ou outras futuras, admins normais só podem mexer em "weeks" (jornadas)
+    if (actionType === "weeks") return true;
+    return false;
   };
 
   const setSeason = (patch) => {
@@ -550,12 +546,12 @@ function PremiumLeague() {
           const w = season.weeks[openWeek];
           const s = weekSummary(w);
           const isLocked = w.locked;
-          // Se estiver bloqueado, só o Super Admin pode mexer. Admins normais ou público ficam bloqueados.
+          // Se estiver bloqueado, apenas o Super Admin pode alterar. Admins normais (mesmo na 2026/3) não mexem se estiver locked.
           const canModifyWeek = isSuper || (!isLocked && hasEditPermission("weeks"));
 
           const setWeek = (patch) => {
             if (!canModifyWeek) {
-              alert(isLocked ? "Esta jornada está bloqueada pela administração." : "Não tens permissões para alterar esta jornada.");
+              alert(isLocked ? "Esta jornada está bloqueada pelo Super Administrador." : "Não tens permissões para alterar esta jornada.");
               return;
             }
             const weeks = season.weeks.map((x, i) => i === openWeek ? { ...x, ...patch } : x);
@@ -574,11 +570,7 @@ function PremiumLeague() {
           };
 
           const conv = s.nB + s.nP;
-
-          // Estado local para adicionar estrangeiro rápido na jornada
           const [newEstrName, setNewEstrName] = useState("");
-
-          // Ordenar todos os jogadores (liga + estrangeiros) alfabeticamente
           const allPlayersSorted = [...season.players].sort((a, b) => a.name.localeCompare(b.name));
 
           return (
@@ -610,7 +602,7 @@ function PremiumLeague() {
 
               {isLocked && (
                 <div style={{ background: "#FCEFEA", border: `1px solid ${C.red}`, color: C.red, borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 10 }}>
-                  🔒 Esta jornada está bloqueada. Apenas o Super Administrador pode efetuar alterações.
+                  🔒 Esta jornada está bloqueada. Apenas o Super Administrador pode efetuar alterações ou gerar/destravar equipas.
                 </div>
               )}
 
@@ -664,7 +656,7 @@ function PremiumLeague() {
                       
                       playerPts.forEach((p, idx) => {
                         if (idx >= targetSize * 2) {
-                          marks[p.name] = "?"; // Reservas
+                          marks[p.name] = "?";
                           return;
                         }
                         const turn = Math.floor(idx / 2);
@@ -690,7 +682,6 @@ function PremiumLeague() {
                 )}
               </div>
 
-              {/* Secção para adicionar novo Estrangeiro/Convidado diretamente na jornada e alimentar o regulamento */}
               {canModifyWeek && (
                 <div style={{ ...S.card, padding: 10, marginBottom: 10, background: "#F6F8F5" }}>
                   <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 6, color: C.sub }}>Adicionar novo Estrangeiro (Convidado) à lista geral:</div>
@@ -701,7 +692,6 @@ function PremiumLeague() {
                       const nm = newEstrName.trim();
                       if (!nm) return;
                       if (season.players.some(p => p.name === nm)) { alert("Esse jogador já existe!"); return; }
-                      // Adiciona aos jogadores da época (como guest = true)
                       const updatedPlayers = [...season.players, { name: nm, guest: true }];
                       const seasons = data.seasons.map((sec, idx) => idx === sIdx ? { ...sec, players: updatedPlayers } : sec);
                       update({ ...data, seasons });
@@ -778,6 +768,13 @@ function PremiumLeague() {
                   </div>
                 );
               })}
+            </div>
+
+            <div style={{ ...S.card, padding: 14 }}>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 6 }}>Formação de Equipas (Época 2026/3)</div>
+              <p style={{ fontSize: 13.5, color: C.sub, margin: 0, lineHeight: 1.6 }}>
+                As equipas (Branca e Preta) podem ser geradas automaticamente de forma equilibrada através do algoritmo inteligente de distribuição em serpente (com base na pontuação e assiduidade dos jogadores na época). Apenas o Super Admin tem o poder de bloquear jornadas para fixar a constituição final e evitar alterações indevidas.
+              </p>
             </div>
 
             <div style={{ ...S.card, padding: 14 }}>
