@@ -300,18 +300,26 @@ function PremiumLeague() {
     } catch (e) {}
   }, [saveState, data]);
 
-  useEffect(() => {
+  const probeRole = () => {
     if (!configured || demo) return;
-    if (!pin) { setRole("viewer"); probeFor.current = ""; return; }
-    if (!data || !locksDb.current || !dbRef.current || !lastJson.current) return;
-    if (probeFor.current === pin) return;
-    probeFor.current = pin;
+    const pv = pinRef.current;
+    if (!pv) { setRole("viewer"); return; }
+    if (!locksDb.current || !dbRef.current || !lastJson.current) return;
+    probeFor.current = pv;
     locksDb.current.child("data").once("value").then((s0) => {
       const cur = s0.val() || {};
       setWithPin(locksDb.current, cur).then(() => setRole("super")).catch(() => {
         setWithPin(dbRef.current, JSON.parse(lastJson.current)).then(() => { setRole("admin"); setSaveState("saved"); }).catch(() => setRole("viewer"));
       });
     }).catch(() => setRole("viewer"));
+  };
+
+  useEffect(() => {
+    if (!configured || demo) return;
+    if (!pin) { setRole("viewer"); probeFor.current = ""; return; }
+    if (!data) return;
+    if (probeFor.current === pin) return;
+    probeRole();
   }, [pin, data === null]);
 
   const toggleLock = (key) => {
@@ -352,6 +360,7 @@ function PremiumLeague() {
     probeFor.current = "";
     setRole("viewer");
     setPin(nv);
+    if (nv) setTimeout(probeRole, 50);
     try { localStorage.setItem("pl_pin", nv); } catch (e) {}
     if (nv && dbRef.current && data && (saveState === "denied" || saveState === "local")) { seedTried.current = true; update(data); }
     else if (saveState === "denied") setSaveState("idle");
