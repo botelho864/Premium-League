@@ -19,9 +19,10 @@
 const { useState, useEffect, useRef } = React;
 
 const SEED = {"version": 3, "seasons": [{"id": "2026_2", "name": "2026/2", "venue": "Campo das Salésias", "points": {"V": 4, "E": 2, "D": 1, "D1": -1, "D2": -2}, "players": [{"name": "Jota", "guest": false}, {"name": "Botelho", "guest": false}, {"name": "Manel MA", "guest": false}, {"name": "Miguel Almeida", "guest": false}, {"name": "Lucas", "guest": false}, {"name": "PTP", "guest": false}, {"name": "Gui", "guest": false}, {"name": "Monteiro", "guest": false}, {"name": "Biu", "guest": false}, {"name": "Zanatti", "guest": false}, {"name": "Miguel Pereira", "guest": false}, {"name": "Ataide", "guest": false}, {"name": "Martim", "guest": false}, {"name": "Manel PS", "guest": false}, {"name": "Lou", "guest": false}, {"name": "Mendes", "guest": false}, {"name": "Cortes", "guest": false}, {"name": "Lourenço", "guest": false}, {"name": "António FC", "guest": false}, {"name": "Augusto", "guest": false}, {"name": "Tavares", "guest": false}, {"name": "Fernandes", "guest": false}, {"name": "Miguel Freitas", "guest": false}, {"name": "Aguiar", "guest": true}, {"name": "Am - Lucas", "guest": true}, {"name": "Amigo Zanatti", "guest": true}, {"name": "Anacoreta", "guest": true}, {"name": "Anahory", "guest": true}, {"name": "Figueira", "guest": true}, {"name": "Guy Gaign", "guest": true}, {"name": "Horta", "guest": true}, {"name": "Kanté", "guest": true}, {"name": "Lourenço Andrade", "guest": true}, {"name": "Manel Sampaio", "guest": true}, {"name": "Siqueira", "guest": true}, {"name": "Tomás", "guest": true}, {"name": "Treinador Belem", "guest": true}, {"name": "Zé PG", "guest": true}], "weeks": [{"date": "2026-04-20", "gB": 3, "gP": 3, "marks": {"António FC": "B", "Botelho": "B", "Lucas": "B", "Mendes": "B", "Monteiro": "B", "Tavares": "B", "Aguiar": "B", "Am - Lucas": "B", "Biu": "P", "Gui": "P", "Jota": "P", "Manel MA": "P", "Miguel Almeida": "P", "Miguel Pereira": "P", "PTP": "P", "Zanatti": "P", "Lou": "D2"}, "scorers": {}}, {"date": "2026-04-27", "gB": 6, "gP": 4, "marks": {"Gui": "B", "Jota": "B", "Miguel Pereira": "B", "Mendes": "B", "Manel MA": "B", "PTP": "B", "António FC": "B", "Siqueira": "B", "Lucas": "P", "Monteiro": "P", "Miguel Almeida": "P", "Zanatti": "P", "Ataide": "P", "Lourenço": "P", "Biu": "P", "Cortes": "P", "Botelho": "D1", "Tavares": "D2", "Fernandes": "D2"}, "scorers": {}}, {"date": "2026-05-04", "gB": 5, "gP": 6, "marks": {"Biu": "B", "Fernandes": "B", "Tavares": "B", "Lou": "B", "Lucas": "B", "António FC": "B", "Horta": "B", "Treinador Belem": "B", "Cortes": "P", "Jota": "P", "Monteiro": "P", "Mendes": "P", "Ataide": "P", "Aguiar": "P", "Siqueira": "P", "Manel Sampaio": "P", "Miguel Pereira": "D1", "Miguel Almeida": "D2"}, "scorers": {}}, {"date": "2026-05-11", "gB": 6, "gP": 5, "marks": {"Jota": "B", "Biu": "B", "Ataide": "B", "Gui": "B", "Miguel Pereira": "B", "Botelho": "B", "Manel MA": "B", "Manel Sampaio": "B", "Tavares": "P", "Zanatti": "P", "Monteiro": "P", "Lucas": "P", "Lou": "P", "Mendes": "P", "Fernandes": "P", "Siqueira": "P", "Manel PS": "D1"}, "scorers": {}}, {"date": "2026-05-18", "gB": 5, "gP": 5, "marks": {"Fernandes": "B", "Tavares": "B", "Ataide": "B", "Jota": "B", "Miguel Almeida": "B", "Manel MA": "B", "Monteiro": "B", "Manel PS": "B", "Lucas": "P", "Lou": "P", "Zanatti": "P", "Martim": "P", "Botelho": "P", "Gui": "P", "PTP": "P", "Miguel Pereira": "P", "Lourenço": "D2"}, "scorers": {}}, {"date": "2026-05-25", "gB": 4, "gP": 5, "marks": {"Tavares": "B", "Miguel Almeida": "B", "Monteiro": "B", "Martim": "B", "PTP": "B", "António FC": "B", "Miguel Pereira": "B", "Anacoreta": "B", "Lucas": "P", "Zanatti": "P", "Botelho": "P", "Gui": "P", "Ataide": "P", "Jota": "P", "Manel PS": "P", "Biu": "P", "Fernandes": "D1", "Manel MA": "DOE", "Mendes": "DOE", "Augusto": "DOE"}, "scorers": {}}, {"date": "2026-06-01", "gB": 5, "gP": 6, "marks": {"Gui": "B", "Miguel Pereira": "B", "Fernandes": "B", "Martim": "B", "Cortes": "B", "Augusto": "B", "Monteiro": "B", "Kanté": "B", "Miguel Almeida": "P", "Mendes": "P", "Jota": "P", "Manel MA": "P", "Manel PS": "P", "PTP": "P", "Botelho": "P", "Anahory": "P"}, "scorers": {}}, {"date": "2026-06-08", "gB": 3, "gP": 0, "marks": {"Martim": "B", "Zanatti": "B", "Miguel Almeida": "B", "Botelho": "B", "Lou": "B", "Manel MA": "B", "Gui": "B", "Figueira": "B", "Mendes": "P", "Monteiro": "P", "Biu": "P", "Lourenço": "P", "Jota": "P", "Miguel Pereira": "P", "Lucas": "P", "PTP": "P", "Augusto": "D1"}, "scorers": {}}, {"date": "2026-06-15", "gB": 3, "gP": 3, "marks": {"PTP": "B", "Manel MA": "B", "Fernandes": "B", "Miguel Almeida": "B", "Biu": "B", "Lucas": "B", "Manel PS": "B", "Cortes": "B", "Zanatti": "P", "Miguel Pereira": "P", "Augusto": "P", "Mendes": "P", "Monteiro": "P", "Lou": "P", "Botelho": "P", "Lourenço": "P", "Ataide": "D2", "Jota": "DOE"}, "scorers": {}}, {"date": "2026-06-22", "gB": 6, "gP": 3, "marks": {"PTP": "B", "Lou": "B", "Botelho": "B", "Miguel Pereira": "B", "Martim": "B", "Lucas": "B", "Jota": "B", "Augusto": "B", "Monteiro": "P", "Lourenço": "P", "Manel MA": "P", "Zanatti": "P", "Manel PS": "P", "Fernandes": "P", "Miguel Almeida": "P", "Aguiar": "P", "Ataide": "?"}, "scorers": {}}, {"date": "2026-06-29", "gB": 4, "gP": 8, "marks": {"Zanatti": "B", "Ataide": "B", "Monteiro": "B", "Lourenço": "B", "Lucas": "B", "Manel PS": "B", "PTP": "B", "Anacoreta": "B", "Manel MA": "P", "Miguel Freitas": "P", "Jota": "P", "Botelho": "P", "Biu": "P", "Miguel Almeida": "P", "Cortes": "P", "Aguiar": "P", "Martim": "?"}, "scorers": {}}, {"date": "2026-07-13", "gB": 4, "gP": 6, "marks": {"Lucas": "B", "Augusto": "B", "Jota": "B", "Martim": "B", "Cortes": "B", "Gui": "B", "Lourenço": "B", "Aguiar": "B", "Zanatti": "P", "Manel MA": "P", "Monteiro": "P", "PTP": "P", "Manel PS": "P", "Miguel Almeida": "P", "Biu": "P", "Anacoreta": "P", "Ataide": "D1"}, "scorers": {}}, {"date": "2026-07-20", "gB": 3, "gP": 0, "marks": {"Jota": "B", "Botelho": "B", "Miguel Almeida": "B", "Monteiro": "B", "Lucas": "B", "Martim": "B", "Ataide": "B", "Anacoreta": "B", "Manel MA": "P", "PTP": "P", "Gui": "P", "Zanatti": "P", "Lou": "P", "Lourenço": "P", "Lourenço Andrade": "P", "Guy Gaign": "P", "Mendes": "D2", "Augusto": "D2"}, "scorers": {}}, {"date": "2026-07-27", "gB": 5, "gP": 7, "marks": {"Biu": "B", "Martim": "B", "Miguel Almeida": "B", "PTP": "B", "Ataide": "B", "Augusto": "B", "Tomás": "B", "Siqueira": "B", "Lourenço": "P", "Jota": "P", "Lucas": "P", "Gui": "P", "Lou": "P", "Amigo Zanatti": "P", "Anacoreta": "P", "Zé PG": "P", "Zanatti": "D2"}, "scorers": {}}], "fines": [], "gameDay": 1, "gameTime": "21:45", "convDay": 5, "convTime": "13:00", "convSlots": 16, "fineAmount": 2.5, "fineTolerance": 1, "prizes": [{"pos": 1, "icon": "🏆", "label": "70€"}, {"pos": 2, "icon": "🥈", "label": "45€"}, {"pos": 3, "icon": "🥉", "label": "20€"}, {"pos": 4, "icon": "💶", "label": "10€"}, {"pos": 5, "icon": "⚽", "label": "bola da época (usada)"}], "convNotes": "Só conta a seguir à hora marcada! Estrangeiros (convidados) admitidos a partir de sábado, inclusive.", "fineNotes": "Chegar atrasado = o jogo já podia ter começado mas não começou porque estamos à tua espera, ou depois das 21:05. A multa tem de ser saldada antes da inscrição do jogo seguinte, sob pena de a inscrição não ser válida.", "notes": "Doença (DOE) não penaliza. Falta (F) vale 0 pontos."}, {"id": "2026_3", "name": "2026/3", "venue": "Campo Atlético Club", "points": {"V": 4, "E": 2, "D": 1, "D1": -1, "D2": -2}, "players": [], "weeks": [{"date": "2026-09-07", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-09-14", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-09-21", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-09-28", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-10-05", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-10-12", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-10-19", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-10-26", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-11-02", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-11-09", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-11-16", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-11-23", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-11-30", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-12-07", "gB": "", "gP": "", "marks": {}, "scorers": {}}], "fines": [], "gameDay": 1, "gameTime": "21:45", "convDay": 5, "convTime": "13:00", "convSlots": 16, "fineAmount": 2.5, "fineTolerance": 1, "prizes": [{"pos": 1, "icon": "🏆", "label": "70€"}, {"pos": 2, "icon": "🥈", "label": "45€"}, {"pos": 3, "icon": "🥉", "label": "20€"}, {"pos": 4, "icon": "💶", "label": "10€"}, {"pos": 5, "icon": "⚽", "label": "bola da época (usada)"}], "convNotes": "Só conta a seguir à hora marcada! Estrangeiros (convidados) admitidos a partir de sábado, inclusive.", "fineNotes": "Chegar atrasado = o jogo já podia ter começado mas não começou porque estamos à tua espera, ou depois das 21:05. A multa tem de ser saldada antes da inscrição do jogo seguinte, sob pena de a inscrição não ser válida.", "notes": "Doença (DOE) não penaliza. Falta (F) vale 0 pontos."}]};
-
 const DEF = {"gameDay": 1, "gameTime": "21:45", "convDay": 5, "convTime": "13:00", "convSlots": 16, "fineAmount": 2.5, "fineTolerance": 1, "prizes": [{"pos": 1, "icon": "🏆", "label": "70€"}, {"pos": 2, "icon": "🥈", "label": "45€"}, {"pos": 3, "icon": "🥉", "label": "20€"}, {"pos": 4, "icon": "💶", "label": "10€"}, {"pos": 5, "icon": "⚽", "label": "bola da época (usada)"}], "convNotes": "Só conta a seguir à hora marcada! Estrangeiros (convidados) admitidos a partir de sábado, inclusive.", "fineNotes": "Chegar atrasado = o jogo já podia ter começado mas não começou porque estamos à tua espera, ou depois das 21:05. A multa tem de ser saldada antes da inscrição do jogo seguinte, sob pena de a inscrição não ser válida.", "notes": "Doença (DOE) não penaliza. Falta (F) vale 0 pontos."};
 
+// ============================================================
+// CONFIGURAÇÃO DO FIREBASE — preencher UMA vez (ver instruções no ecrã inicial)
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyB1III4bABwJCuliFiQbo6tRV5m3aqoues",
   authDomain: "premium-league-212ee.firebaseapp.com",
@@ -29,6 +30,2038 @@ const FIREBASE_CONFIG = {
   projectId: "premium-league-212ee",
 };
 const DB_PATH = "premium_league";
+// ============================================================
+
+// As 400 frases Corny / Cromo para o loop contínuo
+const CROMO_QUOTES = [
+  "O teu único defeito é que a bola no pé atrapalha.",
+  "Vieram direto do escritório para o campo espalhar o caos e a vergonha.",
+  "Passaste o dia a aturar o chefe para chegares aqui e fazeres figura de urso.",
+  "O teu aquecimento foi uma mini e duas bifanas mal cozinhadas.",
+  "Tens dois pés esquerdos e ambos estão engessados.",
+  "O teu talento cabe todo na cabeça de um alfinete.",
+  "A tua inteligência tática cabe num bilhete de metro usado.",
+  "O teu único drible conhecido é tropeçar nas próprias canelas.",
+  "Tens a velocidade punta de um caixote de correio com rodas quadradas.",
+  "O teu passe longo vai sempre ter com o vizinho do lado.",
+  "És a prova viva de que a gravidade odeia os teus remates frouxos.",
+  "O teu golo mais famoso da carreira foi um auto-golo de calcanhar.",
+  "Tens o instinto matador de uma ovelha mansa com medo de moscas.",
+  "O teu radar de jogo está sempre fora de serviço e desligado da tomada.",
+  "És um craque... mas só nos teus sonhos mais distantes.",
+  "A tua classe em campo dá vontade de apagar a luz do estádio.",
+  "O teu lugar reservado é sempre no banco imaginário dos suplentes.",
+  "Tens a mobilidade de um frigorífico antigo a ser arrastado pelas escadas.",
+  "O teu remate foi tão torto que a bola pediu asilo político na rua.",
+  "A tua técnica lembra um acidente de viação em câmara lenta.",
+  "O teu fôlego dura exatamente o tempo de ires buscar a bola ao mato.",
+  "Tens o porte físico de um palito em dia de jejum prolongado.",
+  "O teu cabeceamento é espetacular: passas a bola a quem está na bancada.",
+  "A tua visão de jogo resume-se a ver a bola a passar longe de ti.",
+  "Tens a compostura de um gato a cair de paraquedas num balde de tinta.",
+  "O teu carrinho à defesa limpa as pernas e a paciência de todos.",
+  "A tua garra em campo é a mesma de um peluche esquecido no sofá.",
+  "O teu desodorizante já desistiu de lutar contra o teu suor de segunda.",
+  "Tens o toque de bola de quem tenta calçar um elefante com sapatos 38.",
+  "O teu plano tático é rezar para que o adversário seja pior do que tu.",
+  "O teu estilo de corrida faz lembrar uma galinha sem cabeça e sem rumo.",
+  "Tens a mira tão afinada que acertar na baliza é um milagre divino.",
+  "O teu forte é o fair-play: nunca fizeste falta porque nunca apanhaste ninguém.",
+  "A tua presença em campo enfraquece a moral da tua própria equipa.",
+  "Tens a capacidade de liderança de uma pedra no fundo de um poço.",
+  "O teu pique em profundidade durou meio metro antes do colapso total.",
+  "A tua classe técnica faz corar os pinos de treino do municipal.",
+  "Tens o hábito saudável de estorvar todas as jogadas de ataque promissoras.",
+  "O teu cruzamento milimétrico acertou em cheio na cabeça de um transeunte.",
+  "A tua alegria de segunda-feira acaba sempre no primeiro minuto de jogo.",
+  "Tens a leveza de um tanque de guerra atolado na lama até aos eixos.",
+  "O teu remate de meia-distância assustou os pombos que comiam no telhado.",
+  "A tua leitura de jogo é tão lenta que a bola já mudou de século.",
+  "Tens a dom natural de transformar jogadas simples em tragédias gregas.",
+  "O teu esforço físico é inversamente proporcional à tua utilidade prática.",
+  "A tua postura corporal em campo é um insulto à anatomia humana.",
+  "Tens a rapidez mental de um computador com o Windows 95 avariado.",
+  "O teu empurrãozinho ao adversário foi mais frouxo que um abraço de tia.",
+  "A tua classe de saltador em altura deixou a barra intacta a dois metros.",
+  "Tens a serenidade de um criminoso em pânico numa esquadra de polícia.",
+  "O teu futebol champagne tem sabor a vinagre de vinho rançoso.",
+  "Tens a coragem de um leão de peluche metido numa máquina de lavar.",
+  "O teu desempenho fez o relvado pedir licença para se desintegrar.",
+  "Tens a capacidade criativa de um tijolo cinzento acabado de cozer.",
+  "O teu golo de honra foi marcado na baliza errada por puro engano.",
+  "Tens a postura de quem foi forçado a vir jogar sob ameaça de morte.",
+  "O teu histórico de lesões falsas é mais longo que a tua carreira real.",
+  "Tens o carisma de uma porta de armazém velha e enferrujada.",
+  "O teu passe de calcanhar acertou nos teus próprios dentes da frente.",
+  "Tens a precisão cirúrgica de um carpenteiro a usar uma serra cega.",
+  "O teu rendimento coletivo afunda mais rápido que o Titanic no escuro.",
+  "Tens a leveza de espírito de um elefante com dores de dentes agudas.",
+  "O teu entusiasmo à segunda-feira é contagiante... pela negativa total.",
+  "Tens a elegância de um pinguim a tentar dançar tango num pântano.",
+  "O teu pontapé de saída mandou a bola para fora do complexo desportivo.",
+  "Tens a agilidade de um bloco de cimento armado de dois andares.",
+  "O teu domínio de bola faz lembrar um combate corpo a corpo perdido.",
+  "Tens a inteligência emocional de uma torradeira sem fio à chuva.",
+  "O teu remate foi tão fraco que a bola pediu desculpa por não entrar.",
+  "Tens a capacidade atlética de um saco de areia molhada na berma.",
+  "O teu cruzamento saiu tão torto que regressou ao ponto de partida.",
+  "Tens a postura de quem acha que o campo é um dormitório público.",
+  "O teu pique curto durou três segundos e meio de puro sofrimento.",
+  "Tens a delicadeza de um rinoceronte numa loja de porcelana fina.",
+  "O teu golo de cabeça foi feito com as costas viradas para a baliza.",
+  "Tens a energia de uma pilha gasta encontrada numa gaveta velha.",
+  "O teu sentido de oportunidade é igual ao de um cometa que já passou.",
+  "Tens a velocidade de um caracol asmático a subir uma ladeira íngreme.",
+  "O teu remate à baliza só assustou o bandeirolas que estava a distrair-se.",
+  "Tens a técnica apurada de quem nunca viu uma bola na vida real.",
+  "O teu rendimento de segunda-feira dá direito a subsídio de desemprego.",
+  "Tens a flexibilidade corporal de uma tábua de passar a ferro velha.",
+  "O teu passe milimétrico foi parar diretamente ao bolso do árbitro.",
+  "Tens a classe de um aristocrata falido a pedir trocos na praça.",
+  "O teu instinto defensivo resume-se a desviar o rosto da bola a voar.",
+  "Tens a energia positiva de uma tempestade de granizo em pleno agosto.",
+  "O teu remate cruzado cruzou o campo todo e foi sair pela linha lateral.",
+  "Tens a simpatia de um fiscal de contribuições em dia de fechar contas.",
+  "O teu papel na equipa é servir de aviso vivo do que não se deve fazer.",
+  "Tens a agilidade de um mamute preso num bloco de gelo polar eterno.",
+  "O teu golo de penálti conseguiu bater no poste e ir para fora.",
+  "Tens a eficácia de um guarda-chuvas com buracos do tamanho de punhos.",
+  "O teu entusiasmo pré-jogo durou até calçares as meias furadas.",
+  "Tens a mobilidade de uma estátua de sal esquecida no deserto.",
+  "O teu remate indefensável foi agarrado a rir pelo guarda-redes suplente.",
+  "Tens a classe de um cavalo selvagem dentro de um salão de chá inglês.",
+  "O teu passe rasteiro conseguiu levantar poeira do relvado sintético.",
+  "Tens a inteligência tática de uma couve flor deixada ao sol quente.",
+  "O teu desempenho em campo é um teste severo à paciência dos amigos.",
+  "Tens a categoria de um artista de rua que não sabe assobiar sequer.",
+  "O teu único trunfo é aparecer sempre para pagar a fatura do café.",
+  "A tua tática principal é fingir que estás a marcar alguém para não correr.",
+  "O teu pulmão esquerdo pediu demissão ao minuto dez da primeira parte.",
+  "A tua sola de chuteira tem mais marcas de tropeços do que de golos.",
+  "O teu passe de calcanhar é a desculpa perfeita para ires ao chão.",
+  "A tua barriga de cerveja faz sombra no relvado inteiro aos adeptos.",
+  "O teu remate de trivela faz a bola chorar por clemência imediata.",
+  "A tua velocidade de recuperação faz lembrar o governo a baixar impostos.",
+  "O teu posicionamento tático está sempre no sítio onde a bola não vai.",
+  "A tua classe técnica faz corar os peões de fábrica mais cansados.",
+  "O teu grito a pedir a bola serve apenas para assustar os teus colegas.",
+  "A tua finta corporal foi tão subtil que ninguém deu por ela, nem tu.",
+  "O teu estilo de jogo envergonha até os amadores de fim de semana.",
+  "A tua contribuição ofensiva resume-se a perder a bola na nossa área.",
+  "O teu sentido de direção com a bola nos pés é completamente nulo.",
+  "A tua arrancada em velocidade parece um carro preso com o travão de mão.",
+  "O teu remate foi tão frouxo que a bola adormeceu a meio do caminho.",
+  "A tua presença em campo obriga os outros a trabalhar por dois.",
+  "O teu histórico de golos perdidos dava um livro de comédia dramática.",
+  "A tua classe de médio criativo reduz-se a passes de metro para trás.",
+  "O teu colega de equipa já evitetou olhar para ti de cada vez que tens a bola.",
+  "A tua vontade de correr desaparece logo a seguir ao apito inicial.",
+  "O teu remate de cabeça acertou na nuca do teu próprio companheiro.",
+  "A tua atitude em campo é de quem está a cumprir pena de prisão preventiva.",
+  "O teu passe longo fez a bola aterrar no tejadilho de um carro em marcha.",
+  "A tua consistência de jogo é perfeita: és sempre igualmente horrível.",
+  "O teu fôlego acabou antes mesmo de terminares o teu aquecimento mental.",
+  "A tua postura de craque desmorona-se mal dás o primeiro toque na redondinha.",
+  "O teu remate saiu tão ao lado que o fiscal de linha teve de saltar.",
+  "A tua contribuição para a equipa é manter a média de derrotas estável.",
+  "O teu estilo de passe faz lembrar um cego a atirar pedras no escuro.",
+  "A tua rapidez de raciocínio empata com o crescimento das árvores seculares.",
+  "O teu remate de primeira foi direto para las mãos do dono do terreno.",
+  "A tua classe a defender faz lembrar uma autoestrada sem portagens.",
+  "O teu drible acrobático terminou com uma queda dramática de costas.",
+  "A tua visão periférica não alcança sequer a ponta das tuas chuteiras.",
+  "O teu remate colocado colocou a bola na lua sem permissão de voo.",
+  "A tua garra competitiva derrete-se ao primeiro pingo de suor na testa.",
+  "O teu passe de rotura rompeu apenas a paciência de quem te atura.",
+  "A tua categoria em campo é um segredo bem guardado por ti próprio.",
+  "O teu golo anulado foi o único momento de destaque na tua carreira de sofrimento.",
+  "A tua entrada em campo gelou a espinha dos vossos próprios adeptos.",
+  "O teu remate de meia distância atingiu a carrinha de venda de cachorros.",
+  "A tua mobilidade lateral faz lembrar um pinheiro plantado na calçada.",
+  "O teu cruzamento da esquerda foi sair pela linha de fundo do lado oposto.",
+  "A tua leitura tática do lance é sempre a pior possível em todas as jogadas.",
+  "O teu espírito de sacrifício limita-se a recusar ir buscar a bola ao mato.",
+  "O teu remate acrobático acabou numa distensão muscular desnecessária.",
+  "A tua classe de avançado de ponta é um mito urbano sem qualquer fundamento.",
+  "O teu desempenho de segunda à noite devia ser proibido por decreto-lei.",
+  "O teu remate foi tão forte que a rede tremeu... de pena do teu esforço.",
+  "A tua classe em campo faz inveja a um caixote de lixo orgânico municipal.",
+  "O teu passe longo encontrou um pombo desprevenido a voar baixo.",
+  "A tua inteligência futebolística cabe confortavelmente numa casca de noz vazia.",
+  "O teu aquecimento consistiu em apertar os cordões e suspirar fundo.",
+  "A tua velocidade estonteante faz as tartarugas sentirem-se injustiçadas.",
+  "O teu remate de calcanhar acertou na própria canela de apoio.",
+  "A tua presença em campo faz parecer que jogam com menos dois elementos.",
+  "O teu sentido de oportunidade falha sempre o momento exato de dar à sola.",
+  "A tua categoria técnica está registada nos anais da comédia involuntária.",
+  "O teu cruzamento milimétrico acertou na trave da baliza de treino ao lado.",
+  "A tua postura de líder da equipa resume-se a mandar calar os outros.",
+  "O teu remate colocado foi tão suave que o redes o apanhou a dormir.",
+  "A tua agilidade mental desapareceu algures entre o escritório e o relvado.",
+  "O teu passe em profundidade encontrou um buraco negro no meio-campo.",
+  "A tua combatividade defensiva resume-se a afastar-te do portador da bola.",
+  "O teu golo de ressalto foi o ponto mais alto da tua vidinha de craque.",
+  "A tua classe a receber a bola lembra um acrobata a pisar sabão em pó.",
+  "O teu remate de primeira conseguiu falhar o chão e a própria bola.",
+  "A tua garra competitiva evapora-se assim que o adversário acelera o passo.",
+  "O teu passe curto foi interceptado por uma toupeira distraída no relvado.",
+  "A tua categoria atlética faz rir os veteranos reformados da bancada.",
+  "O teu remate cruzado cruzou o distrito inteiro sem encontrar baliza.",
+  "A tua leitura de jogo consiste em olhar para o céu a ver se chove.",
+  "O teu estilo de corrida parece um boneco de mola partido a meio.",
+  "A tua contribuição tática é criar espaços livres... para o adversário marcar.",
+  "O teu remate de trivela curvou tanto que acabou por ir para trás.",
+  "A tua classe de médio organizador desorganiza a equipa inteira em segundos.",
+  "O teu pique longo durou o tempo de um suspiro abafado de cansaço.",
+  "A tua presença no relvado é o equivalente desportivo a um castigo divino.",
+  "O teu remate de cabeça foi feito com a parte lateral do crânio desatenta.",
+  "A tua inteligência em campo está em regime de poupança permanente.",
+  "O teu passe milimétrico falhou o alvo por meros três metros de largura.",
+  "A tua categoria a fintar restringe-se a fintar a própria sombra no chão.",
+  "O teu remate indefensável foi defendido com o peito por um defesa distendido.",
+  "A tua garra de vencedor nota-se na forma como pedes para sair aos dez minutos.",
+  "O teu passe longo fez a bola aterrar no tejadilho da ambulância de plantão.",
+  "A tua classe técnica faz corar os manequins de montra de centro comercial.",
+  "O teu remate de meia volta deu uma volta completa ao eixo e falhou.",
+  "A tua postura de capitão de equipa é a de quem quer ir embora jantar.",
+  "O teu pique em profundidade levou-te direto aos balneários por engano.",
+  "A tua categoria a defender obriga o guarda-redes a rezar todos os santos.",
+  "O teu remate de primeira mandou a bola para a copa das árvores vizinhas.",
+  "A tua inteligência futebolística está num nível inferior ao zero absoluto.",
+  "O teu passe em rosca desenhou um círculo perfeito de incompetência pura.",
+  "A tua classe de craque internacional é um delírio febril das segundas-feiras.",
+  "O teu remate colocado colocou a bola na via rápida municipal ao lado.",
+  "A tua garra competitiva é do tamanho de um grão de areia na praia.",
+  "O teu contributo para o espetáculo foi a única razão para rirmos alto.",
+  "A tua carreira futebolística de segunda-feira merecia um prémio de paciência.",
+  "O teu remate de trivela acertou em cheio na bandeirola de canto.",
+  "A tua classe técnica faz parecer fácil o que é impossível de ver.",
+  "O teu passe longo foi interceptado pelo vento fraco de segunda-feira.",
+  "A tua inteligência em campo está de férias permanentes no estrangeiro.",
+  "O teu aquecimento foi feito a ver os outros correrem no relvado.",
+  "A tua velocidade de ponta faz inveja a uma geleia derretida ao sol.",
+  "O teu remate de calcanhar partiu a unha do dedo grande do pé.",
+  "A tua presença em campo faz parecer que a baliza tem o dobro do tamanho.",
+  "O teu sentido de oportunidade chega sempre atrasado para a festa.",
+  "A tua categoria atlética assusta qualquer médico do desporto atento.",
+  "O teu cruzamento da direita foi sair pela linha de fundo da esquerda.",
+  "A tua postura de líder inquestionável é aceite apenas por ti próprio.",
+  "O teu remate indefensável bateu no poste e voltou para o meio-campo.",
+  "A tua agilidade mental evaporou-se com a primeira lufada de vento frio.",
+  "O teu passe em profundidade encontrou um guarda-redes que já dormia.",
+  "A tua combatividade defensiva resume-se a gritar com o colega do lado.",
+  "O teu golo de calcanhar foi feito na baliza errada por puro azar.",
+  "A tua classe a receber a bola lembra um elefante a pisar ovos crus.",
+  "O teu remate de primeira falhou a bola de forma memorável e épica.",
+  "A tua garra competitiva evapora-se mal o árbitro apita o início.",
+  "O teu passe curto foi interceptado pelas tuas próprias chuteiras novas.",
+  "A tua categoria técnica faz rir os adeptos da equipa adversária toda.",
+  "O teu remate cruzado cruzou o campo e saiu pela linha lateral oposta.",
+  "A tua leitura de jogo consiste em procurar o banco de suplentes livre.",
+  "O teu estilo de corrida parece um camião a perder óleo na subida.",
+  "A tua contribuição tática é abrir crateras na defesa da tua equipa.",
+  "O teu remate de trivela curvou tanto que foi parar à bancada vazia.",
+  "A tua classe de médio organizador desorganiza até o balneário feminino.",
+  "O teu pique longo durou o tempo de um relâmpago numa noite calma.",
+  "A tua presença no relvado é um teste de resistência aos teus amigos.",
+  "O teu remate de cabeça foi feito com a testa apontada para o céu.",
+  "A tua inteligência em campo está em modo de poupança ultra profunda.",
+  "O teu passe milimétrico falhou o alvo por meia légua de distância.",
+  "A tua categoria a fintar resume-se a cair sozinho sem contacto físico.",
+  "O teu remate foi defendido com a sola da bota por um defesa tonto.",
+  "A tua garra de vencedor nota-se na maneira como finges lesões graves.",
+  "O teu passe longo fez a bola aterrar dentro de uma carrinha aberta.",
+  "A tua classe técnica faz corar os manequins de feira de província.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi para fora.",
+  "A tua postura de capitão de equipa é a de quem quer ir beber uma imperial.",
+  "O teu pique em profundidade levou-te direto ao café mais próximo.",
+  "A tua categoria a defender obriga o guarda-redes a chorar baba e ranho.",
+  "O teu remate de primeira mandou a bola por cima da rede de proteção.",
+  "A tua inteligência futebolística está abaixo do nível do solo pantanoso.",
+  "O teu passe em rosca desenhou um círculo vicioso de pura mediocridade.",
+  "A tua classe de craque internacional é uma alucinação de segunda-feira.",
+  "O teu remate colocado colocou a bola na traseira de um carro em andamento.",
+  "A tua garra competitiva é do tamanho de uma bactéria vista ao microscópio.",
+  "O teu contributo para o espetáculo foi a razão principal do nosso tédio.",
+  "A tua carreira de futebolista de segunda merecia um Óscar de comédia.",
+  "O teu remate de trivela acertou em cheio no rabo de um cão vadio.",
+  "A tua classe técnica faz parecer penoso o ato simples de caminhar.",
+  "O teu passe longo foi interceptado por uma lufada de vento contrário.",
+  "A tua inteligência em campo está a cumprir pena de prisão perpétua.",
+  "O teu aquecimento foi feito a olhar para o telemóvel no banco.",
+  "A tua velocidade de ponta faz as foquinhas parecerem atletas de elite.",
+  "O teu remate de calcanhar partiu as tuas próprias costas de repente.",
+  "A tua presença em campo faz parecer que a bola pesa cinquenta quilos.",
+  "O teu sentido de oportunidade chega sempre a reboque da confusão.",
+  "A tua categoria atlética assusta qualquer cardiologista precavido.",
+  "O teu cruzamento da esquerda foi sair pela linha de fundo da direita.",
+  "A tua postura de líder indiscutível é contestada pelas tuas próprias pernas.",
+  "O teu remate indefensável bateu no bandeirolas e foi ter ao mato.",
+  "A tua agilidade mental evaporou-se logo a seguir ao primeiro minuto.",
+  "O teu passe em profundidade encontrou um vazio existencial profundo.",
+  "A tua combatividade defensiva resume-se a olhar o adversário passar.",
+  "O teu golo de calcanhar foi um milagre que nunca mais vai acontecer.",
+  "A tua classe a receber a bola lembra um pato a tentar voar num lago.",
+  "O teu remate de primeira falhou a bola com requintes de malvadez.",
+  "A tua garra competitiva evapora-se antes mesmo de entrares no relvado.",
+  "O teu passe curto foi interceptado pelas tuas próprias meias caídas.",
+  "A tua categoria técnica faz rir os apanha-bolas mais novos do campo.",
+  "O teu remate cruzado cruzou o distrito e foi cair na rotunda vizinha.",
+  "A tua leitura de jogo consiste em tentar adivinhar onde está a cantina.",
+  "O teu estilo de corrida parece um espantalho sacudido por temporal.",
+  "A tua contribuição tática é abrir autoestradas para o contra-ataque.",
+  "O teu remate de trivela curvou tanto que voltou para os teus pés.",
+  "A tua classe de médio organizador desorganiza a mente de quem vê.",
+  "O teu pique longo durou o tempo de um flash fotográfico rápido.",
+  "A tua presença no relvado é um castigo autoinfligido sem sentido.",
+  "O teu remate de cabeça foi feito com o nariz a apontar para baixo.",
+  "A tua inteligência em campo está desligada por falta de pagamento.",
+  "O teu passe milimétrico falhou o alvo por uma milha de distância.",
+  "A tua categoria a fintar resume-se a perder a bola sem oposição.",
+  "O teu remate foi defendido com os olhos fechados por um defesa tonto.",
+  "A tua garra de vencedor nota-se na pressa com que pedes a substituição.",
+  "O teu passe longo fez a bola aterrar dentro do contentor do lixo.",
+  "A tua classe técnica faz corar os manequins de saldo de armazém.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi para a rua.",
+  "A tua postura de capitão de equipa é a de quem quer ir ver a novela.",
+  "O teu pique em profundidade levou-te direto aos balneários a chorar.",
+  "A tua categoria a defender obriga o guarda-redes a pedir reforma.",
+  "O teu remate de primeira mandou a bola por cima da cobertura alta.",
+  "A tua inteligência futebolística está abaixo do nível do subsolo argiloso.",
+  "O teu passe em rosca desenhou um ziguezague de pura desgraça motora.",
+  "A tua classe de craque internacional é uma miragem típica de segunda.",
+  "O teu remate colocado colocou a bola por cima do muro de vedação.",
+  "A tua garra competitiva é do tamanho de um átomo perdido no espaço.",
+  "O teu contributo para o espetáculo foi a piada principal da noite.",
+  "A tua carreira de futebolista de segunda merecia um atestado de óbito.",
+  "O teu remate de trivela acertou em cheio na porta do bar fechado.",
+  "A tua classe técnica faz parecer doloroso o simples ato de respirar.",
+  "O teu passe longo foi interceptado por um vento lateral ligeiro.",
+  "A tua inteligência em campo está bloqueada por excesso de erros.",
+  "O teu aquecimento foi feito sentado no banco a comer amendoins.",
+  "A tua velocidade de ponta faz os caracóis parecerem bólides de corrida.",
+  "O teu remate de calcanhar partiu as tuas próprias ilusões de craque.",
+  "A tua presença em campo faz parecer que a bola tem picos venenosos.",
+  "O teu sentido de oportunidade chega sempre atrasado para o banquete.",
+  "A tua categoria atlética assusta qualquer instrutor de fitness louco.",
+  "O teu cruzamento da direita foi sair pela linha de fundo da esquerda.",
+  "A tua postura de líder indiscutível é ignorada pelas tuas pernas.",
+  "O teu remate indefensável bateu no poste e foi ter ao parque infantil.",
+  "A tua agilidade mental evaporou-se na viagem de carro até ao campo.",
+  "O teu passe em profundidade encontrou um buraco negro defensivo.",
+  "A tua combatividade defensiva resume-se a rezar para que não chutassem.",
+  "O teu golo de calcanhar foi um acidente feliz que nunca repetirás.",
+  "A tua classe a receber a bola lembra um pinguim a escorregar no óleo.",
+  "O teu remate de primeira falhou a bola com uma precisão matemática.",
+  "A tua garra competitiva evapora-se assim que o árbitro mexe o apito.",
+  "O teu passe curto foi interceptado pelas tuas próprias ataduras soltas.",
+  "A tua categoria técnica faz rir os cães que passeiam na rua ao lado.",
+  "O teu remate cruzado cruzou o campo e foi bater na carrinha estacionada.",
+  "A tua leitura de jogo consiste em adivinhar a que horas acaba o sofrimento.",
+  "O teu estilo de corrida parece um robô desarticulado sem bateria.",
+  "A tua contribuição tática é criar pesadelos recorrentes ao treinador imaginário.",
+  "O teu remate de trivela curvou tanto que foi parar às mãos do teu tio.",
+  "A tua classe de médio organizador desorganiza até o relvado sintético.",
+  "O teu pique longo durou o tempo de um piscar de olhos cansado.",
+  "A tua presença no relvado é um teste de paciência para os anjos.",
+  "O teu remate de cabeça foi feito com o pescoço completamente torto.",
+  "A tua inteligência em campo está em suspensão de pagamento vitalícia.",
+  "O teu passe milimétrico falhou o alvo por uma distância intergaláctica.",
+  "A tua categoria a fintar resume-se a perder a bola por distração pura.",
+  "O teu remate foi defendido com a ponta do nariz por um defesa desprevenido.",
+  "A tua garra de vencedor nota-se na pressa com que pedes água fria.",
+  "O teu passe longo fez a bola aterrar dentro de um balde de tinta fresca.",
+  "A tua classe técnica faz corar os manequins de plástico mais baratos.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi para o mato.",
+  "A tua postura de capitão de equipa é a de quem quer ir dormir cedo.",
+  "O teu pique em profundidade levou-te direto aos bilhares do café.",
+  "A tua categoria a defender obriga o guarda-redes a chorar de desespero.",
+  "O teu remate de primeira mandou a bola por cima da copa das árvores.",
+  "A tua inteligência futebolística está abaixo de zero graus kelvin.",
+  "O teu passe em rosca desenhou um semicírculo perfeito de incompetência.",
+  "A tua classe de craque internacional é uma piada sem graça nenhuma.",
+  "O teu remate colocado colocou a bola na varanda do primeiro andar.",
+  "A tua garra competitiva é do tamanho de uma poeira cósmica invisível.",
+  "O teu contributo para o espetáculo foi a causa principal das nossas gargalhadas.",
+  "A tua carreira de futebolista de segunda-feira merecia ser esquecida já.",
+  "O teu remate de trivela acertou em cheio na perna do teu colega infeliz.",
+  "A tua classe técnica faz parecer hercúleo o ato simples de dar um passo.",
+  "O teu passe longo foi interceptado por uma brisa ligeira de outono.",
+  "A tua inteligência em campo está bloqueada por excesso de peso morto.",
+  "O teu aquecimento foi feito a ver os carros passarem na estrada nacional.",
+  "A tua velocidade de ponta faz os caracóis sentirem-se velocistas olímpicos.",
+  "O teu remate de calcanhar partiu as tuas próprias esperanças de glória.",
+  "A tua presença em campo faz parecer que a bola tem alergia aos teus pés.",
+  "O teu sentido de oportunidade chega sempre a reboque da catástrofe.",
+  "A tua categoria atlética assusta qualquer professor de ginástica reformado.",
+  "O teu cruzamento da direita foi sair pela linha de fundo da esquerda.",
+  "A tua postura de líder indiscutível é desmentida pela tua barriga de cerveja.",
+  "O teu remate indefensável bateu no poste e foi ter ao meio da rua.",
+  "A tua agilidade mental evaporou-se no exato momento em que vestiste a camisola.",
+  "O teu passe em profundidade encontrou um abismo profundo sem fundo.",
+  "A tua combatividade defensiva resume-se a pedir falta de forma preventiva.",
+  "O teu golo de calcanhar foi um milagre estatístico que nunca se repetirá.",
+  "A tua classe a receber a bola lembra um urso a tentar dançar ballete.",
+  "O teu remate de primeira falhou a bola com uma pontaria impressionante.",
+  "A tua garra competitiva evapora-se logo após o apito inicial do árbitro.",
+  "O teu passe curto foi interceptado pelas tuas próprias chuteiras desafinadas.",
+  "A tua categoria técnica faz rir os transeuntes na paragem de autocarro.",
+  "O teu remate cruzado cruzou o relvado e foi bater no muro de cimento.",
+  "A tua leitura de jogo consiste em calcular quantas minis vais beber a seguir.",
+  "O teu estilo de corrida parece um boneco de corda com uma mola partida.",
+  "A tua contribuição tática é abrir autoestradas centrais para o adversário.",
+  "O teu remate de trivela curvou tanto que foi parar às mãos do guarda-redes.",
+  "A tua classe de médio organizador desorganiza a paciência de quem joga.",
+  "O teu pique longo durou o tempo de um suspiro abafado de exaustão.",
+  "A tua presença no relvado é um castigo perpétuo para os teus colegas.",
+  "O teu remate de cabeça foi feito com a orelha esquerda apontada ao céu.",
+  "A tua inteligência em campo está em modo de falência técnica total.",
+  "O teu passe milimétrico falhou o alvo por uma distância astronómica.",
+  "A tua categoria a fintar resume-se a perder a bola sem luta nenhuma.",
+  "O teu remate foi defendido com a barriga por um defesa assustado.",
+  "A tua garra de vencedor nota-se na pressa com que vais para o balneário.",
+  "O teu passe longo fez a bola aterrar dentro de uma carrinha de caixa aberta.",
+  "A tua classe técnica faz corar os manequins de plástico das lojas chinesas.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi para fora do campo.",
+  "A tua postura de capitão de equipa é a de quem quer ir jantar a casa cedo.",
+  "O teu pique em profundidade levou-te direto ao bar do pavilhão municipal.",
+  "A tua categoria a defender obriga o guarda-redes a chorar baba e ranho.",
+  "O teu remate de primeira mandou a bola por cima da vedação de segurança.",
+  "A tua inteligência futebolística está abaixo de zero no termómetro do clube.",
+  "O teu passe em rosca desenhou um círculo vicioso de pura mediocridade.",
+  "A tua classe de craque internacional é uma alucinação coletiva de segunda.",
+  "O teu remate colocado colocou a bola na cobertura de fibrocimento do bar.",
+  "A tua garra competitiva é do tamanho de um micróbio visto à lupa.",
+  "O teu contributo para o espetáculo foi a única piada válida da noite.",
+  "A tua carreira de futebolista de segunda-feira merecia um fim imediato."
+];
+
+function CromoBanner() {
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIdx(prev => (prev + 1) % CROMO_QUOTES.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div style={{
+      background: "linear-gradient(135deg, #37003c 0%, #00ff87 100%)",
+      color: "#ffffff",
+      padding: "10px 14px",
+      borderRadius: 10,
+      marginBottom: 14,
+      textAlign: "center",
+      boxShadow: "0 4px 12px rgba(55,0,60,0.15)",
+      border: "1px solid rgba(255,255,255,0.2)"
+    }}>
+      <div style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, fontStyle: "italic", textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}>
+        "{CROMO_QUOTES[idx]}"
+      </div>
+    </div>
+  );
+}
+
+function normalize(d) {
+  d.seasons = (d.seasons || []).map(s => {
+    s = withDefaults(s);
+    s.players = s.players || [];
+    s.fines = s.fines || [];
+    s.weeks = (s.weeks || []).map(w => ({ date: w.date || "", gB: (w.gB === undefined || w.gB === null) ? "" : w.gB, gP: (w.gP === undefined || w.gP === null) ? "" : w.gP, marks: w.marks || {}, convOrder: w.convOrder || [], format: w.format || 8, scorers: w.scorers || {} }));
+    s.weeks.forEach(w => {
+      const inCo = new Set(w.convOrder);
+      const add = [];
+      ["B", "P", "R", "C"].forEach(t => Object.keys(w.marks).filter(n => w.marks[n] === t && !inCo.has(n)).sort().forEach(n => add.push(n)));
+      ["D1", "D2", "DOE", "F", "?"].forEach(t => Object.keys(w.marks).filter(n => w.marks[n] === t && !inCo.has(n)).sort().forEach(n => add.push(n)));
+      if (add.length) w.convOrder = [...w.convOrder, ...add];
+    });
+    if (s.archived === undefined) s.archived = (s.id === "2026_2");
+    return s;
+  });
+  return d;
+}
+const KEY = "premium_league_2026_2";
+const CODES = ["B", "P", "F", "D1", "D2", "DOE", "?"];
+const DAYS = ["domingo", "2ª feira", "3ª feira", "4ª feira", "5ª feira", "6ª feira", "sábado"];
+
+const C = {
+  bg: "#FFFFFF", surface: "#FFFFFF", ink: "#37003c", sub: "#6c757d",
+  line: "#e5e9f0", green: "#00ff87", gold: "#f9a825", red: "#ff2882",
+  preta: "#111111", brancaBorder: "#cbd5e1", blue: "#00b4d8",
+  plPurple: "#37003c", plCyan: "#00ff87", plPink: "#ff2882"
+};
+
+const FONT_NUM = "'Barlow Condensed','Arial Narrow','Helvetica Neue',sans-serif";
+const FONT = "'Barlow','Helvetica Neue',Arial,sans-serif";
+
+const eur = (n) => `${Number(n).toFixed(2).replace(".", ",")}€`;
+function fmtDate(iso) {
+  if (!iso) return "sem data";
+  const [y, m, d] = iso.split("-");
+  return `${d}/${m}/${y}`;
+}
+const withDefaults = (s) => ({ ...DEF, fines: [], ...s, prizes: s.prizes || DEF.prizes });
+
+function migrate(raw) {
+  if (raw.version === 3) return { ...raw, seasons: raw.seasons.map(withDefaults) };
+  if (raw.version === 2) return { version: 3, seasons: raw.seasons.map(withDefaults) };
+  return {
+    version: 3,
+    seasons: [
+      withDefaults({ id: "2026_2", name: "2026/2", venue: "Campo das Salésias", points: raw.points, players: raw.players, weeks: raw.weeks }),
+      JSON.parse(JSON.stringify(SEED.seasons[1])),
+    ],
+  };
+}
+
+function computeStats(season) {
+  const rows = season.players.filter(p => !p.guest).map((p, idx) => {
+    let V = 0, E = 0, D = 0, D1 = 0, D2 = 0, F = 0, J = 0, golosEquipa = 0, golosPessoais = 0;
+    const form = [];
+    season.weeks.forEach(w => {
+      const mk = w.marks[p.name];
+      if (!mk) return;
+      if (mk === "D1") D1++;
+      if (mk === "D2") D2++;
+      if (mk === "F") F++;
+      if (mk === "B" || mk === "P") {
+        J++;
+        const hasScore = w.gB !== null && w.gB !== "" && w.gP !== null && w.gP !== "";
+        if (hasScore) {
+          const mine = mk === "B" ? Number(w.gB) : Number(w.gP);
+          const theirs = mk === "B" ? Number(w.gP) : Number(w.gB);
+          golosEquipa += mine;
+          if (mine > theirs) { V++; form.push("V"); }
+          else if (mine === theirs) { E++; form.push("E"); }
+          else { D++; form.push("D"); }
+        }
+      }
+      if (w.scorers && w.scorers[p.name]) {
+        golosPessoais += Number(w.scorers[p.name]) || 0;
+      }
+    });
+    const pts = V * season.points.V + E * season.points.E + D * season.points.D + D1 * season.points.D1 + D2 * season.points.D2;
+    const lost = D1 * Math.abs(season.points.D1) + D2 * Math.abs(season.points.D2);
+    let streak = 0;
+    for (let i = form.length - 1; i >= 0 && form[i] === "V"; i--) streak++;
+    return { name: p.name, pts, J, V, E, D, D1, D2, F, golosEquipa, golosPessoais, lost, form: form.slice(-5), streak, idx };
+  });
+  rows.sort((a, b) => b.pts - a.pts || b.J - a.J || b.V - a.V || a.lost - b.lost || a.idx - b.idx);
+  rows.forEach((r, i) => { r.pos = i + 1; });
+  return rows;
+}
+
+function computeTopScorers(season) {
+  const map = {};
+  season.players.filter(p => !p.guest).forEach(p => { map[p.name] = { name: p.name, golos: 0, J: 0 }; });
+  season.weeks.forEach(w => {
+    const activeInWeek = new Set();
+    Object.keys(w.marks || {}).forEach(n => {
+      const mk = w.marks[n];
+      if ((mk === "B" || mk === "P") && w.gB !== null && w.gB !== "" && w.gP !== null && w.gP !== "") {
+        activeInWeek.add(n);
+      }
+    });
+    activeInWeek.forEach(n => {
+      if (!map[n]) map[n] = { name: n, golos: 0, J: 0 };
+      map[n].J += 1;
+    });
+
+    if (w.scorers) {
+      Object.keys(w.scorers).forEach(n => {
+        const g = Number(w.scorers[n]) || 0;
+        if (g > 0) {
+          if (!map[n]) map[n] = { name: n, golos: 0, J: 0 };
+          map[n].golos += g;
+        }
+      });
+    }
+  });
+
+  const list = Object.values(map).filter(x => x.golos > 0 || x.J > 0);
+  list.sort((a, b) => b.golos - a.golos || b.J - a.J || a.name.localeCompare(b.name, "pt"));
+  return list.map(item => ({
+    ...item,
+    media: item.J > 0 ? (item.golos / item.J).toFixed(2).replace(".", ",") : "0,00"
+  }));
+}
+
+function weekSummary(w) {
+  const nB = Object.values(w.marks).filter(m => m === "B").length;
+  const nP = Object.values(w.marks).filter(m => m === "P").length;
+  const hasScore = w.gB !== null && w.gB !== "" && w.gP !== null && w.gP !== "";
+  let winner = null;
+  if (hasScore) winner = Number(w.gB) > Number(w.gP) ? "Branca" : Number(w.gP) > Number(w.gB) ? "Preta" : "Empate";
+  return { nB, nP, hasScore, winner };
+}
+
+function parseHM(t) { const [h, m] = (t || "0:0").split(":").map(Number); return [h || 0, m || 0]; }
+function nextOccurrence(dow, timeStr) {
+  const [h, m] = parseHM(timeStr);
+  const now = new Date();
+  const t = new Date(now);
+  t.setHours(h, m, 0, 0);
+  let delta = (dow - now.getDay() + 7) % 7;
+  if (delta === 0 && t <= now) delta = 7;
+  t.setDate(t.getDate() + delta);
+  return t;
+}
+function fmtDelta(target, now) {
+  const s = Math.max(0, Math.floor((target - now) / 1000));
+  const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), mi = Math.floor((s % 3600) / 60);
+  return d > 0 ? `${d}d ${h}h ${mi}m` : `${h}h ${mi}m`;
+}
+
+function Countdown({ season }) {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => { const id = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(id); }, []);
+  const conv = nextOccurrence(season.convDay, season.convTime);
+  const jogo = nextOccurrence(season.gameDay, season.gameTime);
+  const convOpen = jogo < conv;
+  const chip = (icon, top, bottom, hot) => (
+    <div style={{
+      flex: 1, background: hot ? C.plPurple : C.surface, color: hot ? "#fff" : C.ink,
+      border: `1px solid ${hot ? C.plPurple : C.line}`, borderRadius: 10, padding: "8px 10px",
+      display: "flex", alignItems: "center", gap: 8, minWidth: 0, boxShadow: "0 2px 5px rgba(0,0,0,0.03)"
+    }}>
+      <span style={{ fontSize: 20 }}>{icon}</span>
+      <div style={{ minWidth: 0 }}>
+        <div style={{ fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, lineHeight: 1.1 }}>{top}</div>
+        <div style={{ fontSize: 11, opacity: 0.75, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{bottom}</div>
+      </div>
+    </div>
+  );
+  return (
+    <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+      {chip("📣", convOpen ? "Convocatória aberta" : `abre em ${fmtDelta(conv, now)}`,
+        convOpen ? `primeiros ${season.convSlots} a mandar "." contam` : `${DAYS[season.convDay]} às ${season.convTime}`, convOpen)}
+      {chip("⚽", `jogo em ${fmtDelta(jogo, now)}`, `${DAYS[season.gameDay]} às ${season.gameTime}`, false)}
+    </div>
+  );
+}
+
+function FormDots({ form }) {
+  if (!form.length) return null;
+  const col = { V: "#00ff87", E: "#adb5bd", D: "#ff2882" };
+  return (
+    <span style={{ display: "inline-flex", gap: 3, marginLeft: 6, verticalAlign: "middle" }}>
+      {form.map((f, i) => (
+        <span key={i} title={f} style={{ width: 7, height: 7, borderRadius: 7, background: col[f], display: "inline-block" }} />
+      ))}
+    </span>
+  );
+}
+
+function PremiumLeague() {
+  const [data, setData] = useState(null);
+  const [sIdx, setSIdx] = useState(0);
+  const [tab, setTab] = useState("class");
+  const [openWeek, setOpenWeek] = useState(null);
+  const [openPlayer, setOpenPlayer] = useState(null);
+  const [newSeason, setNewSeason] = useState(false);
+  const [saveState, setSaveState] = useState("idle");
+  const [storageOk, setStorageOk] = useState(true);
+  const [role, setRole] = useState("viewer");
+  const [locks, setLocks] = useState({});
+  const locksDb = useRef(null);
+  const probeFor = useRef("");
+  const timer = useRef(null);
+
+  const [demo, setDemo] = useState(false);
+  const [pin, setPin] = useState(() => { try { return localStorage.getItem("pl_pin") || ""; } catch (e) { return ""; } });
+  const pinRef = useRef("");
+  pinRef.current = pin;
+  const dbRef = useRef(null);
+  const lastJson = useRef("");
+  const firstLoad = useRef(true);
+  const seedTried = useRef(false);
+  const goodPin = useRef(null);
+  const setWithPin = (ref, obj) => {
+    const p = pinRef.current || "";
+    const variants = goodPin.current !== null ? [goodPin.current]
+      : (/^\d+$/.test(p) ? [p, Number(p)] : [p]);
+    const attempt = (i) => ref.set({ _pin: variants[i], data: obj })
+      .then(() => { goodPin.current = variants[i]; })
+      .catch((err) => { if (i + 1 < variants.length) return attempt(i + 1); throw err; });
+    return attempt(0);
+  };
+  const backupDone = useRef(false);
+  const [lastBackup, setLastBackup] = useState("");
+  const configured = !!FIREBASE_CONFIG.databaseURL;
+
+  useEffect(() => {
+    if (!configured) {
+      if (demo) { setStorageOk(false); setData(JSON.parse(JSON.stringify(SEED))); setSIdx(SEED.seasons.length - 1); }
+      return;
+    }
+    try {
+      const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG);
+      dbRef.current = firebase.database().ref(DB_PATH);
+      locksDb.current = firebase.database().ref("locks");
+      locksDb.current.child("data").on("value", (s) => setLocks(s.val() || {}));
+      dbRef.current.child("data").on("value", (snap) => {
+        const val = snap.val();
+        if (!val) {
+          if (seedTried.current) { setSaveState("denied"); return; }
+          seedTried.current = true;
+          const v = JSON.parse(JSON.stringify(SEED));
+          lastJson.current = JSON.stringify(v);
+          setWithPin(dbRef.current, v).then(() => setSaveState("saved")).catch(() => setSaveState("denied"));
+          setData(v); setSIdx(v.seasons.length - 1); firstLoad.current = false;
+          return;
+        }
+        const json = JSON.stringify(val);
+        if (json === lastJson.current) return;
+        lastJson.current = json;
+        const v3 = normalize(migrate(val));
+        setData(v3);
+        if (firstLoad.current) { setSIdx(v3.seasons.length - 1); firstLoad.current = false; }
+        else { setSIdx(i => Math.min(i, v3.seasons.length - 1)); setSaveState("saved"); }
+      }, (err) => { setStorageOk(false); setData(prev => prev || JSON.parse(JSON.stringify(SEED))); });
+    } catch (e) { setStorageOk(false); setData(JSON.parse(JSON.stringify(SEED))); }
+    return () => {
+      if (dbRef.current) dbRef.current.child("data").off();
+      if (locksDb.current) locksDb.current.child("data").off();
+    };
+  }, [demo]);
+
+  const update = (next) => {
+    setData(next);
+    lastJson.current = JSON.stringify(next);
+    if (!dbRef.current || !storageOk) { setSaveState("local"); return; }
+    setSaveState("saving");
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      setWithPin(dbRef.current, JSON.parse(lastJson.current))
+        .then(() => setSaveState("saved"))
+        .catch((err) => {
+          const denied = err && String(err.code || err.message || "").toUpperCase().includes("PERMISSION");
+          setSaveState(denied ? "denied" : "local");
+          dbRef.current.child("data").once("value").then(s => {
+            const v = s.val();
+            if (v) { lastJson.current = JSON.stringify(v); setData(normalize(migrate(v))); }
+          }).catch(() => {});
+        });
+    }, 500);
+  };
+
+  useEffect(() => {
+    if (!configured || demo || !data || !pinRef.current || backupDone.current) return;
+    if (saveState !== "saved") return;
+    backupDone.current = true;
+    try {
+      const bref = firebase.database().ref("backups");
+      bref.child("data").once("value").then(s => {
+        const cur = s.val() || {};
+        const keys = Object.keys(cur).sort();
+        const today = new Date().toISOString().slice(0, 10);
+        const last = keys[keys.length - 1] || "";
+        if (last && (new Date(today) - new Date(last)) < 7 * 86400000) { setLastBackup(last); return; }
+        cur[today] = JSON.parse(JSON.stringify(data));
+        const trimmed = {};
+        Object.keys(cur).sort().slice(-10).forEach(k => { trimmed[k] = cur[k]; });
+        setWithPin(bref, trimmed)
+          .then(() => setLastBackup(today))
+          .catch(() => {});
+      }).catch(() => {});
+    } catch (e) {}
+  }, [saveState, data]);
+
+  const probeRole = () => {
+    if (!configured || demo) return;
+    const pv = pinRef.current;
+    if (!pv) { setRole("viewer"); return; }
+    if (!locksDb.current || !dbRef.current || !lastJson.current) return;
+    probeFor.current = pv;
+    locksDb.current.child("data").once("value").then((s0) => {
+      const cur = s0.val() || {};
+      setWithPin(locksDb.current, cur).then(() => setRole("super")).catch(() => {
+        setWithPin(dbRef.current, JSON.parse(lastJson.current)).then(() => { setRole("admin"); setSaveState("saved"); }).catch(() => setRole("viewer"));
+      });
+    }).catch(() => setRole("viewer"));
+  };
+
+  useEffect(() => {
+    if (!configured || demo) return;
+    if (!pin) { setRole("viewer"); probeFor.current = ""; return; }
+    if (!data) return;
+    if (probeFor.current === pin) return;
+    probeRole();
+  }, [pin, data === null]);
+
+  const toggleLock = (key) => {
+    if (role !== "super" || !locksDb.current) return;
+    const next = { ...locks };
+    if (next[key]) delete next[key]; else next[key] = true;
+    setLocks(next);
+    setWithPin(locksDb.current, next).catch(() => {});
+  };
+
+  const renamePlayer = (oldName) => {
+    if (role !== "super") return;
+    const v = prompt(`Novo nome para "${oldName}":`, oldName);
+    if (v === null) return;
+    const nm = v.trim();
+    if (!nm || nm === oldName) return;
+    if (/[.#$\[\]\/]/.test(nm)) { alert("O nome não pode conter . # $ [ ] /"); return; }
+    if (data.seasons.some(se => se.players.some(x => x.name === nm))) { alert("Já existe um jogador com esse nome."); return; }
+    const seasons = data.seasons.map(se => ({
+      ...se,
+      players: se.players.map(x => x.name === oldName ? { ...x, name: nm } : x),
+      fines: (se.fines || []).map(f => f.name === oldName ? { ...f, name: nm } : f),
+      weeks: se.weeks.map(w => {
+        const marks = {};
+        Object.keys(w.marks).forEach(k => { marks[k === oldName ? nm : k] = w.marks[k]; });
+        const scorers = {};
+        Object.keys(w.scorers || {}).forEach(k => { scorers[k === oldName ? nm : k] = w.scorers[k]; });
+        return { ...w, marks, scorers, convOrder: (w.convOrder || []).map(n => n === oldName ? nm : n) };
+      }),
+    }));
+    update({ ...data, seasons });
+  };
+
+  const askPin = () => {
+    const v = prompt("PIN de organizador (pede a quem criou a liga; deixa vazio para modo espectador):", pin || "");
+    if (v === null) return;
+    const nv = v.trim();
+    pinRef.current = nv;
+    goodPin.current = null;
+    probeFor.current = "";
+    setRole("viewer");
+    setPin(nv);
+    if (nv) setTimeout(probeRole, 50);
+    try { localStorage.setItem("pl_pin", nv); } catch (e) {}
+    if (nv && dbRef.current && data && (saveState === "denied" || saveState === "local")) { seedTried.current = true; update(data); }
+    else if (saveState === "denied") setSaveState("idle");
+  };
+
+  if (!configured && !demo) return <Setup onDemo={() => setDemo(true)} />;
+
+  if (!data) return (
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONT, color: C.sub }}>
+      A carregar a liga…
+    </div>
+  );
+
+  const season = data.seasons[Math.min(sIdx, data.seasons.length - 1)];
+  const setSeason = (patch) => {
+    const seasons = data.seasons.map((s, i) => i === sIdx ? { ...s, ...patch } : s);
+    update({ ...data, seasons });
+  };
+  const stats = computeStats(season);
+  const topScorers = computeTopScorers(season);
+  const leaguePlayers = season.players.filter(p => !p.guest);
+  const guests = season.players.filter(p => p.guest);
+  const played = season.weeks.filter(w => weekSummary(w).hasScore);
+  const winB = played.filter(w => Number(w.gB) > Number(w.gP)).length;
+  const winP = played.filter(w => Number(w.gP) > Number(w.gB)).length;
+  const emp = played.length - winB - winP;
+  const totGolos = played.reduce((s, w) => s + Number(w.gB) + Number(w.gP), 0);
+  const finesPaid = (season.fines || []).filter(f => f.paid).length;
+  const finesOwed = (season.fines || []).length - finesPaid;
+  const superOk = role === "super";
+
+  const S = {
+    tabBtn: (on) => ({
+      flex: 1, padding: "10px 0", border: "none", cursor: "pointer",
+      background: on ? C.plPurple : "transparent", color: on ? "#fff" : C.ink,
+      fontFamily: FONT_NUM, fontSize: 16, fontWeight: 600, letterSpacing: "0.02em", borderRadius: 6,
+      transition: "background 0.2s ease"
+    }),
+    card: { background: C.surface, border: `1px solid ${C.line}`, borderRadius: 10, overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" },
+    input: { border: `1px solid ${C.line}`, borderRadius: 6, padding: "6px 8px", fontFamily: FONT, fontSize: 14, background: "#fff" },
+    lbl: { fontSize: 12, color: C.sub, display: "block", marginBottom: 2 },
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.ink, paddingBottom: 40 }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap');
+        input:focus, button:focus, select:focus, textarea:focus { outline: 2px solid ${C.plPurple}; outline-offset: 1px; }
+      `}</style>
+
+      <div style={{ maxWidth: 520, margin: "0 auto", padding: "0 12px" }}>
+        
+        {/* Banner das Frases Corny em loop contínuo sem cabeçalho */}
+        <div style={{ paddingTop: 14 }}>
+          <CromoBanner />
+        </div>
+
+        <header style={{ padding: "6px 2px 10px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+            <h1 style={{ margin: 0, fontFamily: FONT_NUM, fontWeight: 700, fontSize: 30, letterSpacing: "0.01em", whiteSpace: "nowrap", color: C.plPurple }}>
+              Premium League
+            </h1>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <select value={sIdx} onChange={e => { setSIdx(Number(e.target.value)); setOpenWeek(null); setOpenPlayer(null); }}
+                style={{ fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: C.plPurple, border: `1px solid ${C.line}`, borderRadius: 8, padding: "4px 6px", background: "#fff", maxWidth: 110 }}>
+                {data.seasons.map((s, i) => <option key={s.id} value={i}>{s.name}</option>)}
+              </select>
+              {superOk && <button onClick={() => setNewSeason(v => !v)} title="Nova época" style={{
+                fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, width: 34, height: 34, borderRadius: 8,
+                border: `1.5px solid ${newSeason ? C.ink : C.plPurple}`, background: newSeason ? C.ink : "transparent",
+                color: newSeason ? "#fff" : C.plPurple, cursor: "pointer", lineHeight: 1,
+              }}>{newSeason ? "×" : "+"}</button>}
+              <button onClick={askPin} title="PIN de organizador" style={{
+                fontSize: 16, width: 34, height: 34, borderRadius: 8, border: `1.5px solid ${pin && saveState !== "denied" ? C.plPurple : saveState === "denied" ? C.red : C.line}`,
+                background: "transparent", cursor: "pointer", lineHeight: 1,
+              }}>{pin && saveState !== "denied" ? "🔓" : "🔒"}</button>
+            </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <p style={{ margin: "2px 0 0", fontSize: 13, color: C.sub }}>
+              {season.venue} · {DAYS[season.gameDay]} às {season.gameTime}{role === "super" ? " · acesso total" : role === "admin" ? " · acesso: jornadas" : ""}
+            </p>
+            <span style={{ fontSize: 11, color: (saveState === "local" || saveState === "denied") ? C.red : C.sub }}>
+              {saveState === "saving" ? "a sincronizar…" : saveState === "saved" ? "sincronizado ✓" : saveState === "denied" ? "🔒 sem permissão" : saveState === "local" ? "sem ligação — não gravado" : ""}
+            </span>
+          </div>
+        </header>
+
+        {!storageOk && (
+          <div style={{ background: "#fff5f5", border: `1px solid ${C.red}`, color: C.red, borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 10 }}>
+            Modo demonstração / sem ligação à base de dados — as alterações não ficam gravadas. Verifica a configuração do Firebase no topo do ficheiro.
+          </div>
+        )}
+
+        {saveState === "denied" && (
+          <div style={{ background: "#fff5f5", border: `1px solid ${C.red}`, color: C.red, borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 10 }}>
+            A alteração foi recusada. Toca no cadeado 🔒 lá em cima e introduz um PIN válido (gestor ou administrador).
+          </div>
+        )}
+
+        {newSeason && superOk && (
+          <NewSeasonForm base={season} S={S} onCreate={(ns) => {
+            update({ ...data, seasons: [...data.seasons, ns] });
+            setSIdx(data.seasons.length); setNewSeason(false); setTab("rules"); setOpenWeek(null);
+          }} />
+        )}
+
+        <Countdown key={season.id + season.convDay + season.convTime + season.gameDay + season.gameTime} season={season} />
+
+        <nav style={{ display: "flex", gap: 4, background: C.surface, border: `1px solid ${C.line}`, borderRadius: 8, padding: 4, marginBottom: 14, boxShadow: "0 2px 6px rgba(0,0,0,0.02)" }}>
+          <button style={S.tabBtn(tab === "class")} onClick={() => setTab("class")}>Classificação</button>
+          <button style={S.tabBtn(tab === "weeks")} onClick={() => { setTab("weeks"); setOpenWeek(null); }}>Jornadas</button>
+          <button style={S.tabBtn(tab === "rules")} onClick={() => setTab("rules")}>Regulamento</button>
+        </nav>
+
+        {tab === "class" && (
+          <>
+            {stats.length === 0 ? (
+              <div style={{ ...S.card, padding: 20, textAlign: "center", color: C.sub, fontSize: 14 }}>
+                Ainda não há jogadores na época {season.name}.<br />
+                Adiciona-os no separador <b>Regulamento → Jogadores</b> — dá para importar os da época anterior num clique.
+              </div>
+            ) : (
+              <>
+                <div style={{ ...S.card, overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontVariantNumeric: "tabular-nums", tableLayout: "fixed" }}>
+                    <colgroup>
+                      <col style={{ width: "26px" }} />
+                      <col style={{ width: "114px" }} />
+                      {/* Secção 1: PONTOS */}
+                      <col style={{ width: "46px" }} />
+                      {/* Secção 2: Jogos, V, E, D */}
+                      <col style={{ width: "30px" }} />
+                      <col style={{ width: "30px" }} />
+                      <col style={{ width: "30px" }} />
+                      <col style={{ width: "30px" }} />
+                      {/* Secção 3: D1 e D2 */}
+                      <col style={{ width: "32px" }} />
+                      <col style={{ width: "32px" }} />
+                      {/* Secção 4: Golos e Golos Equipa */}
+                      <col style={{ width: "38px" }} />
+                      <col style={{ width: "42px" }} />
+                    </colgroup>
+                    <thead>
+                      <tr style={{ background: C.plPurple, color: "#fff", fontFamily: FONT_NUM, fontSize: 13 }}>
+                        <th style={{ padding: "6px 2px", textAlign: "center" }}>#</th>
+                        <th style={{ padding: "6px 4px", textAlign: "left" }}>Jogador</th>
+                        
+                        {/* Secção 1: PONTOS */}
+                        <th style={{ padding: "6px 2px", textAlign: "center", background: "#250029", borderLeft: "1px solid rgba(255,255,255,0.2)", borderRight: "1px solid rgba(255,255,255,0.2)" }} title="Secção 1: PONTOS">Pts</th>
+                        
+                        {/* Secção 2: Jogos, V, E, D */}
+                        <th style={{ padding: "6px 2px", textAlign: "center" }} title="Jogos">J</th>
+                        <th style={{ padding: "6px 2px", textAlign: "center" }} title="Vitórias">V</th>
+                        <th style={{ padding: "6px 2px", textAlign: "center" }} title="Empates">E</th>
+                        <th style={{ padding: "6px 2px", textAlign: "center" }} title="Derrotas">D</th>
+                        
+                        {/* Secção 3: D1 e D2 */}
+                        <th style={{ padding: "6px 2px", textAlign: "center", borderLeft: "1px solid rgba(255,255,255,0.1)" }} title="Desistência 1">D1</th>
+                        <th style={{ padding: "6px 2px", textAlign: "center" }} title="Desistência 2">D2</th>
+                        
+                        {/* Secção 4: Golos e Golos Equipa */}
+                        <th style={{ padding: "6px 2px", textAlign: "center", borderLeft: "1px solid rgba(255,255,255,0.1)" }} title="Golos Pessoais">G</th>
+                        <th style={{ padding: "6px 2px", textAlign: "center" }} title="Golos Equipa">GE</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stats.map((r, i) => {
+                        const prize = (season.prizes || []).find(p => p.pos === r.pos);
+                        const open = openPlayer === r.name;
+                        return [
+                          <tr key={r.name} onClick={() => setOpenPlayer(open ? null : r.name)} style={{
+                            borderTop: `1px solid ${C.line}`, cursor: "pointer",
+                            background: open ? "#f8fafc" : i === 0 ? "#fffbeb" : i === 1 ? "#f8fafc" : i === 2 ? "#fff7ed" : "#FFFFFF",
+                          }}>
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, color: i < 3 ? C.gold : C.sub }}>{r.pos}</td>
+                            <td style={{ padding: "6px 4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                              <span style={{ fontWeight: prize ? 600 : 400, fontSize: 13.5 }}>{r.name}</span>
+                              {r.streak >= 3 && <span title={`${r.streak} vitórias seguidas`} style={{ fontSize: 11, marginLeft: 2 }}>🔥{r.streak}</span>}
+                              {prize && <span style={{ fontSize: 9.5, color: C.gold, fontWeight: 700, display: "block" }}>{prize.icon} {prize.label}</span>}
+                              <FormDots form={r.form} />
+                            </td>
+                            
+                            {/* Secção 1: PONTOS (Destaque máximo) */}
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 18, fontWeight: 700, background: i === 0 ? "#fef3c7" : "#f8fafc", color: C.plPurple, borderLeft: `1px solid ${C.line}`, borderRight: `1px solid ${C.line}` }}>{r.pts}</td>
+                            
+                            {/* Secção 2: Jogos, V, E, D */}
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.J}</td>
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.V}</td>
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.E}</td>
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.D}</td>
+                            
+                            {/* Secção 3: D1 e D2 */}
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12, color: r.D1 > 0 ? C.red : C.sub, borderLeft: `1px solid ${C.line}` }}>{r.D1}</td>
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12, color: r.D2 > 0 ? C.red : C.sub }}>{r.D2}</td>
+                            
+                            {/* Secção 4: Golos e Golos Equipa */}
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12.5, fontWeight: 700, color: C.plPurple, borderLeft: `1px solid ${C.line}` }}>{r.golosPessoais}</td>
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.golosEquipa}</td>
+                          </tr>,
+                          open && (
+                            <tr key={r.name + "_d"} style={{ background: "#f8fafc" }}>
+                              <td colSpan={11} style={{ padding: "8px 12px", fontSize: 12, color: C.sub }}>
+                                <b style={{ color: C.ink }}>{r.name}</b> — desistências: {r.D1} × D1, {r.D2} × D2 (−{r.lost} pts) · faltas: {r.F}
+                                <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 6 }}>
+                                  {season.weeks.map((w, wi) => {
+                                    const mk = w.marks[r.name];
+                                    if (!mk) return null;
+                                    const s = weekSummary(w);
+                                    let res = "";
+                                    if ((mk === "B" || mk === "P") && s.hasScore) {
+                                      const mine = mk === "B" ? Number(w.gB) : Number(w.gP);
+                                      const theirs = mk === "B" ? Number(w.gP) : Number(w.gB);
+                                      res = mine > theirs ? "V" : mine === theirs ? "E" : "D";
+                                    }
+                                    const bg = res === "V" ? "#f0fdf4" : res === "D" ? "#fff1f2" : res === "E" ? "#f1f5f9" : "#fffbeb";
+                                    const pGolos = w.scorers && w.scorers[r.name] ? ` (${w.scorers[r.name]} golos)` : "";
+                                    return (
+                                      <span key={wi} style={{ background: bg, border: `1px solid ${C.line}`, borderRadius: 6, padding: "2px 6px", fontSize: 11, color: C.ink }}>
+                                        J{wi + 1} {mk === "B" ? "⚪" : mk === "P" ? "⚫" : mk}{res ? ` ${w.gB}–${w.gP} ${res}` : ""}{pGolos}
+                                      </span>
+                                    );
+                                  })}
+                                </div>
+                              </td>
+                            </tr>
+                          ),
+                        ];
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Top Scorers / Marcadores */}
+                {topScorers.length > 0 && (
+                  <div style={{ marginTop: 20 }}>
+                    <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 8, color: C.plPurple }}>⚽ Top Scorers (Marcadores)</div>
+                    <div style={S.card}>
+                      <table style={{ width: "100%", borderCollapse: "collapse", fontVariantNumeric: "tabular-nums" }}>
+                        <thead>
+                          <tr style={{ background: C.plPurple, color: "#fff", fontFamily: FONT_NUM, fontSize: 15 }}>
+                            {["#", "Jogador", "Golos", "Jogos", "Média"].map((h, i) => (
+                              <th key={i} style={{ padding: "7px 6px", textAlign: i === 1 ? "left" : "center", fontWeight: 600 }}>{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {topScorers.map((ts, idx) => (
+                            <tr key={ts.name} style={{ borderTop: `1px solid ${C.line}`, background: idx === 0 ? "#fffbeb" : idx === 1 ? "#f8fafc" : idx === 2 ? "#fff7ed" : "#FFFFFF" }}>
+                              <td style={{ padding: "6px 6px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700, color: idx < 3 ? C.gold : C.sub, width: 32 }}>{idx + 1}</td>
+                              <td style={{ padding: "6px 6px", fontWeight: idx < 3 ? 600 : 400, fontSize: 14 }}>{ts.name}</td>
+                              <td style={{ padding: "6px 6px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: C.plPurple }}>{ts.golos}</td>
+                              <td style={{ padding: "6px 6px", textAlign: "center", fontSize: 13, color: C.sub }}>{ts.J}</td>
+                              <td style={{ padding: "6px 6px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 14, fontWeight: 600 }}>{ts.media}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+            {stats.length > 0 && (
+              <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+                {[["Jornadas", `${played.length}/${season.weeks.length}`], ["Branca", `${winB} vit.`], ["Preta", `${winP} vit.`], ["Empates", `${emp}`], ["Golos", `${totGolos}`]].map(([l, v]) => (
+                  <div key={l} style={{ ...S.card, flex: "1 1 80px", padding: "8px 10px", textAlign: "center" }}>
+                    <div style={{ fontFamily: FONT_NUM, fontSize: 22, fontWeight: 700, color: C.plPurple }}>{v}</div>
+                    <div style={{ fontSize: 11, color: C.sub }}>{l}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <p style={{ fontSize: 12, color: C.sub, marginTop: 10 }}>
+              Toca num jogador para ver o percurso jornada a jornada. Desempate: pontos → assiduidade → vitórias → menos pontos perdidos em desistências.
+            </p>
+          </>
+        )}
+
+        {tab === "weeks" && openWeek === null && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {season.weeks.map((w, i) => {
+              const s = weekSummary(w);
+              return (
+                <button key={i} onClick={() => setOpenWeek(i)} style={{
+                  ...S.card, display: "flex", alignItems: "center", justifyContent: "space-between",
+                  padding: "10px 14px", cursor: "pointer", textAlign: "left", fontFamily: FONT, width: "100%",
+                }}>
+                  <div>
+                    <div style={{ fontFamily: FONT_NUM, fontWeight: 600, fontSize: 18, color: C.plPurple }}>Jornada {i + 1}</div>
+                    <div style={{ fontSize: 12, color: C.sub }}>{fmtDate(w.date)} · {s.nB} Branca / {s.nP} Preta</div>
+                  </div>
+                  {s.hasScore ? (
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontFamily: FONT_NUM, fontSize: 24, fontWeight: 700 }}>{w.gB}–{w.gP}</span>
+                      <span style={{
+                        fontSize: 11, padding: "3px 8px", borderRadius: 20, fontWeight: 600,
+                        background: s.winner === "Preta" ? C.preta : s.winner === "Branca" ? "#ffffff" : "#f1f5f9",
+                        color: s.winner === "Preta" ? "#fff" : C.ink,
+                        border: `1px solid ${s.winner === "Branca" ? C.brancaBorder : C.line}`,
+                      }}>{s.winner}</span>
+                    </div>
+                  ) : (
+                    <span style={{ fontSize: 12, color: C.plPurple, fontWeight: 600 }}>por jogar →</span>
+                  )}
+                </button>
+              );
+            })}
+            {(superOk || (role === "admin" && !season.archived)) && <button onClick={() => {
+              setSeason({ weeks: [...season.weeks, { date: "", gB: "", gP: "", marks: {}, convOrder: [], format: 8, scorers: {} }] });
+              setOpenWeek(season.weeks.length);
+            }} style={{ padding: "12px", border: `1.5px dashed ${C.plPurple}`, borderRadius: 10, background: "transparent", color: C.plPurple, fontFamily: FONT_NUM, fontSize: 17, fontWeight: 600, cursor: "pointer" }}>
+              + Nova jornada
+            </button>}
+          </div>
+        )}
+
+        {tab === "weeks" && openWeek !== null && season.weeks[openWeek] && (
+          <WeekEditor key={season.id + "_" + openWeek + "_" + role}
+            data={data} season={season} openWeek={openWeek}
+            setOpenWeek={setOpenWeek} setSeason={setSeason}
+            role={role} locked={!!locks[season.id + "_w" + openWeek]}
+            onToggleLock={() => toggleLock(season.id + "_w" + openWeek)}
+            onDelete={() => {
+              if (!superOk) return;
+              if (confirm(`Apagar a jornada ${openWeek + 1}?`)) {
+                setSeason({ weeks: season.weeks.filter((_, k) => k !== openWeek) });
+                setOpenWeek(null);
+              }
+            }} />
+        )}
+
+        {tab === "rules" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+
+            {!superOk && (
+              <div style={{ background: "#fffbeb", border: `1px solid ${C.gold}`, color: "#7a5c00", borderRadius: 8, padding: "8px 12px", fontSize: 13 }}>
+                Modo consulta — a edição do regulamento é exclusiva da password de gestor{role === "admin" ? " (estás com o PIN de administrador: só jornadas)" : ""}. Para editar, toca no cadeado 🔒 e usa a password de gestor.
+              </div>
+            )}
+
+            {/* SECÇÃO PRÉMIOS TOTALMENTE EDITÁVEL PARA O SUPERADMIN */}
+            <div style={{ ...S.card, padding: 14, background: C.plPurple, color: "#fff", border: "none" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700 }}>🏆 Prémios — se a época acabasse hoje</div>
+              </div>
+              {(season.prizes || []).map((p, i) => {
+                const holder = stats[p.pos - 1];
+                return (
+                  <div key={p.pos} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+                    <span style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, width: 26, color: p.pos <= 3 ? C.gold : "#bbb" }}>{p.pos}º</span>
+                    {superOk ? (
+                      <>
+                        <input value={p.icon} onChange={e => setSeason({ prizes: season.prizes.map((x, j) => j === i ? { ...x, icon: e.target.value } : x) })}
+                          style={{ ...S.input, width: 36, textAlign: "center", fontSize: 16 }} />
+                        <span style={{ flex: 1, fontSize: 14, fontWeight: 600 }}>{holder ? holder.name : "—"}</span>
+                        <input value={p.label} onChange={e => setSeason({ prizes: season.prizes.map((x, j) => j === i ? { ...x, label: e.target.value } : x) })}
+                          style={{ ...S.input, width: 90, textAlign: "right", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700 }} />
+                        <button onClick={() => setSeason({ prizes: season.prizes.filter((_, j) => j !== i).map((x, j) => ({ ...x, pos: j + 1 })) })}
+                          style={{ border: "none", background: "none", color: "#ff8080", cursor: "pointer", fontSize: 16 }}>×</button>
+                      </>
+                    ) : (
+                      <>
+                        <span style={{ fontSize: 18 }}>{p.icon}</span>
+                        <span style={{ flex: 1, fontSize: 14, fontWeight: 600 }}>{holder ? holder.name : "—"}</span>
+                        <span style={{ fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: C.gold }}>{p.label}</span>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+              {superOk && (
+                <button onClick={() => setSeason({ prizes: [...(season.prizes || []), { pos: (season.prizes || []).length + 1, icon: "🎁", label: "" }] })}
+                  style={{ marginTop: 8, fontSize: 12.5, border: `1px solid rgba(255,255,255,0.3)`, color: "#fff", background: "rgba(255,255,255,0.1)", borderRadius: 6, padding: "4px 10px", cursor: "pointer" }}>
+                  + Adicionar Prémio
+                </button>
+              )}
+            </div>
+
+            {/* CONVOCATÓRIA EDITÁVEL */}
+            <div style={{ ...S.card, padding: 14 }}>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 6, color: C.plPurple }}>📣 Convocatória</div>
+              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.7 }}>
+                <li>Sai <b>{DAYS[season.convDay]} às {season.convTime}</b> (hora de Portugal continental).</li>
+                <li>Os <b>primeiros {season.convSlots}</b> a enviar "." estão convocados.</li>
+                <li>Jogos <b>{DAYS[season.gameDay]} às {season.gameTime}</b>, {season.venue}.</li>
+              </ul>
+              {superOk ? (
+                <div style={{ marginTop: 8 }}>
+                  <label style={S.lbl}>Notas da convocatória (Editável)</label>
+                  <textarea value={season.convNotes || ""} onChange={e => setSeason({ convNotes: e.target.value })} rows={2}
+                    style={{ ...S.input, width: "100%", boxSizing: "border-box", resize: "vertical", fontFamily: FONT, lineHeight: 1.5 }} />
+                </div>
+              ) : (
+                season.convNotes && <p style={{ fontSize: 13, color: C.sub, margin: "6px 0 0", lineHeight: 1.6 }}>{season.convNotes}</p>
+              )}
+            </div>
+
+            {/* COMO SE FORMAM AS EQUIPAS */}
+            <div style={{ ...S.card, padding: 14 }}>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 6, color: C.plPurple }}>⚖️ Como se formam as equipas</div>
+              {superOk ? (
+                <div>
+                  <label style={S.lbl}>Texto explicativo das equipas (Editável)</label>
+                  <textarea value={season.notes || ""} onChange={e => setSeason({ notes: e.target.value })} rows={4}
+                    style={{ ...S.input, width: "100%", boxSizing: "border-box", resize: "vertical", fontFamily: FONT, lineHeight: 1.5 }} />
+                </div>
+              ) : (
+                <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.7 }}>
+                  <li>A ordem de inscrição na convocatória define os titulares: os primeiros <b>{season.convSlots}</b> contam; os seguintes ficam como <b>reservas</b>.</li>
+                  <li>As equipas <b>Branca</b> e <b>Preta</b> são geradas automaticamente de forma equilibrada, com base no índice de cada jogador — a média de pontos por jogo em todas as épocas (jogadores sem histórico recebem a média da liga).</li>
+                  <li>Os organizadores podem ajustar manualmente qualquer jogador entre Branca, Preta e reservas antes do jogo (agora com suporte de arrastar e largar / Drag-and-Drop).</li>
+                  <li>Formatos suportados: <b>8v8</b> (16 titulares) ou <b>11v11</b> (22 titulares). Estrangeiros (ᶜ) contam para a equipa mas não para a classificação.</li>
+                  {season.notes && <li style={{ marginTop: 6, listStyleType: "none" }}>{season.notes}</li>}
+                </ul>
+              )}
+            </div>
+
+            {/* IMPOSTO DO ATRASO / MULTAS */}
+            <div style={{ ...S.card, padding: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, color: C.plPurple }}>💸 Imposto do atraso</div>
+                <div style={{ fontSize: 13, color: C.sub }}>
+                  pote: <b style={{ color: C.plPurple }}>{eur(finesPaid * season.fineAmount)}</b>
+                  {finesOwed > 0 && <span style={{ color: C.red }}> · por cobrar: {eur(finesOwed * season.fineAmount)}</span>}
+                </div>
+              </div>
+              <p style={{ fontSize: 12.5, color: C.sub, margin: "0 0 8px", lineHeight: 1.6 }}>
+                <b style={{ color: C.ink }}>{eur(season.fineAmount)}</b> a quem chegar atrasado (tolerância de <b>{season.fineTolerance}</b> atraso{season.fineTolerance === 1 ? "" : "s"} para todos).
+              </p>
+              {superOk ? (
+                <div style={{ marginBottom: 8 }}>
+                  <label style={S.lbl}>Definição de atraso / regra da multa (Editável)</label>
+                  <textarea value={season.fineNotes || ""} onChange={e => setSeason({ fineNotes: e.target.value })} rows={2}
+                    style={{ ...S.input, width: "100%", boxSizing: "border-box", resize: "vertical", fontFamily: FONT, lineHeight: 1.5 }} />
+                </div>
+              ) : (
+                season.fineNotes && <p style={{ fontSize: 12.5, color: C.sub, margin: "0 0 8px", lineHeight: 1.6 }}>{season.fineNotes}</p>
+              )}
+              {superOk && leaguePlayers.length > 0 && (
+                <AddFine players={leaguePlayers} amount={season.fineAmount} onAdd={(name) => {
+                  setSeason({ fines: [...(season.fines || []), { id: Date.now(), name, date: new Date().toISOString().slice(0, 10), paid: false }] });
+                }} />
+              )}
+              {(season.fines || []).map(f => (
+                <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 0", borderTop: `1px solid ${C.line}`, fontSize: 13 }}>
+                  <span style={{ flex: 1 }}>{f.name} <span style={{ color: C.sub, fontSize: 11 }}>({fmtDate(f.date)})</span></span>
+                  <button onClick={() => { if (!superOk) return; setSeason({ fines: season.fines.map(x => x.id === f.id ? { ...x, paid: !x.paid } : x) }); }} style={{
+                    fontSize: 12, padding: "3px 10px", borderRadius: 20, cursor: "pointer", fontWeight: 600,
+                    border: `1px solid ${f.paid ? C.plPurple : C.red}`, background: f.paid ? "#f0fdf4" : "#fff1f2", color: f.paid ? C.plPurple : C.red,
+                  }}>{f.paid ? "pago ✓" : "por pagar"}</button>
+                  {superOk && <button onClick={() => setSeason({ fines: season.fines.filter(x => x.id !== f.id) })} style={{ border: "none", background: "none", color: C.sub, cursor: "pointer" }}>×</button>}
+                </div>
+              ))}
+            </div>
+
+            {/* PONTUAÇÃO */}
+            <div style={{ ...S.card, padding: 14 }}>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 8, color: C.plPurple }}>Pontuação</div>
+              {[["V", "Vitória"], ["E", "Empate"], ["D", "Derrota"], ["D1", "Desistência desde sábado (inclusive)"], ["D2", "Desistência desde 2ª às 00h"]].map(([k, lab]) => (
+                <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderTop: `1px solid ${C.line}` }}>
+                  <span style={{ fontSize: 14 }}>{lab} ({k})</span>
+                  <input type="number" value={season.points[k]} disabled={!superOk}
+                    onChange={e => setSeason({ points: { ...season.points, [k]: Number(e.target.value) } })}
+                    style={{ ...S.input, width: 60, textAlign: "center", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700 }} />
+                </div>
+              ))}
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", borderTop: `1px solid ${C.line}`, fontSize: 14, color: C.sub }}>
+                <span>Falta (F)</span><span style={{ fontFamily: FONT_NUM, fontWeight: 700 }}>0</span>
+              </div>
+              <p style={{ fontSize: 12.5, color: C.sub, margin: "8px 0 0", lineHeight: 1.6 }}>
+                Em caso de empate: <b>1ª</b> assiduidade, <b>2ª</b> mais vitórias, <b>3ª</b> menos pontos perdidos por desistências.
+              </p>
+            </div>
+
+            {/* JOGADORES */}
+            <div style={{ ...S.card, padding: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+                <span style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, color: C.plPurple }}>Jogadores — {season.name}</span>
+                <span style={{ fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, color: C.plPurple }}>
+                  {leaguePlayers.length} da liga{guests.length ? ` + ${guests.length} conv.` : ""}
+                </span>
+              </div>
+              {superOk && <AddPlayer onAdd={(name, guest) => {
+                const nm = name.trim();
+                if (!nm || season.players.some(p => p.name === nm)) return;
+                if (/[.#$\[\]\/]/.test(nm)) { alert("O nome não pode conter . # $ [ ] /"); return; }
+                setSeason({ players: [...season.players, { name: nm, guest }] });
+              }} />}
+              {superOk && data.seasons.some((s, i) => i !== sIdx && s.players.length > 0) && (
+                <button onClick={() => {
+                  const others = data.seasons.filter((s, i) => i !== sIdx && s.players.length > 0);
+                  const src = others[others.length - 1];
+                  const existing = new Set(season.players.map(p => p.name));
+                  const add = src.players.filter(p => !p.guest && !existing.has(p.name)).map(p => ({ name: p.name, guest: false }));
+                  setSeason({ players: [...season.players, ...add] });
+                }} style={{ width: "100%", marginBottom: 8, padding: "9px", border: `1.5px dashed ${C.plPurple}`, borderRadius: 8, background: "transparent", color: C.plPurple, fontWeight: 600, fontSize: 13.5, cursor: "pointer" }}>
+                  ⤵ Importar os jogadores da época anterior
+                </button>
+              )}
+              {[...leaguePlayers].sort((a, b) => a.name.localeCompare(b.name, "pt")).concat([...guests].sort((a, b) => a.name.localeCompare(b.name, "pt"))).map(p => (
+                <div key={p.name} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderTop: `1px solid ${C.line}` }}>
+                  <span style={{ fontSize: 14, fontStyle: p.guest ? "italic" : "normal", color: p.guest ? C.sub : C.ink }}>{p.name}</span>
+                  {superOk && <div style={{ display: "flex", gap: 6 }}>
+                    <button onClick={() => renamePlayer(p.name)} title="Editar nome"
+                      style={{ fontSize: 12, border: `1px solid ${C.line}`, background: "transparent", borderRadius: 6, padding: "3px 8px", cursor: "pointer", color: C.sub }}>✎</button>
+                    <button onClick={() => setSeason({ players: season.players.map(x => x.name === p.name ? { ...x, guest: !x.guest } : x) })}
+                      style={{ fontSize: 12, border: `1px solid ${C.line}`, background: "transparent", borderRadius: 6, padding: "3px 8px", cursor: "pointer", color: C.sub }}>
+                      {p.guest ? "tornar da liga" : "tornar convidado"}
+                    </button>
+                    <button onClick={() => {
+                      if (confirm(`Remover ${p.name} da época ${season.name}? Apaga também as marcações dele nas jornadas.`)) {
+                        const weeks = season.weeks.map(w => {
+                          const m = { ...w.marks }; delete m[p.name];
+                          const sc = { ...(w.scorers || {}) }; delete sc[p.name];
+                          return { ...w, marks: m, scorers: sc, convOrder: (w.convOrder || []).filter(n => n !== p.name) };
+                        });
+                        setSeason({ weeks, players: season.players.filter(x => x.name !== p.name) });
+                      }
+                    }} style={{ fontSize: 12, border: "none", background: "transparent", color: C.red, cursor: "pointer" }}>remover</button>
+                  </div>}
+                </div>
+              ))}
+              <p style={{ fontSize: 12, color: C.sub, margin: "8px 0 0" }}>
+                Convidados (estrangeiros) contam para os golos da equipa mas não entram na classificação.
+              </p>
+            </div>
+
+            {superOk && <SeasonSettings season={season} setSeason={setSeason} S={S}
+              canDelete={data.seasons.length > 1}
+              onDelete={() => {
+                if (confirm(`Apagar a época ${season.name} e todos os seus dados? Isto não se desfaz.`)) {
+                  const seasons = data.seasons.filter((_, i) => i !== sIdx);
+                  update({ ...data, seasons });
+                  setSIdx(Math.max(0, sIdx - 1));
+                }
+              }} />}
+
+            <div style={{ ...S.card, padding: 14, fontSize: 12.5, color: C.sub, lineHeight: 1.6 }}>
+              Qualquer pessoa com o link pode <b>ver</b> em tempo real, sem conta nenhuma. Para <b>alterar</b> é preciso o PIN de organizador (cadeado 🔒 no topo, fica guardado no teu telemóvel). O PIN muda-se na consola do Firebase, no campo <b>secret</b>. A app guarda sozinha uma cópia de segurança semanal na base de dados (últimas 10){lastBackup ? <span> · última: <b>{fmtDate(lastBackup)}</b></span> : null}.
+              <button onClick={() => {
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(blob);
+                a.download = "premium_league_backup_" + new Date().toISOString().slice(0, 10) + ".json";
+                a.click();
+              }} style={{ display: "block", marginTop: 8, fontSize: 12.5, border: `1px solid ${C.line}`, color: C.ink, background: "transparent", borderRadius: 6, padding: "6px 12px", cursor: "pointer" }}>
+                📥 Descarregar cópia de segurança (JSON)
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SeasonSettings({ season, setSeason, S, canDelete, onDelete }) {
+  const [open, setOpen] = useState(false);
+  const num = (v, fb) => { const n = Number(v); return isNaN(n) ? fb : n; };
+  const row = { display: "flex", gap: 8, marginBottom: 8, flexWrap: "wrap" };
+  const daySelect = (val, onCh) => (
+    <select value={val} onChange={onCh} style={{ ...S.input, flex: 1 }}>
+      {DAYS.map((d, i) => <option key={i} value={i}>{d}</option>)}
+    </select>
+  );
+  return (
+    <div style={{ ...S.card, padding: 14 }}>
+      <button onClick={() => setOpen(o => !o)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: FONT_NUM }}>
+        <span style={{ fontSize: 20, fontWeight: 700, color: C.plPurple }}>⚙️ Definições da época</span>
+        <span style={{ fontSize: 18, color: C.sub }}>{open ? "▴" : "▾"}</span>
+      </button>
+      {!open && <p style={{ fontSize: 12, color: C.sub, margin: "4px 0 0" }}>Nome, campo, horários, convocatória, multa, prémios e notas — tudo editável aqui.</p>}
+      {open && (
+        <div style={{ marginTop: 12 }}>
+          <div style={row}>
+            <div style={{ flex: 1, minWidth: 120 }}>
+              <label style={S.lbl}>Nome da época</label>
+              <input value={season.name} onChange={e => setSeason({ name: e.target.value })} style={{ ...S.input, width: "100%", boxSizing: "border-box" }} />
+            </div>
+            <div style={{ flex: 2, minWidth: 160 }}>
+              <label style={S.lbl}>Campo</label>
+              <input value={season.venue} onChange={e => setSeason({ venue: e.target.value })} style={{ ...S.input, width: "100%", boxSizing: "border-box" }} />
+            </div>
+          </div>
+          <label style={{ fontSize: 13, display: "flex", gap: 6, alignItems: "center", marginBottom: 8 }}>
+            <input type="checkbox" checked={!!season.archived} onChange={e => setSeason({ archived: e.target.checked })} />
+            Época arquivada (os administradores deixam de poder editar as jornadas)
+          </label>
+          <div style={row}>
+            <div style={{ flex: 1 }}>
+              <label style={S.lbl}>Dia do jogo</label>
+              {daySelect(season.gameDay, e => setSeason({ gameDay: Number(e.target.value) }))}
+            </div>
+            <div>
+              <label style={S.lbl}>Hora do jogo</label>
+              <input type="time" value={season.gameTime} onChange={e => setSeason({ gameTime: e.target.value })} style={S.input} />
+            </div>
+          </div>
+          <div style={row}>
+            <div style={{ flex: 1 }}>
+              <label style={S.lbl}>Dia da convocatória</label>
+              {daySelect(season.convDay, e => setSeason({ convDay: Number(e.target.value) }))}
+            </div>
+            <div>
+              <label style={S.lbl}>Hora</label>
+              <input type="time" value={season.convTime} onChange={e => setSeason({ convTime: e.target.value })} style={S.input} />
+            </div>
+            <div>
+              <label style={S.lbl}>Convocados</label>
+              <input type="number" min="2" value={season.convSlots} onChange={e => setSeason({ convSlots: num(e.target.value, 16) })} style={{ ...S.input, width: 64, textAlign: "center" }} />
+            </div>
+          </div>
+          <div style={row}>
+            <div>
+              <label style={S.lbl}>Multa (€)</label>
+              <input type="number" step="0.5" min="0" value={season.fineAmount} onChange={e => setSeason({ fineAmount: num(e.target.value, 2.5) })} style={{ ...S.input, width: 80, textAlign: "center" }} />
+            </div>
+            <div>
+              <label style={S.lbl}>Tolerância (atrasos)</label>
+              <input type="number" min="0" value={season.fineTolerance} onChange={e => setSeason({ fineTolerance: num(e.target.value, 1) })} style={{ ...S.input, width: 80, textAlign: "center" }} />
+            </div>
+          </div>
+          {canDelete && (
+            <button onClick={onDelete} style={{ fontSize: 12.5, border: `1px solid ${C.red}`, color: C.red, background: "none", borderRadius: 6, padding: "6px 12px", cursor: "pointer", marginTop: 4 }}>
+              Apagar esta época
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function NewSeasonForm({ base, S, onCreate }) {
+  const [name, setName] = useState("");
+  const [venue, setVenue] = useState(base.venue);
+  const [start, setStart] = useState("");
+  const [n, setN] = useState(14);
+  const [copyPlayers, setCopyPlayers] = useState(true);
+  const [copyRules, setCopyRules] = useState(true);
+  const chk = { display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.ink };
+  return (
+    <div style={{ ...S.card, padding: 14, marginBottom: 14, border: `1.5px solid ${C.plPurple}` }}>
+      <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 10, color: C.plPurple }}>Nova época</div>
+      <div style={{ display: "flex", gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
+        <div style={{ flex: 1, minWidth: 110 }}>
+          <label style={S.lbl}>Nome (ex.: 2026/4)</label>
+          <input value={name} onChange={e => setName(e.target.value)} placeholder="2026/4" style={{ ...S.input, width: "100%", boxSizing: "border-box" }} />
+        </div>
+        <div style={{ flex: 2, minWidth: 150 }}>
+          <label style={S.lbl}>Campo</label>
+          <input value={venue} onChange={e => setVenue(e.target.value)} style={{ ...S.input, width: "100%", boxSizing: "border-box" }} />
+        </div>
+      </div>
+      <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap", alignItems: "flex-end" }}>
+        <div>
+          <label style={S.lbl}>Data da 1ª jornada</label>
+          <input type="date" value={start} onChange={e => setStart(e.target.value)} style={S.input} />
+        </div>
+        <div>
+          <label style={S.lbl}>Nº de jornadas</label>
+          <input type="number" min="1" max="52" value={n} onChange={e => setN(Number(e.target.value) || 14)} style={{ ...S.input, width: 70, textAlign: "center" }} />
+        </div>
+      </div>
+      <div style={{ display: "flex", gap: 16, marginBottom: 12, flexWrap: "wrap" }}>
+        <label style={chk}><input type="checkbox" checked={copyPlayers} onChange={e => setCopyPlayers(e.target.checked)} /> copiar jogadores de {base.name}</label>
+        <label style={chk}><input type="checkbox" checked={copyRules} onChange={e => setCopyRules(e.target.checked)} /> copiar regras e prémios</label>
+      </div>
+      <button onClick={() => {
+        if (!name.trim()) { alert("Dá um nome à época (ex.: 2026/4)."); return; }
+        const src = copyRules ? base : DEF;
+        let gameDay = src.gameDay;
+        const weeks = [];
+        if (start) {
+          const d0 = new Date(start + "T12:00:00");
+          gameDay = d0.getDay();
+          for (let i = 0; i < n; i++) {
+            const d = new Date(d0); d.setDate(d0.getDate() + i * 7);
+            weeks.push({ date: d.toISOString().slice(0, 10), gB: "", gP: "", marks: {}, convOrder: [], format: 8, scorers: {} });
+          }
+        } else {
+          for (let i = 0; i < n; i++) weeks.push({ date: "", gB: "", gP: "", marks: {}, convOrder: [], format: 8, scorers: {} });
+        }
+        onCreate({
+          id: "s_" + Date.now(),
+          archived: false,
+          name: name.trim(), venue: venue.trim() || base.venue,
+          gameDay, gameTime: src.gameTime, convDay: src.convDay, convTime: src.convTime, convSlots: src.convSlots,
+          fineAmount: src.fineAmount, fineTolerance: src.fineTolerance,
+          prizes: JSON.parse(JSON.stringify(src.prizes || DEF.prizes)),
+          convNotes: src.convNotes, fineNotes: src.fineNotes, notes: src.notes,
+          points: { ...(copyRules ? base.points : { V: 4, E: 2, D: 1, D1: -1, D2: -2 }) },
+          players: copyPlayers ? base.players.filter(p => !p.guest).map(p => ({ name: p.name, guest: false })) : [],
+          weeks, fines: [],
+        });
+      }} style={{ width: "100%", background: C.plPurple, color: "#fff", border: "none", borderRadius: 8, padding: "11px", fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, cursor: "pointer" }}>
+        Criar época{start ? ` (${n} jornadas semanais a partir de ${fmtDate(start)})` : ""}
+      </button>
+      <p style={{ fontSize: 11.5, color: C.sub, margin: "8px 0 0" }}>
+        As jornadas são criadas semanalmente no dia da semana da 1ª jornada. Tudo é ajustável depois em Regulamento → Definições da época.
+      </p>
+    </div>
+  );
+}
+
+function buildRatings(allSeasons) {
+  const acc = {};
+  allSeasons.forEach(se => {
+    computeStats(se).forEach(r => {
+      const a = acc[r.name] || (acc[r.name] = { pts: 0, J: 0 });
+      a.pts += r.pts; a.J += r.J;
+    });
+  });
+  const map = {}; const vals = [];
+  Object.keys(acc).forEach(n => { if (acc[n].J > 0) { map[n] = acc[n].pts / acc[n].J; vals.push(map[n]); } });
+  const avg = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 2;
+  return { get: (n) => (map[n] !== undefined ? map[n] : avg) };
+}
+
+function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, locked, onToggleLock, onDelete }) {
+  const w = season.weeks[openWeek];
+  const s = weekSummary(w);
+  const [sub, setSub] = useState(() => (s.hasScore ? 3 : (s.nB + s.nP > 0 ? 2 : 1)));
+  const [copied, setCopied] = useState(false);
+  const [nName, setNName] = useState("");
+  const [nGuest, setNGuest] = useState(false);
+  const [addSel, setAddSel] = useState("");
+
+  const superOk = role === "super";
+  const canW = superOk || (role === "admin" && !season.archived && !locked);
+  const cap = (w.format || 8) * 2;
+  const convOrder = w.convOrder || [];
+  const isGuest = (n) => { const pl = season.players.find(x => x.name === n); return pl ? !!pl.guest : false; };
+  const alpha = [...season.players].sort((a, b) => a.name.localeCompare(b.name, "pt"));
+  const activeConv = convOrder.filter(n => ["C", "B", "P", "R"].includes(w.marks[n]));
+  const desist = convOrder.filter(n => ["D1", "D2", "DOE", "F"].includes(w.marks[n]));
+  const titulares = activeConv.slice(0, cap);
+  const reservasAuto = activeConv.slice(cap);
+  const Bs = activeConv.filter(n => w.marks[n] === "B");
+  const Ps = activeConv.filter(n => w.marks[n] === "P");
+  const Rs = activeConv.filter(n => w.marks[n] === "R");
+  const naoConv = alpha.filter(pl => !convOrder.includes(pl.name));
+
+  const card = { background: C.surface, border: `1px solid ${C.line}`, borderRadius: 10, overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" };
+  const inp = { border: `1px solid ${C.line}`, borderRadius: 6, padding: "6px 8px", fontFamily: FONT, fontSize: 14, background: "#fff" };
+
+  const setWeek = (patch) => {
+    if (!canW) return;
+    setSeason({ weeks: season.weeks.map((x, k) => k === openWeek ? { ...x, ...patch } : x) });
+  };
+  const toggleConv = (name) => {
+    if (!canW) return;
+    const marks = { ...w.marks };
+    let order = [...convOrder];
+    if (order.includes(name)) { order = order.filter(n => n !== name); delete marks[name]; }
+    else { order.push(name); marks[name] = "C"; }
+    setWeek({ convOrder: order, marks });
+  };
+  const setStatus = (name, code) => {
+    if (!canW) return;
+    const marks = { ...w.marks };
+    marks[name] = marks[name] === code ? "C" : code;
+    setWeek({ marks });
+  };
+  const setPlayerTeam = (name, targetTeam) => {
+    if (!canW) return;
+    const marks = { ...w.marks };
+    marks[name] = targetTeam;
+    setWeek({ marks });
+  };
+  const cycleTeam = (name) => {
+    if (!canW) return;
+    const marks = { ...w.marks };
+    marks[name] = marks[name] === "B" ? "P" : marks[name] === "P" ? "R" : "B";
+    setWeek({ marks });
+  };
+  const addPlayer = () => {
+    if (!canW) return;
+    const nm = nName.trim();
+    if (!nm || season.players.some(x => x.name === nm)) return;
+    if (/[.#$\[\]\/]/.test(nm)) { alert("O nome não pode conter . # $ [ ] /"); return; }
+    setSeason({ players: [...season.players, { name: nm, guest: nGuest }] });
+    setNName(""); setNGuest(false);
+  };
+  const quickAdd = (team) => {
+    if (!canW) return;
+    const name = addSel || (naoConv[0] && naoConv[0].name);
+    if (!name) return;
+    const marks = { ...w.marks };
+    marks[name] = team;
+    setWeek({ convOrder: [...convOrder, name], marks });
+    setAddSel("");
+  };
+  const ratings = buildRatings(data.seasons);
+  const sum = (arr) => arr.reduce((t, n) => t + ratings.get(n), 0);
+  const gerarEquipas = () => {
+    if (!canW || titulares.length < 2) return;
+    const sorted = [...titulares].sort((a, b) => ratings.get(b) - ratings.get(a));
+    const A = [], Bt = [];
+    sorted.forEach((n, k) => { const m = k % 4; (m === 0 || m === 3 ? A : Bt).push(n); });
+    let improved = true;
+    while (improved) {
+      improved = false;
+      for (let a = 0; a < A.length; a++) for (let b = 0; b < Bt.length; b++) {
+        const d0 = Math.abs(sum(A) - sum(Bt));
+        const x = A[a], y = Bt[b];
+        A[a] = y; Bt[b] = x;
+        if (Math.abs(sum(A) - sum(Bt)) + 1e-9 < d0) { improved = true; }
+        else { A[a] = x; Bt[b] = y; }
+      }
+    }
+    const marks = { ...w.marks };
+    A.forEach(n => { marks[n] = "B"; });
+    Bt.forEach(n => { marks[n] = "P"; });
+    reservasAuto.forEach(n => { marks[n] = "R"; });
+    setWeek({ marks });
+  };
+  const copyWhats = () => {
+    const g = (n) => isGuest(n) ? `${n} (conv.)` : n;
+    const fmt = w.format || 8;
+    const lines = [
+      `⚽ Premium League ${season.name} — Jornada ${openWeek + 1}${w.date ? ` · ${fmtDate(w.date)}` : ""}`,
+      `${season.venue} · ${DAYS[season.gameDay]} às ${season.gameTime} · ${fmt}v${fmt}`,
+      "",
+      `⚪ BRANCA (${Bs.length})`, ...Bs.map((n, k) => `${k + 1}. ${g(n)}`),
+      "",
+      `⚫ PRETA (${Ps.length})`, ...Ps.map((n, k) => `${k + 1}. ${g(n)}`),
+    ];
+    if (Rs.length) lines.push("", `🪑 Reservas: ${Rs.map(g).join(", ")}`);
+    if (desist.length) lines.push(`🚫 Fora: ${desist.map(n => `${n} (${w.marks[n] === "DOE" ? "just." : w.marks[n]})`).join(", ")}`);
+    const txt = lines.join("\n");
+    const done = () => { setCopied(true); setTimeout(() => setCopied(false), 2500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done).catch(() => prompt("Copia o texto:", txt));
+    else prompt("Copia o texto:", txt);
+  };
+
+  const subBtn = (n, lab, badge) => (
+    <button onClick={() => setSub(n)} style={{
+      flex: 1, padding: "8px 2px", border: "none", cursor: "pointer", borderRadius: 6,
+      background: sub === n ? C.plPurple : "transparent", color: sub === n ? "#fff" : C.ink,
+      fontFamily: FONT_NUM, fontSize: 14.5, fontWeight: 600,
+    }}>{lab}{badge ? ` (${badge})` : ""}</button>
+  );
+  const statusBtn = (name, code, lab) => {
+    const on = w.marks[name] === code;
+    const color = code === "DOE" ? C.blue : code === "F" ? "#7a5c00" : C.red;
+    return (
+      <button key={code} onClick={(e) => { e.stopPropagation(); setStatus(name, code); }} disabled={!canW} style={{
+        minWidth: 30, padding: "4px 4px", borderRadius: 6, cursor: canW ? "pointer" : "default",
+        fontFamily: FONT_NUM, fontSize: 12, fontWeight: 700,
+        border: `1.5px solid ${on ? color : C.line}`,
+        background: on ? (code === "DOE" ? "#f0f9ff" : code === "F" ? "#fffbeb" : "#fff1f2") : "transparent",
+        color: on ? color : "#94a3b8",
+      }}>{lab}</button>
+    );
+  };
+
+  const teamChip = (name, mk) => (
+    <div key={name} draggable={canW}
+      onDragStart={(e) => { e.dataTransfer.setData("text/plain", name); }}
+      style={{ display: "flex", gap: 4, marginBottom: 4, cursor: canW ? "grab" : "default" }}>
+      <button onClick={() => cycleTeam(name)} disabled={!canW} title="Tocar para mover: Branca → Preta → Reserva (ou arrasta)" style={{
+        flex: 1, minWidth: 0, textAlign: "left", padding: "6px 8px",
+        borderRadius: 8, cursor: canW ? "pointer" : "default", fontFamily: FONT, fontSize: 13.5,
+        background: mk === "P" ? C.preta : mk === "B" ? "#ffffff" : "#fffbeb",
+        color: mk === "P" ? "#fff" : C.ink,
+        border: `1.5px solid ${mk === "P" ? C.preta : mk === "B" ? C.brancaBorder : C.gold}`,
+        fontStyle: isGuest(name) ? "italic" : "normal",
+        overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+      }}>{name}{isGuest(name) ? " ᶜ" : ""}</button>
+      {canW && <button onClick={() => toggleConv(name)} title="Remover da convocatória" style={{
+        width: 26, borderRadius: 8, border: `1px solid ${C.line}`, background: "transparent", color: C.sub, cursor: "pointer", fontSize: 14, flexShrink: 0,
+      }}>×</button>}
+    </div>
+  );
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+        <button onClick={() => setOpenWeek(null)} style={{ background: "none", border: "none", color: C.plPurple, fontWeight: 600, fontSize: 14, cursor: "pointer", padding: 0 }}>← Jornadas</button>
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          {superOk && (
+            <button onClick={onToggleLock} style={{
+              fontSize: 12.5, fontWeight: 600, padding: "4px 10px", borderRadius: 20, cursor: "pointer",
+              border: `1.5px solid ${locked ? C.red : C.line}`, background: locked ? "#fff1f2" : "transparent", color: locked ? C.red : C.sub,
+            }}>{locked ? "🔒 Desbloquear" : "🔓 Bloquear jornada"}</button>
+          )}
+          {superOk && <button onClick={onDelete} style={{ background: "none", border: "none", color: C.red, fontSize: 13, cursor: "pointer" }}>Apagar</button>}
+        </div>
+      </div>
+
+      {locked && !superOk && (
+        <div style={{ background: "#fff1f2", border: `1px solid ${C.red}`, color: C.red, borderRadius: 8, padding: "7px 12px", fontSize: 13, marginBottom: 10 }}>
+          🔒 Jornada fechada pelo gestor — apenas consulta.
+        </div>
+      )}
+      {!locked && !canW && role !== "viewer" && (
+        <div style={{ background: "#fffbeb", border: `1px solid ${C.gold}`, color: "#7a5c00", borderRadius: 8, padding: "7px 12px", fontSize: 13, marginBottom: 10 }}>
+          Época arquivada — apenas o gestor principal pode editar.
+        </div>
+      )}
+
+      <div style={{ ...card, padding: 12, marginBottom: 10 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ fontFamily: FONT_NUM, fontSize: 22, fontWeight: 700, color: C.plPurple }}>
+            Jornada {openWeek + 1} {locked && "🔒"}
+          </div>
+          <input type="date" value={w.date || ""} disabled={!canW} onChange={e => setWeek({ date: e.target.value })} style={inp} />
+        </div>
+        <div style={{ display: "flex", gap: 4, marginTop: 10, background: "#f1f5f9", borderRadius: 8, padding: 3 }}>
+          {subBtn(1, "1·Convocatória", activeConv.length)}
+          {subBtn(2, "2·Equipas")}
+          {subBtn(3, "3·Resultado")}
+        </div>
+      </div>
+
+      {sub === 1 && (
+        <div>
+          <div style={{ ...card, padding: "10px 12px", marginBottom: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 700, color: activeConv.length >= cap ? C.plPurple : C.ink }}>
+              {Math.min(activeConv.length, cap)}/{cap} convocados
+            </span>
+            <span style={{ fontSize: 12, color: C.sub }}>
+              {reservasAuto.length > 0 ? `+ ${reservasAuto.length} reserva${reservasAuto.length > 1 ? "s" : ""}` : "toca no nome para convocar"}
+            </span>
+          </div>
+          <div style={{ ...card }}>
+            {alpha.map((pl, k) => {
+              const mk = w.marks[pl.name];
+              const inConv = convOrder.includes(pl.name);
+              const pos = activeConv.indexOf(pl.name);
+              const isRes = pos >= cap;
+              return (
+                <div key={pl.name} onClick={() => toggleConv(pl.name)} style={{
+                  display: "flex", alignItems: "center", gap: 8, padding: "7px 10px",
+                  borderTop: k ? `1px solid ${C.line}` : "none", cursor: canW ? "pointer" : "default",
+                  background: inConv ? (isRes ? "#fffbeb" : "#f0fdf4") : "transparent",
+                }}>
+                  <span style={{
+                    width: 26, height: 26, borderRadius: 13, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+                    fontFamily: FONT_NUM, fontSize: 13, fontWeight: 700,
+                    background: pos >= 0 ? (isRes ? C.gold : C.plPurple) : "transparent",
+                    border: pos >= 0 ? "none" : `1.5px dashed ${C.line}`,
+                    color: pos >= 0 ? "#fff" : "#cbd5e1",
+                  }}>{pos >= 0 ? (isRes ? "R" : pos + 1) : "+"}</span>
+                  <span style={{ flex: 1, minWidth: 0, fontSize: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontStyle: pl.guest ? "italic" : "normal", color: pl.guest ? C.sub : C.ink }}>
+                    {pl.name}{pl.guest ? " ᶜ" : ""}
+                  </span>
+                  {inConv && (
+                    <span style={{ display: "flex", gap: 3, flexShrink: 0 }} onClick={e => e.stopPropagation()}>
+                      {statusBtn(pl.name, "D1", "D1")}
+                      {statusBtn(pl.name, "D2", "D2")}
+                      {statusBtn(pl.name, "DOE", "Just")}
+                      {statusBtn(pl.name, "F", "F")}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          {canW && (
+            <div style={{ display: "flex", gap: 6, alignItems: "center", marginTop: 10 }}>
+              <input value={nName} onChange={e => setNName(e.target.value)} placeholder="Novo jogador…"
+                onKeyDown={e => { if (e.key === "Enter") addPlayer(); }}
+                style={{ ...inp, flex: 1, minWidth: 0 }} />
+              <label style={{ fontSize: 12, color: C.sub, display: "flex", alignItems: "center", gap: 4, whiteSpace: "nowrap" }}>
+                <input type="checkbox" checked={nGuest} onChange={e => setNGuest(e.target.checked)} /> estrangeiro
+              </label>
+              <button onClick={addPlayer} style={{ background: C.plPurple, color: "#fff", border: "none", borderRadius: 6, padding: "7px 12px", fontWeight: 600, cursor: "pointer", fontSize: 13 }}>Adicionar</button>
+            </div>
+          )}
+          <p style={{ fontSize: 12, color: C.sub, marginTop: 8 }}>
+            A ordem de clique é a ordem da convocatória (primeiros {cap} são titulares, o resto reservas). D1 −1 pt · D2 −2 pts · Just = justificada (doença, sem penalização) · F = falta (0 pts). Novos jogadores entram logo na lista do regulamento.
+          </p>
+        </div>
+      )}
+
+      {sub === 2 && (
+        <div>
+          <div style={{ ...card, padding: 12, marginBottom: 10 }}>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+              <span style={{ fontSize: 13, color: C.sub }}>Formato:</span>
+              {[8, 11].map(f => (
+                <button key={f} onClick={() => setWeek({ format: f })} disabled={!canW} style={{
+                  padding: "5px 12px", borderRadius: 20, cursor: canW ? "pointer" : "default", fontFamily: FONT_NUM, fontSize: 14, fontWeight: 700,
+                  border: `1.5px solid ${(w.format || 8) === f ? C.plPurple : C.line}`,
+                  background: (w.format || 8) === f ? C.plPurple : "transparent", color: (w.format || 8) === f ? "#fff" : C.sub,
+                }}>{f}v{f}</button>
+              ))}
+              <button onClick={gerarEquipas} disabled={!canW || titulares.length < 2} style={{
+                marginLeft: "auto", padding: "7px 12px", borderRadius: 8, border: "none", cursor: canW ? "pointer" : "default",
+                background: canW && titulares.length >= 2 ? C.plPurple : "#cbd5e1", color: "#fff", fontFamily: FONT_NUM, fontSize: 14.5, fontWeight: 700,
+              }}>⚖️ Gerar equipas</button>
+            </div>
+            {titulares.length === 0 && <p style={{ fontSize: 12.5, color: C.sub, margin: "8px 0 0" }}>Ainda não há convocados — começa no passo 1·Convocatória.</p>}
+          </div>
+          {canW && naoConv.length > 0 && (
+            <div style={{ ...card, padding: 10, marginBottom: 10, display: "flex", gap: 6, alignItems: "center" }}>
+              <select value={addSel || (naoConv[0] && naoConv[0].name) || ""} onChange={e => setAddSel(e.target.value)} style={{ ...inp, flex: 1, minWidth: 0 }}>
+                {naoConv.map(pl => <option key={pl.name} value={pl.name}>{pl.name}{pl.guest ? " (conv.)" : ""}</option>)}
+              </select>
+              <button onClick={() => quickAdd("B")} title="Convocar para a Branca" style={{ padding: "7px 10px", borderRadius: 8, border: `1.5px solid ${C.brancaBorder}`, background: "#fff", cursor: "pointer", fontWeight: 700 }}>⚪</button>
+              <button onClick={() => quickAdd("P")} title="Convocar para a Preta" style={{ padding: "7px 10px", borderRadius: 8, border: `1.5px solid ${C.preta}`, background: C.preta, color: "#fff", cursor: "pointer", fontWeight: 700 }}>⚫</button>
+            </div>
+          )}
+          
+          {/* DRAG AND DROP AREAS */}
+          <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
+            {/* Branca */}
+            <div style={{ ...card, flex: 1, minWidth: 140, padding: 8 }}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const name = e.dataTransfer.getData("text/plain");
+                if (name) setPlayerTeam(name, "B");
+              }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, marginBottom: 6 }}>
+                <span>⚪ Branca ({Bs.length})</span>
+                <span title="índice de força (média de pontos por jogo)" style={{ color: C.sub }}>{sum(Bs).toFixed(1)}</span>
+              </div>
+              <div style={{ minHeight: 60 }}>
+                {Bs.map(n => teamChip(n, "B"))}
+                {Bs.length === 0 && <div style={{ fontSize: 12, color: "#94a3b8", textAlign: "center", padding: "10px 0" }}>Arrasta para aqui</div>}
+              </div>
+            </div>
+
+            {/* Preta */}
+            <div style={{ ...card, flex: 1, minWidth: 140, padding: 8 }}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const name = e.dataTransfer.getData("text/plain");
+                if (name) setPlayerTeam(name, "P");
+              }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, marginBottom: 6 }}>
+                <span>⚫ Preta ({Ps.length})</span>
+                <span title="índice de força (média de pontos por jogo)" style={{ color: C.sub }}>{sum(Ps).toFixed(1)}</span>
+              </div>
+              <div style={{ minHeight: 60 }}>
+                {Ps.map(n => teamChip(n, "P"))}
+                {Ps.length === 0 && <div style={{ fontSize: 12, color: "#94a3b8", textAlign: "center", padding: "10px 0" }}>Arrasta para aqui</div>}
+              </div>
+            </div>
+          </div>
+
+          {/* Reservas */}
+          <div style={{ ...card, padding: 8, marginBottom: 10 }}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              const name = e.dataTransfer.getData("text/plain");
+              if (name) setPlayerTeam(name, "R");
+            }}>
+            <div style={{ fontFamily: FONT_NUM, fontSize: 14, fontWeight: 700, color: C.sub, marginBottom: 6 }}>🪑 Reservas ({Rs.length}) — Podes arrastar para aqui também</div>
+            <div style={{ minHeight: 40 }}>
+              {Rs.map(n => teamChip(n, "R"))}
+              {Rs.length === 0 && <div style={{ fontSize: 12, color: "#94a3b8", textAlign: "center", padding: "6px 0" }}>Nenhum reserva</div>}
+            </div>
+          </div>
+
+          {(Bs.length + Ps.length) > 0 && (
+            <button onClick={copyWhats} style={{
+              width: "100%", padding: "11px", borderRadius: 8, border: `1.5px solid ${C.plPurple}`,
+              background: copied ? C.plPurple : "transparent", color: copied ? "#fff" : C.plPurple,
+              fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700, cursor: "pointer",
+            }}>{copied ? "✓ Copiado!" : "📋 Copiar equipas para o WhatsApp"}</button>
+          )}
+          <p style={{ fontSize: 12, color: C.sub, marginTop: 8 }}>
+            Podes <b>arrastar e largar</b> os jogadores entre a Equipa Branca, Equipa Preta e Reservas para ajustar manualmente as equipas. Também podes tocar no nome para alternar rapidamente.
+          </p>
+        </div>
+      )}
+
+      {sub === 3 && (
+        <div>
+          <div style={{ ...card, padding: 14, marginBottom: 10 }}>
+            <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+              {[["Branca", "gB", "#ffffff", C.ink, C.brancaBorder], ["Preta", "gP", C.preta, "#ffffff", C.preta]].map(([lab, key, bg, fg, bd]) => (
+                <div key={key} style={{ flex: 1, background: bg, color: fg, border: `1.5px solid ${bd}`, borderRadius: 10, padding: "10px 8px", textAlign: "center" }}>
+                  <div style={{ fontFamily: FONT_NUM, fontSize: 16, fontWeight: 600, marginBottom: 4 }}>{lab}</div>
+                  <input type="number" min="0" max="60" inputMode="numeric" placeholder="–" disabled={!canW}
+                    value={w[key] === null ? "" : w[key]}
+                    onChange={e => setWeek({ [key]: e.target.value === "" ? "" : Number(e.target.value) })}
+                    style={{ width: 70, fontFamily: FONT_NUM, fontSize: 34, fontWeight: 700, textAlign: "center", background: "transparent", color: fg, border: "none", borderBottom: `2px solid ${fg === "#ffffff" ? "#555" : C.line}` }} />
+                  <div style={{ fontSize: 11, opacity: 0.75, marginTop: 4 }}>golos da equipa</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ textAlign: "center", marginTop: 8, fontSize: 13, color: C.sub }}>
+              {s.nB} na Branca · {s.nP} na Preta {s.winner ? `· venceu: ${s.winner}` : ""}
+            </div>
+          </div>
+
+          {/* Marcadores dos Golos por Jogo */}
+          <div style={{ ...card, padding: 14, marginBottom: 10 }}>
+            <div style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 700, marginBottom: 8, color: C.plPurple }}>⚽ Marcadores dos Golos</div>
+            <p style={{ fontSize: 12, color: C.sub, margin: "0 0 10px" }}>Regista quantos golos cada jogador marcou nesta jornada (alimenta o Top Scorers e os Golos pessoais).</p>
+            
+            {activeConv.length === 0 ? (
+              <div style={{ fontSize: 13, color: C.sub, fontStyle: "italic" }}>Ainda não há jogadores nas equipas para esta jornada.</div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {activeConv.map(n => {
+                  const scorers = w.scorers || {};
+                  const currentGoals = scorers[n] !== undefined ? scorers[n] : "";
+                  const teamColor = w.marks[n] === "B" ? "⚪ Branca" : w.marks[n] === "P" ? "⚫ Preta" : "🪑 Reserva";
+                  return (
+                    <div key={n} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 8px", background: "#f8fafc", borderRadius: 6, border: `1px solid ${C.line}` }}>
+                      <div>
+                        <span style={{ fontSize: 14, fontWeight: 600 }}>{n}</span>
+                        <span style={{ fontSize: 11, color: C.sub, marginLeft: 6 }}>({teamColor})</span>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <span style={{ fontSize: 12, color: C.sub }}>golos:</span>
+                        <input type="number" min="0" max="30" inputMode="numeric" placeholder="0" disabled={!canW}
+                          value={currentGoals}
+                          onChange={e => {
+                            const val = e.target.value === "" ? "" : Number(e.target.value);
+                            const nextScorers = { ...(w.scorers || {}) };
+                            if (val === "" || val === 0) {
+                              delete nextScorers[n];
+                            } else {
+                              nextScorers[n] = val;
+                            }
+                            setWeek({ scorers: nextScorers });
+                          }}
+                          style={{ ...inp, width: 55, textAlign: "center", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700 }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <div style={{ ...card, padding: 12, fontSize: 13, lineHeight: 1.8, color: C.sub }}>
+            <b style={{ color: C.ink }}>⚪ Branca:</b> {Bs.map(n => isGuest(n) ? n + " ᶜ" : n).join(", ") || "—"}<br />
+            <b style={{ color: C.ink }}>⚫ Preta:</b> {Ps.map(n => isGuest(n) ? n + " ᶜ" : n).join(", ") || "—"}<br />
+            {Rs.length > 0 && <span><b style={{ color: C.ink }}>🪑 Reservas:</b> {Rs.join(", ")}<br /></span>}
+            {desist.length > 0 && <span><b style={{ color: C.ink }}>🚫 Fora:</b> {desist.map(n => `${n} (${w.marks[n] === "DOE" ? "just." : w.marks[n]})`).join(", ")}</span>}
+          </div>
+          <p style={{ fontSize: 12, color: C.sub, marginTop: 8 }}>
+            Os pontos e golos individuais recalculam-se automaticamente na Classificação e no Top Scorers assim que o resultado e os marcadores são gravados.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Setup({ onDemo }) {
+  const box = { background: "#FFFFFF", border: "1px solid #e5e9f0", borderRadius: 10, padding: 16, marginBottom: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.02)" };
+  const code = { background: "#f1f5f9", borderRadius: 4, padding: "1px 5px", fontFamily: "monospace", fontSize: 12.5 };
+  return (
+    <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: FONT, color: "#37003c", padding: "24px 12px" }}>
+      <div style={{ maxWidth: 560, margin: "0 auto" }}>
+        <h1 style={{ fontFamily: FONT_NUM, fontWeight: 700, fontSize: 32, margin: "0 0 4px", color: C.plPurple }}>Premium League — configuração inicial</h1>
+        <p style={{ fontSize: 14, color: "#6c757d", margin: "0 0 16px" }}>
+          Só é preciso fazer isto <b>uma vez</b>, por <b>um</b> dos organizadores. Depois disto, toda a gente usa a app só com o link — sem contas, sem logins.
+        </p>
+        <div style={box}>
+          <b>1. Criar a base de dados (grátis)</b>
+          <ol style={{ margin: "8px 0 0", paddingLeft: 20, fontSize: 13.5, lineHeight: 1.8 }}>
+            <li>Vai a <b>console.firebase.google.com</b> e entra com uma conta Google (o site está em inglês — os nomes abaixo são os dos botões).</li>
+            <li><b>Create a project</b> (ou <b>Add project</b>) → nome ex.: premium-league → desliga o Google Analytics → <b>Create project</b>.</li>
+            <li>Menu lateral: <b>Build → Realtime Database → Create Database</b> → localização <b>Belgium (europe-west1)</b> → <b>Start in test mode</b> → Enable.</li>
+            <li>No separador <b>Rules</b>, apaga o que lá está, cola o seguinte e carrega em <b>Publish</b> (torna a leitura pública e a escrita protegida por PIN, sem prazo de expiração):<br/>
+              <span style={code}>{`{ "rules": { "secret": { ".read": false, ".write": false }, "secret_admin": { ".read": false, ".write": false }, "premium_league": { ".read": false, ".write": "newData.child('_pin').val() != null && (newData.child('_pin').val() === root.child('secret').val() || newData.child('_pin').val() === root.child('secret_admin').val())", "data": { ".read": true } }, "backups": { ".read": false, ".write": "newData.child('_pin').val() != null && (newData.child('_pin').val() === root.child('secret').val() || newData.child('_pin').val() === root.child('secret_admin').val())", "data": { ".read": true } }, "locks": { ".read": false, ".write": "newData.child('_pin').val() != null && newData.child('_pin').val() === root.child('secret').val()", "data": { ".read": true } } } }`}</span></li>
+            <li>No separador <b>Data</b>: passa o rato por cima do endereço da base (linha de topo) → clica no <b>+</b> e cria DOIS campos: <span style={code}>secret</span> = a password do <b>gestor principal</b> (acesso total, bloqueios, regulamento) e <span style={code}>secret_admin</span> = o PIN dos <b>administradores</b> (só podem editar jornadas de épocas ativas). Ambos se introduzem no cadeado 🔒 da app; quem não tiver nenhum só consegue ver.</li>
+          </ol>
+        </div>
+        <div style={box}>
+          <b>2. Ligar a app à base de dados</b>
+          <ol style={{ margin: "8px 0 0", paddingLeft: 20, fontSize: 13.5, lineHeight: 1.8 }}>
+            <li>Na consola: roda dentada ⚙ → <b>Project settings</b> → desce até <b>Your apps</b> → ícone <b>{"</>"}</b> (Web) → dá um nome qualquer → <b>Register app</b> (não é preciso marcar Firebase Hosting).</li>
+            <li>Aparece um bloco <span style={code}>const firebaseConfig = {'{...}'}</span> com <b>apiKey</b>, <b>authDomain</b>, <b>databaseURL</b> e <b>projectId</b> — são esses 4 que interessam.</li>
+            <li>Abre este ficheiro (<b>index.html</b>) num editor de texto (Notepad/TextEdit) e cola esses 4 valores no topo, onde diz <span style={code}>FIREBASE_CONFIG</span>, entre as aspas. Se o bloco não mostrar <b>databaseURL</b>, copia o endereço que aparece no topo da página do Realtime Database (algo como https://….firebasedatabase.app).</li>
+          </ol>
+        </div>
+        <div style={box}>
+          <b>3. Pôr online e partilhar</b>
+          <ol style={{ margin: "8px 0 0", paddingLeft: 20, fontSize: 13.5, lineHeight: 1.8 }}>
+            <li>Cria conta em <b>github.com</b> → botão <b>New repository</b> → nome ex.: premium-league → <b>Public</b> → <b>Create repository</b> → link <b>uploading an existing file</b> → arrasta o ficheiro já renomeado para <b>index.html</b> → <b>Commit changes</b>.</li>
+            <li>No repositório: <b>Settings → Pages</b> → em <b>Build and deployment / Source</b> escolhe <b>Deploy from a branch</b> → Branch: <b>main</b> e <b>/ (root)</b> → <b>Save</b>. Passado ~1 minuto o link aparece no topo dessa página: <span style={code}>oteunome.github.io/premium-league</span>.</li>
+            <li>Manda o link no grupo. Cada um abre no browser e faz "Adicionar ao ecrã principal" para ficar com ícone de app. Fim — livre e grátis para sempre.</li>
+          </ol>
+        </div>
+        <button onClick={onDemo} style={{ width: "100%", padding: "12px", borderRadius: 8, border: `1.5px solid ${C.plPurple}`, background: "transparent", color: C.plPurple, fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, cursor: "pointer" }}>
+          Ver a app em modo demonstração (sem gravar)
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function AddPlayer({ onAdd }) {
+  const [name, setName] = useState("");
+  const [guest, setGuest] = useState(false);
+  return (
+    <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 8 }}>
+      <input value={name} onChange={e => setName(e.target.value)} placeholder="Nome do jogador"
+        onKeyDown={e => { if (e.key === "Enter") { onAdd(name, guest); setName(""); } }}
+        style={{ flex: 1, minWidth: 0, border: "1px solid #e5e9f0", borderRadius: 6, padding: "7px 10px", fontSize: 14, fontFamily: "'Barlow',sans-serif" }} />
+      <label style={{ fontSize: 12, color: "#6c757d", display: "flex", alignItems: "center", gap: 4, whiteSpace: "nowrap" }}>
+        <input type="checkbox" checked={guest} onChange={e => setGuest(e.target.checked)} /> conv.
+      </label>
+      <button onClick={() => { onAdd(name, guest); setName(""); }}
+        style={{ background: C.plPurple, color: "#fff", border: "none", borderRadius: 6, padding: "7px 12px", fontWeight: 600, cursor: "pointer", fontSize: 14 }}>
+        Adicionar
+      </button>
+    </div>
+  );
+}
+
+function AddFine({ players, amount, onAdd }) {
+  const [name, setName] = useState(players[0]?.name || "");
+  return (
+    <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
+      <select value={name} onChange={e => setName(e.target.value)}
+        style={{ flex: 1, border: "1px solid #e5e9f0", borderRadius: 6, padding: "7px 8px", fontSize: 14, fontFamily: "'Barlow',sans-serif", background: "#fff" }}>
+        {players.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
+      </select>
+      <button onClick={() => name && onAdd(name)}
+        style={{ background: C.red, color: "#fff", border: "none", borderRadius: 6, padding: "7px 12px", fontWeight: 600, cursor: "pointer", fontSize: 13, whiteSpace: "nowrap" }}>
+        Multar {`${Number(amount).toFixed(2).replace(".", ",")}€`}
+      </button>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(PremiumLeague));
 </script>
 </body>
 </html>
