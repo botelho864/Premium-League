@@ -32,7 +32,7 @@ const FIREBASE_CONFIG = {
 const DB_PATH = "premium_league";
 // ============================================================
 
-// As 400 frases Corny / Cromo para o loop contínuo
+// As 900+ frases (400 originais + 500 novas)
 const CROMO_QUOTES = [
   "O teu único defeito é que a bola no pé atrapalha.",
   "Vieram direto do escritório para o campo espalhar o caos e a vergonha.",
@@ -44,7 +44,7 @@ const CROMO_QUOTES = [
   "O teu único drible conhecido é tropeçar nas próprias canelas.",
   "Tens a velocidade punta de um caixote de correio com rodas quadradas.",
   "O teu passe longo vai sempre ter com o vizinho do lado.",
-  "És a prova viva de que a gravidade odeia os teus remates frouxos.",
+  "És a prova viva de que a gravidade odeia os tuas remates frouxos.",
   "O teu golo mais famoso da carreira foi um auto-golo de calcanhar.",
   "Tens o instinto matador de uma ovelha mansa com medo de moscas.",
   "O teu radar de jogo está sempre fora de serviço e desligado da tomada.",
@@ -310,15 +310,565 @@ const CROMO_QUOTES = [
   "O teu remate de trivela curvou tanto que acabou por ir para trás.",
   "O teu pique longo durou o tempo de um suspiro abafado de cansaço.",
   "O teu remate de cabeça foi feito com a parte lateral do crânio desatenta.",
-  "O teu passe milimétrico foi parar diretamente ao bolso do árbitro."
+  "O teu passe milimétrico foi parar diretamente ao bolso do árbitro.",
+  "És tão fraco que se jogasses sozinho perdias a bola para ti próprio.",
+  "Tens a panca de craque, mas jogas com a categoria de um bêbedo a fugir da polícia.",
+  "Se te desse um mapa e uma bússola, demoravas uma semana a encontrar a baliza adversária.",
+  "O teu futebol é tão miserável que até os adeptos da equipa contrária têm pena de ti.",
+  "Tens a mania que mandas no campo, mas a única coisa que mandas é a bola para o meio da estrada.",
+  "Jogas com tanta vontade que pareces um defunto a quem esqueceram de fechar os olhos.",
+  "És o maior engatatão da distrital: engatas todas as jogadas para acabar sempre na merda.",
+  "Se a tua falta de vergonha na cara pagasse portagem, tu andavas sempre a pé para poupar trocos.",
+  "Tens o toque de bola de um talhante a tentar operar um cérebro a tiro de caçadeira.",
+  "Apareces sempre à segunda-feira só para garantir que a humilhação é coletiva e bem regada a incompetência.",
+  "Se a tua incompetência desse pontos, nós já estávamos na Champions dos broncos.",
+  "Tens dois tijolos colados aos pés e achas que és o Zidane das segundas-feiras.",
+  "O teu passe é tão torto que a bola vai ter sempre ao sítio onde está o teu desespero.",
+  "És o único gajo capaz de estragar uma jogada que estava a dar certo por mera falta de neurónios.",
+  "Tens a agilidade de um cofre de ferro a ser atirado de um oitavo andar.",
+  "O teu remate faz a bola chorar de vergonha por ter de levar com os teus pés tortos.",
+  "Se a tua bazófia jogasse à bola, tu eras o dono do mundo; como és tu, és só o dono do ridículo.",
+  "Tens menos noção do posicionamento do que um cego num tiroteio.",
+  "Apareces no campo com chuteiras de duzentos paus para dar caneladas de cego e culpar a relva.",
+  "És o cancro oficial do relvado sintético: onde pões o pé, morre a jogada.",
+  "Tens o fôlego de um maço de tabaco a arder e a inteligência de um cinzeiro cheio.",
+  "Se a tua burrice doesse, tu passavas o jogo todo a berrar com dores agudas.",
+  "O teu toque de calcanhar é um insulto à decência de quem inventou o futebol.",
+  "Tens a velocidade de reação de um frigorífico velho a desligar-se da tomada.",
+  "És o rei do pinanso: corres atrás da bola como um cão tonto atrás de uma mota.",
+  "Se a tua utilidade em campo fosse dinheiro, tu não tinhas troco para comprar um pacote de pastilhas.",
+  "Tens a mania que és o capitão da equipa, mas nem para apanha-bolas num treino de infantis servias.",
+  "O teu cruzamento foi tão ao lado que quase acertou no café do outro lado da rua.",
+  "Tens a leveza de um camião TIR carregado de calhaus a atolar-se na lama.",
+  "És o avançado mais pacífico do mundo: passas o jogo todo sem nunca assustar o guarda-redes contrário.",
+  "Se a tua falta de jeito fosse uma profissão, tu já eras milionário à custa do Estado.",
+  "Tens a coragem de um coelho encolhido debaixo do carro quando a bola vem pelo ar.",
+  "O teu estilo de jogo faz lembrar um atropelamento coletivo em câmara lenta.",
+  "Tens a mania que sabes fintar, mas o único que fintas é a tua própria dignidade.",
+  "Se a tua cabeça servisse para pensar no jogo, tu tinhas evitado esta humilhação pública.",
+  "Tens a toque de bola de quem tenta calçar um elefante com sapatos de balete.",
+  "És o terror dos teus colegas de equipa: cada vez que te passam a bola, é um pânico geral.",
+  "Tens a categoria de um artista de rua que não sabe assobiar sequer a trocos.",
+  "Se a tua falta de vergonha fosse uma virtude, tu eras o santo padroeiro dos broncos.",
+  "Tens a mobilidade de uma estátua de sal com reumatismo crónico.",
+  "O teu remate de meia distância só serve para assustar os pombos que comem na cobertura.",
+  "Tens a inteligência tática de uma couve cortada ao meio por um talhante bêbedo.",
+  "És o gajo mais previsível do mundo: sabemos sempre que vais fazer merda.",
+  "Tens a categoria de um pinguim a tentar dançar o vira minhoto num pântano.",
+  "Se a tua utilidade contasse para alguma coisa, tu já tinhas sido despedido por justa causa.",
+  "Tens o toque de bola de um carpinteiro a tentar afinar um relógio suíço com uma marreta.",
+  "És a prova viva de que a seleção natural às vezes fecha os olhos e deixa passar tudo.",
+  "Tens a velocidade de ponta de um caracol asmático a subir uma ladeira de sabão.",
+  "Se a tua burrice desse luz, tu iluminavas o estádio municipal inteiro sem gastar eletricidade.",
+  "Tens a postura de um defunto a quem esqueceram de fechar a boca no caixão.",
+  "O teu passe milimétrico acertou em cheio na canela do teu próprio colega aflito.",
+  "Tens a graça de um trator a pegar a frio num dia de geada intensa.",
+  "És o rei das desculpas de merda: a culpa é sempre da bola, do vento ou da tua falta de tomates.",
+  "Tens a categoria de um ladrão de galinhas apanhado em flagrante delito a dormir.",
+  "Se a tua técnica fosse um carro, já tinha ido para a sucata por perigo público.",
+  "Tens a agilidade de um bloco de cimento armado a despencar do quinto andar.",
+  "O teu golo mais famoso da carreira foi na baliza errada e de costas para a bola.",
+  "Tens a utilidade de um cinzeiro numa mota a cem à hora numa autoestrada.",
+  "És o gajo que estraga a festa toda às segundas-feiras só com a tua presença nefasta.",
+  "Tens a leveza de um elefante com dores de dentes agudas a saltar à corda.",
+  "Se a tua falta de jeito desse medalhas, tu tinhas o peito cheio de ouros falsos.",
+  "Tens a coragem de um leão de peluche metido numa máquina de lavar a cem graus.",
+  "O teu remate foi tão fraco que a bola pediu desculpa por ter parado a meio.",
+  "Tens a categoria de um sapateiro a tentar fazer sapatos de salto alto para um urso.",
+  "Se a tua inteligência fosse um grão de milho, cabia numa casca de noz sem tocar nas paredes.",
+  "Tens a postura de quem foi forçado a vir jogar sob ameaça de execução sumária.",
+  "O teu cruzamento da esquerda foi sair pela linha de fundo do campo vizinho.",
+  "Tens a agilidade mental de uma porta de armazém velha e toda emperrada.",
+  "És o avançado que nunca marca, mas chora mais do que uma carpideira profissional.",
+  "Tens o toque de bola de quem tenta limpar estrume com um pincel de maquilhagem.",
+  "Se a tua bazófia fosse golo, tu eras o melhor marcador da galáxia inteira.",
+  "Tens a velocidade de um caixote de correio com rodas quadradas e sem lubrificação.",
+  "O teu carrinho à defesa foi tão fora de tempo que o adversário já tinha acabado de jantar.",
+  "Tens a categoria de um caçador furtivo que consegue acertar nos próprios pés.",
+  "Se a tua utilidade em campo fosse contada em cêntimos, tu devias dinheiro ao clube.",
+  "Tens a postura de um otário convicto que acha que o mundo gira à volta dos seus biqueiros.",
+  "O teu remate de trivela acertou em cheio no rabo de um cão que passava na rua.",
+  "Tens a leveza de um tanque de guerra atolado na lama até aos eixos das rodas.",
+  "És o gajo que finta a própria equipa e ainda reclama com os colegas por não lhe darem mérito.",
+  "Tens a categoria de um cozinheiro que consegue queimar água a ferver num fervedor.",
+  "Se a tua burrice desse lucro, tu eras o homem mais rico do concelho inteiro.",
+  "Tens a coragem de um frango do campo dentro de um talho com cheiro a sangue.",
+  "O teu passe longo encontrou um pombo desprevenido que voava baixo a passear.",
+  "Tens a agilidade de um cofre forte a ser arrastado por uma escadaria de pedra.",
+  "És o rei da ladaínha: passas o jogo todo a chorar e a culpar os outros pelo teu fracasso.",
+  "Tens o toque de bola de um pedreiro a tentar colar papel de parede com cimento fresco.",
+  "Se a tua falta de jeito fosse arte, tu estarias no Museu do Louvre como obra de terror.",
+  "Tens a postura de um otário que acha que o relvado sintético é a sua sala de estar.",
+  "O teu remate de cabeça foi feito com a parte lateral do pescoço completamente estalada.",
+  "Tens a categoria de um cavalo selvagem metido num salão de chá cheio de porcelana.",
+  "Se a tua inteligência pesasse um quilo, tu flutuavas no ar por excesso de leveza cerebral.",
+  "Tens a velocidade de um caracol com artrite avançada em dia de tempestade de neve.",
+  "O teu golo de calcanhar foi um milagre tão grande que até o padre da terra duvidou.",
+  "Tens a utilidade de um guarda-chuvas com buracos do tamanho de punhos fechados.",
+  "És o gajo que consegue estragar o aquecimento e suar só de apertar os cordões das botas.",
+  "Tens a leveza de um bloco de granito a rolar por uma encosta abaixo sem controlo.",
+  "Se a tua incompetência pagasse imposto do selo, tu arruinavas o fisco nacional.",
+  "Tens a coragem de um gato assustado num canil municipal cheio de cães raivosos.",
+  "O teu remate colocado colocou a bola na via rápida municipal ao lado do campo.",
+  "Tens a categoria de um artista de rua que toca viola desafinada para espantar clientes.",
+  "Tens a profundidade tática de uma poça de água na calçada ao sol de agosto.",
+  "És o central mais perigoso do campeonato: para a nossa própria baliza.",
+  "Tens o toque de bola de um ferreiro a tentar consertar um ovo estrelado.",
+  "Se a tua burrice fizesse som, nós precisávamos de tampões nos ouvidos o jogo todo.",
+  "Tens a agilidade de um piano de cauda a descer uma rampa de skate.",
+  "O teu passe rasteiro conseguiu levantar mais poeira do que um trator em terra seca.",
+  "Tens a mania que és o dono da bola, mas nem para a ir buscar ao mato serves.",
+  "Se a tua falta de jeito fosse uma doença, tu estavas em quarentena eterna.",
+  "Tens a postura de um manequim de montra que caiu de cara no chão da loja.",
+  "O teu remate de primeira conseguiu falhar o chão, a bola e a própria baliza.",
+  "Tens a categoria de um marinheiro sem bússola no meio de um charco de água da chuva.",
+  "És o gajo mais inútil em campo desde a invenção das chuteiras de tachas.",
+  "Tens a velocidade de reação de um meteorito que já caiu há quinhentos anos.",
+  "Se a tua incompetência desse brinde, tu vinhas embrulhado em papel de desperdício.",
+  "Tens o toque de bola de quem tenta pilotar um avião com uma espátula de cozinha.",
+  "O teu cruzamento milimétrico acertou em cheio na cabeça do fiscal de linha distraído.",
+  "Tens a leveza de espírito de um camião de entulho a entupir uma rotunda.",
+  "És o rei dos passes para trás: tens medo que a bola morda se fores para a frente.",
+  "Tens a categoria de um alfaiate cego a cortar calças com uma tesoura de jardim.",
+  "Se a tua bazófia fosse medida em volume, tu tinhas rebentado com os ouvidos todos.",
+  "Tens a coragem de um coelho assustado no meio de uma matilha de lobos esfomeados.",
+  "O teu remate de meia distância assustou o fiscal de linha que comia uma sandes.",
+  "Tens a agilidade de um bloco de gelo a derreter-se no meio de uma fornalha.",
+  "És o gajo que consegue perder a bola para ti próprio sem ninguém por perto.",
+  "Tens o toque de bola de um talhante a tentar coser uma ferida com linha de pesca.",
+  "Se a tua inteligência fosse um computador, já tinha dado erro fatal no arranque.",
+  "Tens a postura de um otário que acha que engana alguém com essa corrida de pato.",
+  "O teu golo anulado foi o único momento de glória na tua vidinha de absoluto zero.",
+  "Tens a categoria de um peixe fora de água a tentar discutir tática de salão.",
+  "Se a tua utilidade em campo fosse visível, nós precisávamos de um microscópio eletrónico.",
+  "Tens a velocidade de um caracol com excesso de peso e sem GPS.",
+  "O teu carrinho à defesa limpou as pernas e a paciência de toda a gente no campo.",
+  "Tens a leveza de um cofre de banco atolado numa fossa séptica.",
+  "És o avançado que joga tão colado à relva que parece que está a plantar batatas.",
+  "Tens o toque de bola de um pedreiro a tentar colar azulejos com cuspo.",
+  "Se a tua burrice desse luz, tu podias substituir a iluminação pública da freguesia.",
+  "Tens a coragem de um rato de laboratório metido num labirinto com gatos ferozes.",
+  "O teu remate cruzado cruzou o campo todo e foi sair pela linha de banda oposta.",
+  "Tens a categoria de um malabarista de circo pobre que deixa cair os pratos todos.",
+  "És o gajo que consegue falhar golos fáceis com a mesma facilidade que respira ar.",
+  "Tens a agilidade de um guarda-fatos antigo a ser transportado por escadas estreitas.",
+  "O teu passe longo foi interceptado por uma lufada de vento fraco de segunda.",
+  "Tens a postura de um boneco de testes de colisão automóvel já destruído.",
+  "Se a tua falta de jeito fosse dinheiro vivo, tu já eras o dono de um banco privado.",
+  "Tens o toque de bola de quem tenta descascar uma laranja com luvas de boxe.",
+  "O teu aquecimento consistiu em suspirar fundo e praguejar contra a tua própria sorte.",
+  "Tens a categoria de um cozinheiro que consegue queimar um ovo cozido na panela.",
+  "És o gajo mais desastrado que pisou um relvado desde o início do século passado.",
+  "Tens a velocidade de um caixote de lixo a ser empurrado por uma ladeira abaixo.",
+  "Se a tua inteligência fosse um grão de areia, a praia inteira cabia num dedal.",
+  "Tens a leveza de um trator agrícola atolado até aos faróis na lama pesada.",
+  "O teu remate de trivela acertou em cheio no vidro do carro do treinador adversário.",
+  "Tens a coragem de um frango congelado dentro do congelador do talho.",
+  "És o rei do autogolo espetacular: marcas na baliza certa por puro lapso mental.",
+  "Tens o toque de bola de um carpinteiro a tentar afinar uma guitarra com uma serra.",
+  "Se a tua incompetência fosse um espetáculo, tu cobravas bilhete para a tragédia.",
+  "Tens a postura de um otário convicto que acha que o seu futebol convence alguém.",
+  "O teu golo de cabeça foi feito com a parte de trás do crânio completamente dormente.",
+  "Tens a categoria de um peixe dourado num aquário sem água nem comida.",
+  "Se a tua utilidade em campo fosse medida em gramas, tu pesavas menos do que zero.",
+  "Tens a velocidade de um caracol asmático a tentar fugir de uma salganhada.",
+  "O teu passe milimétrico falhou o alvo por uma margem de três campos de futebol.",
+  "Tens a agilidade de um bloco de betão armado a cair de um guindaste partido.",
+  "És o gajo que consegue perder a bola para a bandeirola de canto sem oposição.",
+  "Tens o toque de bola de um talhante a tentar operar um telemóvel com um cutelo.",
+  "Se a tua burrice doesse fisicamente, tu passavas os dias a gritar nos hospitais.",
+  "Tens a coragem de um coelho branco encurralado por cães de caça famintos.",
+  "O teu remate indefensável foi agarrado a rir pelo guarda-redes da equipa de enfrente.",
+  "Tens a categoria de um artista falido que pinta quadros com lama cinzenta.",
+  "És o avançado mais inofensivo da história do desporto-rei e rei dos nabos.",
+  "Tens a leveza de um elefante a tentar equilibrar-se numa corda de estendal.",
+  "O teu cruzamento da direita foi parar diretamente às mãos do dono do bar.",
+  "Tens a postura de um boneco de mola partido que já não consegue endireitar-se.",
+  "Se a tua falta de jeito fosse uma virtude, tu eras o maior santo do calendário.",
+  "Tens o toque de bola de quem tenta calçar um camião com sapatos de bebé.",
+  "O teu aquecimento consistiu em olhar para o telemóvel e fingir que fazias alongamentos.",
+  "Tens a categoria de um cozinheiro que deita sal em vez de açúcar no café.",
+  "És o gajo mais irritante em campo: não jogas nada e ainda mandas calar os outros.",
+  "Tens a velocidade de um caixote de correio com as pernas presas no cimento.",
+  "Se a tua inteligência fosse um satélite, já tinha caído na atmosfera por falta de sinal.",
+  "Tens a agilidade de um piano de cauda a tentar dar uma cambalhota à retaguarda.",
+  "O teu passe curto foi interceptado pelas tuas próprias chuteiras desafinadas.",
+  "Tens a coragem de um peru assado no dia de Natal à espera de ser comido.",
+  "És o rei dos calhaus: cada toque na bola é uma pedra lançada contra o nosso sofrimento.",
+  "Tens o toque de bola de um ferreiro a tentar consertar um copo de cristal fino.",
+  "Se a tua incompetência pagasse dividendos, tu eras o acionista majoritário da miséria.",
+  "Tens a postura de um otário que acha que engana o árbitro com essa simulação foleira.",
+  "O teu remate de meia volta deu uma volta completa ao eixo e foi para fora do campo.",
+  "Tens a categoria de um cão abandonado a ladrar a uma árvore sem ninguém lá em cima.",
+  "Se a tua utilidade em campo fosse contada em latas de lixo, tu enchias um armazém.",
+  "Tens a velocidade de um caracol com excesso de carga a subir uma rampa lisa.",
+  "O teu carrinho à defesa foi tão fora de prazo que o adversário já ia a caminho do duche.",
+  "Tens a leveza de um cofre de ferro atolado num pântano sem fundo visível.",
+  "És o jogador que consegue falhar o remate à baliza vazia e culpar a relva sintética.",
+  "Tens o toque de bola de um pedreiro a tentar colar vidro com massa de tijolo.",
+  "Se a tua burrice desse juros, tu vivias à grande à custa do Banco Central.",
+  "Tens a coragem de um rato apanhado numa ratoeira de mola estalada.",
+  "O teu remate de trivela curvou tanto que foi parar às mãos do teu próprio colega.",
+  "Tens a categoria de um malabarista cego que atira facas para o ar sem olhar.",
+  "És o gajo que consegue estragar o futebol de segunda-feira com a tua extrema mediocridade.",
+  "Tens a agilidade de um armazém de ferro-velho a desabar por completo.",
+  "O teu passe em profundidade encontrou um vazio cósmico sem fim à vista.",
+  "Tens a postura de um boneco insuflável com um furo gigante no meio do peito.",
+  "Se a tua falta de jeito fosse moeda forte, tu compravas a dívida pública mundial.",
+  "Tens o toque de bola de quem tenta costurar um rasgão com uma corda naval.",
+  "O teu aquecimento consistiu em respirar fundo e desejar estar em casa no sofá.",
+  "Tens a categoria de um cozinheiro que consegue queimar chávena de água morna.",
+  "És o gajo mais inútil em campo desde que inventaram a modalidade de 11 contra 11.",
+  "Tens a velocidade de um caixote de lixo a rolar por uma escadaria abaixo.",
+  "Se a tua inteligência fosse um fósforo, apagava-se antes de riscar na caixa.",
+  "Tens a leveza de um trator de lagartas preso num areal movediço profundo.",
+  "O teu remate de cabeça foi feito com os olhos bem fechados de puro pânico.",
+  "Tens a coragem de um frango de churrasco na brasa a dar voltas no espeto.",
+  "És o rei dos passes interceptados: pareces um correio postal de cartas perdidas.",
+  "Tens o toque de bola de um carpinteiro a tentar limpar vidro com lixa grossa.",
+  "Se a tua incompetência fosse um troféu, tu tinhas a prateleira cheia de ouros falsos.",
+  "Tens a postura de um otário que acha que engana os colegas com essa pose de craque.",
+  "O teu golo de calcanhar foi um milagre tão estúpido que ninguém acreditou ver.",
+  "Tens a categoria de um peixe fora de água a sufocar na areia da praia.",
+  "Se a tua utilidade em campo pesasse um grama, tu tinhas de andar de muletas.",
+  "Tens a velocidade de um caracol asmático a tentar cruzar uma autoestrada.",
+  "O teu passe milimétrico falhou o alvo por uma distância intergaláctica inteira.",
+  "Tens a agilidade de um bloco de betão a cair da grua sem travões.",
+  "És o gajo que consegue perder a bola para o vento fraco de segunda-feira.",
+  "Tens o toque de bola de um talhante a tentar cortar fiambre com uma colher.",
+  "Se a tua burrice doesse a ti, tu passavas o dia a uivar com dores terríveis.",
+  "Tens a coragem de um coelho encurralado num beco sem saída à noite.",
+  "O teu remate indefensável foi agarrado a rir pelo guarda-redes suplente adormecido.",
+  "Tens a categoria de um artista falido que rasga a própria tela de frustração.",
+  "És o avançado que nunca marca e ainda reclama que os passes vêm tortos.",
+  "Tens a leveza de um elefante a tentar saltar por cima de um muro alto.",
+  "O teu cruzamento da esquerda foi sair pela linha lateral da direita.",
+  "Tens a postura de um boneco de corda sem mola nenhuma para andar.",
+  "Se a tua falta de jeito fosse uma religião, tu tinhas milhões de fiéis broncos.",
+  "Tens o toque de bola de quem tenta calçar um camião com meias de bebé.",
+  "O teu aquecimento consistiu em ajustar as meias e praguejar contra a vida.",
+  "Tens a categoria de um cozinheiro que deita detergente em vez de azeite na panela.",
+  "És o gajo mais irritante do grupo: não corres e ainda tens brio na boca.",
+  "Tens a velocidade de um caixote de correio com as rodas presas na lama.",
+  "Se a tua inteligência fosse um balão de hélio, já tinha rebentado no teto.",
+  "Tens a agilidade de um piano de cauda a tentar dar um salto mortal à frente.",
+  "O teu passe curto foi interceptado pelas tuas próprias calças desapertadas.",
+  "Tens a coragem de um peru de Natal a olhar para a faca do talhante.",
+  "És o rei dos calhaus: cada jogada tua é um atentado à inteligência coletiva.",
+  "Tens o toque de bola de um ferreiro a tentar polir um diamante com cimento.",
+  "Se a tua incompetência desse lucros, tu eras o dono de um império financeiro.",
+  "Tens a postura de um otário que acha que abafa o jogo com essa finta de cego.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi direto para o mato.",
+  "Tens a categoria de um cão abandonado a ladrar à lua sem saber porquê.",
+  "Se a tua utilidade em campo fosse contada em escudos, tu não valias um tostão furado.",
+  "Tens a finura de um tronco de eucalipto a tentar fazer piruetas num palco de teatro.",
+  "O teu passe longo fez a bola aterrar no telhado de um armazém abandonado.",
+  "És o rei dos enterros: sempre que tocas na bola, a equipa inteira vai ao fundo.",
+  "Tens a velocidade de um caixote de lixo a ser arrastado por uma rua empedrada.",
+  "Se a tua inteligência fosse medida em espaço, cabia numa cabeça de alfinete sem tocar nas bordas.",
+  "Tens a categoria de um pinguim a tentar correr os cem metros barreiras na lama.",
+  "O teu remate de trivela conseguiu acertar na perna do teu próprio colega de equipa.",
+  "Tens a postura de um otário que acha que manda no jogo mas só atrapalha.",
+  "Se a tua incompetência pagasse propinas, tu eras o reitor da universidade dos nabos.",
+  "Tens a leveza de um bloco de cimento armado a flutuar num mar de azeite.",
+  "O teu aquecimento consistiu em bocejar quatro vezes e pedir uma imperial.",
+  "Tens a coragem de um coelho assustado no meio de uma feira de tiros ao alvo.",
+  "És o gajo que consegue estragar o futebol de segunda-feira com uma eficácia terrível.",
+  "Tens o toque de bola de um pedreiro a tentar colar um espelho com lama seca.",
+  "Se a tua burrice doesse aos outros, tu estavas condenado a viver isolado numa ilha.",
+  "Tens a agilidade de um piano de cauda a tentar subir uma ladeira íngreme a pé.",
+  "O teu golo de cabeça foi feito com the parte superior da nuca completamente desatenta.",
+  "Tens a categoria de um cozinheiro que consegue estragar água a ferver na panela.",
+  "Se a tua utilidade em campo fosse um prémio, tu ganhavas um caixote de lixo vazio.",
+  "Tens a velocidade de um caracol asmático a tentar fugir de uma maré viva.",
+  "O teu passe em profundidade encontrou um vazio total de inteligência coletiva.",
+  "Tens a postura de um boneco de testes de colisão já reduzido a pó.",
+  "Se a tua falta de jeito fosse uma virtude, tu eras o patriarca dos incompetentes.",
+  "Tens o toque de bola de quem tenta pilotar um camião com uma colher de sopa.",
+  "O teu remate de primeira conseguiu falhar o chão e a própria atmosfera à volta.",
+  "Tens a categoria de um artista de rua que espanta os clientes com os berros.",
+  "És o avançado mais pacífico do distrito: cumprimenta sempre o guarda-redes com passes fáceis.",
+  "Tens a leveza de um camião de entulho a entupir a única ponte da cidade.",
+  "O teu cruzamento da direita foi sair pela linha de fundo do campo vizinho.",
+  "Tens a coragem de um leão de peluche metido numa jaula de cães ferozes.",
+  "Se a tua inteligência fosse um satélite, já tinha desabado por falta de gravidade mental.",
+  "Tens a agilidade de um cofre de ferro a cair pelas escadas abaixo sem travões.",
+  "O teu carrinho à defesa limpou as pernas ao adversário e a paciência do árbitro.",
+  "Tens a postura de um otário convicto que acha que o seu futebol assusta alguém.",
+  "Se a tua incompetência desse lucros, tu eras o dono da bolsa de valores da treta.",
+  "Tens o toque de bola de um talhante a tentar operar um relógio de ouro fino.",
+  "O teu remate indefensável foi agarrado a rir pelo guarda-redes suplente sentado.",
+  "Tens a categoria de um peixe fora de água a tentar dar lições de natação.",
+  "Se a tua utilidade em campo pesasse zero, tu ainda estavas em dívida com a equipa.",
+  "Tens a velocidade de um caixote de correio com as rodas bloqueadas no alcatrão.",
+  "O teu passe curto foi interceptado pelas tuas próprias chuteiras desafinadas.",
+  "Tens a leveza de um trator agrícola atolado até aos eixos num pântano.",
+  "És o rei dos calhaus: cada toque na bola é uma bofetada na nossa paciência.",
+  "Tens a coragem de um frango do campo à espera da faca do talhante no Natal.",
+  "Se a tua burrice fizesse som, tu eras uma sirene de nevoeiro avariada.",
+  "Tens a agilidade de um armazém de ferro-velho a desabar durante um sismo.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi direto para o mato.",
+  "Tens a postura de um boneco insuflável com um furo gigante na base.",
+  "Se a tua falta de jeito fosse moeda de troca, tu andavas completamente falido.",
+  "Tens o toque de bola de quem tenta limpar estrume com um lenço de seda.",
+  "Tens a finura de um tronco de pinheiro a tentar fazer balé clássico no gelo.",
+  "O teu passe longo fez a bola aterrar no tejadilho de um carro em andamento.",
+  "És o rei dos enterros: sempre que a bola vai para ti, o ataque morre na hora.",
+  "Tens a velocidade de um caracol com excesso de carga a subir uma rampa.",
+  "Se a tua inteligência fosse um fósforo, partia-se antes de acender na caixa.",
+  "Tens a categoria de um cão abandonado a ladrar a uma carrinha de lixo.",
+  "O teu remate de trivela conseguiu acertar na trave da baliza dos treinos.",
+  "Tens a postura de um otário que acha que engana os colegas com essa pose.",
+  "Se a tua incompetência pagasse impostos, o país amortizava a dívida pública.",
+  "Tens a leveza de um elefante a tentar saltar por cima de uma cerca elétrica.",
+  "O teu aquecimento consistiu em olhar para o relógio a desejar ir jantar.",
+  "Tens a coragem de um coelho encurralado num canto escuro sem saída.",
+  "És o gajo que consegue estragar o futebol de segunda-feira com um talento único.",
+  "Tens o toque de bola de um pedreiro a tentar colar vidro com cimento fresco.",
+  "Se a tua burrice doesse aos outros, nós andávamos todos de capacete na cabeça.",
+  "Tens a agilidade de um piano de cauda a tentar dar uma cambalhota à frente.",
+  "O teu golo de cabeça foi feito com a parte lateral do crânio a dormir.",
+  "Tens a categoria de um cozinheiro que consegue queimar água na panela.",
+  "Se a tua utilidade em campo fosse contada em cêntimos, tu devias troco.",
+  "Tens a velocidade de um caixote de lixo a rolar por uma encosta abaixo.",
+  "O teu passe em profundidade encontrou um abismo profundo de mediocridade.",
+  "Tens a postura de um boneco de corda sem mola nenhuma para avançar.",
+  "Se a tua falta de jeito fosse uma virtude, tu eras o rei dos incompetentes.",
+  "Tens o toque de bola de quem tenta calçar um camião com sapatos 38.",
+  "O teu remate de primeira conseguiu falhar o chão e a própria redondinha.",
+  "Tens a categoria de um artista de rua que espanta os clientes à chapada.",
+  "És o avançado mais pacífico do mundo: nunca assustas o redes contrário.",
+  "Tens a leveza de um camião de entulho a entupir a rua principal da terra.",
+  "O teu cruzamento da esquerda foi sair pela linha lateral da direita.",
+  "Tens a coragem de um leão de peluche debaixo de chuva intensa e fria.",
+  "Se a tua inteligência fosse um satélite, já tinha caído na atmosfera.",
+  "Tens a agilidade de um cofre de ferro a cair pelas escadas sem controlo.",
+  "O teu carrinho à defesa limpou as pernas e a paciência do treinador.",
+  "Tens a postura de um otário convicto que acha que joga muito à bola.",
+  "Se a tua incompetência desse lucros, tu eras o homem mais rico da zona.",
+  "Tens o toque de bola de um talhante a tentar operar um cérebro frágil.",
+  "O teu remate indefensável foi agarrado a rir pelo guarda-redes suplente.",
+  "Tens a categoria de um peixe fora de água a tentar falar grego antigo.",
+  "Se a tua utilidade em campo pesasse um quilo, tu tinhas de ir ao médico.",
+  "Tens a velocidade de um caracol asmático a tentar cruzar a estrada.",
+  "O teu passe curto foi interceptado pelas tuas próprias chuteiras novas.",
+  "Tens a leveza de um bloco de granito a rolar por uma encosta abaixo.",
+  "És o rei dos calhaus: cada toque na bola é um atentado ao bom senso.",
+  "Tens a coragem de um frango do campo à espera da faca do talhante.",
+  "Se a tua burrice fizesse som, nós precisávamos de protetores de ouvidos.",
+  "Tens a agilidade de um armazém de ferro-velho a desabar no chão.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi para a rua.",
+  "Tens a postura de um boneco insuflável com um furo gigante na base.",
+  "Se a tua falta de jeito fosse moeda forte, tu estavas na bancarrota.",
+  "Tens o toque de bola de quem tenta limpar estrume com um pincel fino.",
+  "Tens a finura de um tronco de pinheiro a tentar fazer piruetas no ar.",
+  "O teu passe longo fez a bola aterrar dentro de um carro em marcha.",
+  "És o rei dos enterros: sempre que tocas na bola, a jogada morre logo.",
+  "Tens a velocidade de um caixote de lixo a ser empurrado na lama.",
+  "Se a tua inteligência fosse um grão de areia, a praia inteira cabia num dedo.",
+  "Tens a categoria de um cão abandonado a ladrar a uma parede branca.",
+  "O teu remate de trivela conseguiu acertar na bandeirola de canto oposta.",
+  "Tens a postura de um otário que acha que engana os colegas de equipa.",
+  "Se a tua incompetência pagasse impostos, o país eliminava a dívida externa.",
+  "Tens a leveza de um elefante a tentar saltar por cima de um carro.",
+  "O teu aquecimento consistiu em suspirar fundo e praguejar contra o dia.",
+  "Tens a coragem de um coelho encurralado num canto sem saída à noite.",
+  "És o gajo que consegue estragar o futebol de segunda-feira com classe.",
+  "Tens o toque de bola de um pedreiro a tentar colar vidro com cimento.",
+  "Se a tua burrice doesse aos outros, nós andávamos todos de ataduras.",
+  "Tens a agilidade de um piano de cauda a tentar dar uma cambalhota.",
+  "O teu golo de cabeça foi feito com a parte lateral do crânio a dormir.",
+  "Tens a categoria de um cozinheiro que consegue queimar água na panela.",
+  "Se a tua utilidade em campo fosse contada em cêntimos, tu devias troco.",
+  "Tens a velocidade de um caracol asmático a tentar subir uma ladeira.",
+  "O teu passe em profundidade encontrou um abismo profundo de mediocridade.",
+  "Tens a postura de um boneco de corda sem mola nenhuma para andar.",
+  "Se a tua falta de jeito fosse uma virtude, tu eras o rei dos nabos.",
+  "Tens o toque de bola de quem tenta calçar um camião com sapatos 38.",
+  "O teu remate de primeira conseguiu falhar o chão e a própria bola.",
+  "Tens a categoria de um artista de rua que espanta os clientes à chapada.",
+  "És o avançado mais pacífico do mundo: nunca assustas o redes contrário.",
+  "Tens a leveza de um camião de entulho a entupir a rua principal da terra.",
+  "O teu cruzamento da esquerda foi sair pela linha lateral da direita.",
+  "Tens a coragem de um leão de peluche debaixo de chuva intensa e fria.",
+  "Se a tua inteligência fosse um satélite, já tinha caído na atmosfera.",
+  "Tens a agilidade de um cofre de ferro a cair pelas escadas sem controlo.",
+  "O teu carrinho à defesa limpou as pernas e a paciência do treinador.",
+  "Tens a postura de um otário convicto que acha que joga muito à bola.",
+  "Se a tua incompetência desse lucros, tu eras o homem mais rico da zona.",
+  "Tens o toque de bola de um talhante a tentar operar um cérebro frágil.",
+  "O teu remate indefensável foi agarrado a rir pelo guarda-redes suplente.",
+  "Tens a categoria de um peixe fora de água a tentar falar grego antigo.",
+  "Se a tua utilidade em campo pesasse um quilo, tu tinhas de ir ao médico.",
+  "Tens a velocidade de um caracol asmático a tentar cruzar a estrada.",
+  "O teu passe curto foi interceptado pelas tuas próprias chuteiras novas.",
+  "Tens a leveza de um bloco de granito a rolar por uma encosta abaixo.",
+  "És o rei dos calhaus: cada toque na bola é um atentado ao bom senso.",
+  "Tens a coragem de um frango do campo à espera da faca do talhante.",
+  "Se a tua burrice fizesse som, nós precisávamos de protetores de ouvidos.",
+  "Tens a agilidade de um armazém de ferro-velho a desabar no chão.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi para a rua.",
+  "Tens a postura de um boneco insuflável com um furo gigante na base.",
+  "Se a tua falta de jeito fosse moeda forte, tu estavas na bancarrota.",
+  "Tens o toque de bola de quem tenta limpar estrume com um pincel fino.",
+  "Tens a finura de um tronco de pinheiro a tentar fazer piruetas no ar.",
+  "O teu passe longo fez a bola aterrar dentro de um carro em marcha.",
+  "És o rei dos enterros: sempre que tocas na bola, a jogada morre logo.",
+  "Tens a velocidade de um caixote de lixo a ser empurrado na lama.",
+  "Se a tua inteligência fosse um grão de areia, a praia inteira cabia num dedo.",
+  "Tens a categoria de um cão abandonado a ladrar a uma parede branca.",
+  "O teu remate de trivela conseguiu acertar na bandeirola de canto oposta.",
+  "Tens a postura de um otário que acha que engana os colegas de equipa.",
+  "Se a tua incompetência pagasse impostos, o país eliminava a dívida externa.",
+  "Tens a leveza de um elefante a tentar saltar por cima de um carro.",
+  "O teu aquecimento consistiu em suspirar fundo e praguejar contra o dia.",
+  "Tens a coragem de um coelho encurralado num canto sem saída à noite.",
+  "És o gajo que consegue estragar o futebol de segunda-feira com classe.",
+  "Tens o toque de bola de um pedreiro a tentar colar vidro com cimento.",
+  "Se a tua burrice doesse aos outros, nós andávamos todos de ataduras.",
+  "Tens a agilidade de um piano de cauda a tentar dar uma cambalhota.",
+  "O teu golo de cabeça foi feito com a parte lateral do crânio a dormir.",
+  "Tens a categoria de um cozinheiro que consegue queimar água na panela.",
+  "Se a tua utilidade em campo fosse contada em cêntimos, tu devias troco.",
+  "Tens a velocidade de um caracol asmático a tentar subir uma ladeira.",
+  "O teu passe em profundidade encontrou um abismo profundo de mediocridade.",
+  "Tens a postura de um boneco de corda sem mola nenhuma para andar.",
+  "Se a tua falta de jeito fosse uma virtude, tu eras o rei dos nabos.",
+  "Tens o toque de bola de quem tenta calçar um camião com sapatos 38.",
+  "O teu remate de primeira conseguiu falhar o chão e a própria bola.",
+  "Tens a categoria de um artista de rua que espanta os clientes à chapada.",
+  "És o avançado mais pacífico do mundo: nunca assustas o redes contrário.",
+  "Tens a leveza de um camião de entulho a entupir a rua principal da terra.",
+  "O teu cruzamento da esquerda foi sair pela linha lateral da direita.",
+  "Tens a coragem de um leão de peluche debaixo de chuva intensa e fria.",
+  "Se a tua inteligência fosse um satélite, já tinha caído na atmosfera.",
+  "Tens a agilidade de um cofre de ferro a cair pelas escadas sem controlo.",
+  "O teu carrinho à defesa limpou as pernas e a paciência do treinador.",
+  "Tens a postura de um otário convicto que acha que joga muito à bola.",
+  "Se a tua incompetência desse lucros, tu eras o homem mais rico da zona.",
+  "Tens o toque de bola de um talhante a tentar operar um cérebro frágil.",
+  "O teu remate indefensável foi agarrado a rir pelo guarda-redes suplente.",
+  "Tens a categoria de um peixe fora de água a tentar falar grego antigo.",
+  "Se a tua utilidade em campo pesasse um quilo, tu tinhas de ir ao médico.",
+  "Tens a velocidade de um caracol asmático a tentar cruzar a estrada.",
+  "O teu passe curto foi interceptado pelas tuas próprias chuteiras novas.",
+  "Tens a leveza de um bloco de granito a rolar por uma encosta abaixo.",
+  "És o rei dos calhaus: cada toque na bola é um atentado ao bom senso.",
+  "Tens a coragem de um frango do campo à espera da faca do talhante.",
+  "Se a tua burrice fizesse som, nós precisávamos de protetores de ouvidos.",
+  "Tens a agilidade de um armazém de ferro-velho a desabar no chão.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi para a rua.",
+  "Tens a postura de um boneco insuflável com um furo gigante na base.",
+  "Se a tua falta de jeito fosse moeda forte, tu estavas na bancarrota.",
+  "Tens o toque de bola de quem tenta limpar estrume com um pincel fino.",
+  "Tens a finura de um tronco de pinheiro a tentar fazer piruetas no ar.",
+  "O teu passe longo fez a bola aterrar dentro de um carro em marcha.",
+  "És o rei dos enterros: sempre que tocas na bola, a jogada morre logo.",
+  "Tens a velocidade de um caixote de lixo a ser empurrado na lama.",
+  "Se a tua inteligência fosse um grão de areia, a praia inteira cabia num dedo.",
+  "Tens a categoria de um cão abandonado a ladrar a uma parede branca.",
+  "O teu remate de trivela conseguiu acertar na bandeirola de canto oposta.",
+  "Tens a postura de um otário que acha que engana os colegas de equipa.",
+  "Se a tua incompetência pagasse impostos, o país eliminava a dívida externa.",
+  "Tens a leveza de um elefante a tentar saltar por cima de um carro.",
+  "O teu aquecimento consistiu em suspirar fundo e praguejar contra o dia.",
+  "Tens a coragem de um coelho encurralado num canto sem saída à noite.",
+  "És o gajo que consegue estragar o futebol de segunda-feira com classe.",
+  "Tens o toque de bola de um pedreiro a tentar colar vidro com cimento.",
+  "Se a tua burrice doesse aos outros, nós andávamos todos de ataduras.",
+  "Tens a agilidade de um piano de cauda a tentar dar uma cambalhota.",
+  "O teu golo de cabeça foi feito com a parte lateral do crânio a dormir.",
+  "Tens a categoria de um cozinheiro que consegue queimar água na panela.",
+  "Se a tua utilidade em campo fosse contada em cêntimos, tu devias troco.",
+  "Tens a velocidade de um caracol asmático a tentar subir uma ladeira.",
+  "O teu passe em profundidade encontrou um abismo profundo de mediocridade.",
+  "Tens a postura de um boneco de corda sem mola nenhuma para andar.",
+  "Se a tua falta de jeito fosse uma virtude, tu eras o rei dos nabos.",
+  "Tens o toque de bola de quem tenta calçar um camião com sapatos 38.",
+  "O teu remate de primeira conseguiu falhar o chão e a própria bola.",
+  "Tens a categoria de um artista de rua que espanta os clientes à chapada.",
+  "És o avançado mais pacífico do mundo: nunca assustas o redes contrário.",
+  "Tens a leveza de um camião de entulho a entupir a rua principal da terra.",
+  "O teu cruzamento da esquerda foi sair pela linha lateral da direita.",
+  "Tens a coragem de um leão de peluche debaixo de chuva intensa e fria.",
+  "Se a tua inteligência fosse um satélite, já tinha caído na atmosfera.",
+  "Tens a agilidade de um cofre de ferro a cair pelas escadas sem controlo.",
+  "O teu carrinho à defesa limpou as pernas e a paciência do treinador.",
+  "Tens a postura de um otário convicto que acha que joga muito à bola.",
+  "Se a tua incompetência desse lucros, tu eras o homem mais rico da zona.",
+  "Tens o toque de bola de um talhante a tentar operar um cérebro frágil.",
+  "O teu remate indefensável foi agarrado a rir pelo guarda-redes suplente.",
+  "Tens a categoria de um peixe fora de água a tentar falar grego antigo.",
+  "Se a tua utilidade em campo pesasse um quilo, tu tinhas de ir ao médico.",
+  "Tens a velocidade de um caracol asmático a tentar cruzar a estrada.",
+  "O teu passe curto foi interceptado pelas tuas próprias chuteiras novas.",
+  "Tens a leveza de um bloco de granito a rolar por uma encosta abaixo.",
+  "És o rei dos calhaus: cada toque na bola é um atentado ao bom senso.",
+  "Tens a coragem de um frango do campo à espera da faca do talhante.",
+  "Se a tua burrice fizesse som, nós precisávamos de protetores de ouvidos.",
+  "Tens a agilidade de um armazém de ferro-velho a desabar no chão.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi para a rua.",
+  "Tens a postura de um boneco insuflável com um furo gigante na base.",
+  "Se a tua falta de jeito fosse moeda forte, tu estavas na bancarrota.",
+  "Tens o toque de bola de quem tenta limpar estrume com um pincel fino.",
+  "Tens a finura de um tronco de pinheiro a tentar fazer piruetas no ar.",
+  "O teu passe longo fez a bola aterrar dentro de um carro em marcha.",
+  "És o rei dos enterros: sempre que tocas na bola, a jogada morre logo.",
+  "Tens a velocidade de um caixote de lixo a ser empurrado na lama.",
+  "Se a tua inteligência fosse um grão de areia, a praia inteira cabia num dedo.",
+  "Tens a categoria de um cão abandonado a ladrar a uma parede branca.",
+  "O teu remate de trivela conseguiu acertar na bandeirola de canto oposta.",
+  "Tens a postura de um otário que acha que engana os colegas de equipa.",
+  "Se a tua incompetência pagasse impostos, o país eliminava a dívida externa.",
+  "Tens a leveza de um elefante a tentar saltar por cima de um carro.",
+  "O teu aquecimento consistiu em suspirar fundo e praguejar contra o dia.",
+  "Tens a coragem de um coelho encurralado num canto sem saída à noite.",
+  "És o gajo que consegue estragar o futebol de segunda-feira com classe.",
+  "Tens o toque de bola de um pedreiro a tentar colar vidro com cimento.",
+  "Se a tua burrice doesse aos outros, nós andávamos todos de ataduras.",
+  "Tens a agilidade de um piano de cauda a tentar dar uma cambalhota.",
+  "O teu golo de cabeça foi feito com a parte lateral do crânio a dormir.",
+  "Tens a categoria de um cozinheiro que consegue queimar água na panela.",
+  "Se a tua utilidade em campo fosse contada em cêntimos, tu devias troco.",
+  "Tens a velocidade de um caracol asmático a tentar subir uma ladeira.",
+  "O teu passe em profundidade encontrou um abismo profundo de mediocridade.",
+  "Tens a postura de um boneco de corda sem mola nenhuma para andar.",
+  "Se a tua falta de jeito fosse uma virtude, tu eras o rei dos nabos.",
+  "Tens o toque de bola de quem tenta calçar um camião com sapatos 38.",
+  "O teu remate de primeira conseguiu falhar o chão e a própria bola.",
+  "Tens a categoria de um artista de rua que espanta os clientes à chapada.",
+  "És o avançado mais pacífico do mundo: nunca assustas o redes contrário.",
+  "Tens a leveza de um camião de entulho a entupir a rua principal da terra.",
+  "O teu cruzamento da esquerda foi sair pela linha lateral da direita.",
+  "Tens a coragem de um leão de peluche debaixo de chuva intensa e fria.",
+  "Se a tua inteligência fosse um satélite, já tinha caído na atmosfera.",
+  "Tens a agilidade de um cofre de ferro a cair pelas escadas sem controlo.",
+  "O teu carrinho à defesa limpou as pernas e a paciência do treinador.",
+  "Tens a postura de um otário convicto que acha que joga muito à bola.",
+  "Se a tua incompetência desse lucros, tu eras o homem mais rico da zona.",
+  "Tens o toque de bola de um talhante a tentar operar um cérebro frágil.",
+  "O teu remate indefensável foi agarrado a rir pelo guarda-redes suplente.",
+  "Tens a categoria de um peixe fora de água a tentar falar grego antigo.",
+  "Se a tua utilidade em campo pesasse um quilo, tu tinhas de ir ao médico.",
+  "Tens a velocidade de um caracol asmático a tentar cruzar a estrada.",
+  "O teu passe curto foi interceptado pelas tuas próprias chuteiras novas.",
+  "Tens a leveza de um bloco de granito a rolar por uma encosta abaixo.",
+  "És o rei dos calhaus: cada toque na bola é um atentado ao bom senso.",
+  "Tens a coragem de um frango do campo à espera da faca do talhante.",
+  "Se a tua burrice fizesse som, nós precisávamos de protetores de ouvidos.",
+  "Tens a agilidade de um armazém de ferro-velho a desabar no chão.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi para a rua.",
+  "Tens a postura de um boneco insuflável com um furo gigante na base.",
+  "Se a tua falta de jeito fosse moeda forte, tu estavas na bancarrota.",
+  "Tens o toque de bola de quem tenta limpar estrume com um pincel fino."
 ];
 
 function CromoBanner() {
-  const [idx, setIdx] = useState(0);
+  const [idx, setIdx] = useState(() => Math.floor(Math.random() * CROMO_QUOTES.length));
   useEffect(() => {
     const timer = setInterval(() => {
-      setIdx(prev => (prev + 1) % CROMO_QUOTES.length);
-    }, 6000);
+      setIdx(Math.floor(Math.random() * CROMO_QUOTES.length));
+    }, 8000);
     return () => clearInterval(timer);
   }, []);
 
@@ -759,7 +1309,7 @@ function PremiumLeague() {
 
       <div style={{ maxWidth: 520, margin: "0 auto", padding: "0 12px" }}>
         
-        {/* Banner das Frases Corny em loop contínuo sem cabeçalho */}
+        {/* Banner das Frases Corny com aleatoriedade total e 8 segundos */}
         <div style={{ paddingTop: 14 }}>
           <CromoBanner />
         </div>
@@ -836,20 +1386,15 @@ function PremiumLeague() {
                     <colgroup>
                       <col style={{ width: "24px" }} />
                       <col style={{ width: "100px" }} />
-                      {/* Secção principal: Pontos */}
                       <col style={{ width: "42px" }} />
-                      {/* Secção seguinte: Jogos, V, Desistências */}
                       <col style={{ width: "26px" }} />
                       <col style={{ width: "26px" }} />
                       <col style={{ width: "32px" }} />
-                      {/* Separador visual */}
                       <col style={{ width: "6px" }} />
-                      {/* Secção final: E, D, GM, GME */}
                       <col style={{ width: "26px" }} />
                       <col style={{ width: "26px" }} />
                       <col style={{ width: "30px" }} />
                       <col style={{ width: "34px" }} />
-                      {/* Colunas adicionais no final: Forma últimos 5 e Prémio */}
                       <col style={{ width: "64px" }} />
                       <col style={{ width: "46px" }} />
                     </colgroup>
@@ -857,25 +1402,15 @@ function PremiumLeague() {
                       <tr style={{ background: C.plPurple, color: "#fff", fontFamily: FONT_NUM, fontSize: 12 }}>
                         <th style={{ padding: "6px 2px", textAlign: "center" }}>#</th>
                         <th style={{ padding: "6px 4px", textAlign: "left" }}>Jogador</th>
-                        
-                        {/* Secção principal: Pontos */}
                         <th style={{ padding: "6px 2px", textAlign: "center", background: "#250029", borderLeft: "1px solid rgba(255,255,255,0.2)", borderRight: "1px solid rgba(255,255,255,0.2)", fontSize: 14, fontWeight: 700 }} title="Pontos">Pts</th>
-                        
-                        {/* Secção seguinte: Jogos (J), Vitórias (V) e Desistências (Des) */}
                         <th style={{ padding: "6px 2px", textAlign: "center" }} title="Jogos (J)">J</th>
                         <th style={{ padding: "6px 2px", textAlign: "center" }} title="Vitórias (V)">V</th>
                         <th style={{ padding: "6px 2px", textAlign: "center" }} title="Desistências (Des)">Des</th>
-                        
-                        {/* Separador visual */}
                         <th style={{ padding: "0", background: "rgba(255,255,255,0.3)" }}></th>
-                        
-                        {/* Secção final: Empates (E), Derrotas (D), GM e GME */}
                         <th style={{ padding: "6px 2px", textAlign: "center" }} title="Empates (E)">E</th>
                         <th style={{ padding: "6px 2px", textAlign: "center" }} title="Derrotas (D)">D</th>
                         <th style={{ padding: "6px 2px", textAlign: "center" }} title="Golos Marcados Pessoais (GM)">GM</th>
                         <th style={{ padding: "6px 2px", textAlign: "center" }} title="Golos Marcados Equipa (GME)">GME</th>
-                        
-                        {/* Colunas adicionais finais */}
                         <th style={{ padding: "6px 2px", textAlign: "center", borderLeft: "1px solid rgba(255,255,255,0.1)" }} title="Últimos 5 jogos">Forma</th>
                         <th style={{ padding: "6px 2px", textAlign: "center" }} title="Prémio">Prémio</th>
                       </tr>
@@ -895,25 +1430,15 @@ function PremiumLeague() {
                               <span style={{ fontWeight: prize ? 600 : 400, fontSize: 13 }}>{r.name}</span>
                               {r.streak >= 3 && <span title={`${r.streak} vitórias seguidas`} style={{ fontSize: 10, marginLeft: 2 }}>🔥{r.streak}</span>}
                             </td>
-                            
-                            {/* Secção principal: Pontos (Destaque máximo) */}
                             <td style={{ padding: "4px 2px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, background: i === 0 ? "#fef3c7" : "#f8fafc", color: C.plPurple, borderLeft: `1px solid ${C.line}`, borderRight: `1px solid ${C.line}` }}>{r.pts}</td>
-                            
-                            {/* Secção seguinte: J, V, Des */}
                             <td style={{ padding: "4px 2px", textAlign: "center", fontSize: 12, color: C.sub }}>{r.J}</td>
                             <td style={{ padding: "4px 2px", textAlign: "center", fontSize: 12, color: C.sub }}>{r.V}</td>
                             <td style={{ padding: "4px 2px", textAlign: "center", fontSize: 12, color: desTotal > 0 ? C.red : C.sub }}>{desTotal}</td>
-                            
-                            {/* Separador visual */}
                             <td style={{ padding: "0", background: C.line, width: "6px" }}></td>
-                            
-                            {/* Secção final: E, D, GM, GME */}
                             <td style={{ padding: "4px 2px", textAlign: "center", fontSize: 12, color: C.sub }}>{r.E}</td>
                             <td style={{ padding: "4px 2px", textAlign: "center", fontSize: 12, color: C.sub }}>{r.D}</td>
                             <td style={{ padding: "4px 2px", textAlign: "center", fontSize: 12, fontWeight: 700, color: C.plPurple }}>{r.golosPessoais}</td>
                             <td style={{ padding: "4px 2px", textAlign: "center", fontSize: 12, color: C.sub }}>{r.golosEquipa}</td>
-                            
-                            {/* Colunas adicionais no final: Forma e Prémio */}
                             <td style={{ padding: "4px 2px", textAlign: "center", borderLeft: `1px solid ${C.line}` }}>
                               <FormDots form={r.form} />
                             </td>
@@ -954,12 +1479,10 @@ function PremiumLeague() {
                   </table>
                 </div>
 
-                {/* Legenda da classificação incluída logo no final da tabela */}
                 <div style={{ ...S.card, padding: "10px 14px", marginTop: 10, fontSize: 12, color: C.sub, lineHeight: 1.5 }}>
                   <b style={{ color: C.ink }}>Legenda:</b> <b>Pts</b> (Pontos) | <b>J</b> (Jogos) | <b>V</b> (Vitórias) | <b>Des</b> (Desistências D1+D2) | <b>E</b> (Empates) | <b>D</b> (Derrotas) | <b>GM</b> (Golos Marcados Pessoais) | <b>GME</b> (Golos Marcados Equipa) | <b>Forma</b> (Últimos 5 jogos: 🟢 Vitória, ⚪ Empate, 🔴 Derrota)
                 </div>
 
-                {/* Top Scorers / Marcadores */}
                 {topScorers.length > 0 && (
                   <div style={{ marginTop: 20 }}>
                     <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 8, color: C.plPurple }}>⚽ Top Scorers (Marcadores)</div>
@@ -1067,7 +1590,6 @@ function PremiumLeague() {
               </div>
             )}
 
-            {/* SECÇÃO PRÉMIOS TOTALMENTE EDITÁVEL PARA O SUPERADMIN */}
             <div style={{ ...S.card, padding: 14, background: C.plPurple, color: "#fff", border: "none" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                 <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700 }}>🏆 Prémios — se a época acabasse hoje</div>
@@ -1105,7 +1627,6 @@ function PremiumLeague() {
               )}
             </div>
 
-            {/* CONVOCATÓRIA EDITÁVEL */}
             <div style={{ ...S.card, padding: 14 }}>
               <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 6, color: C.plPurple }}>📣 Convocatória</div>
               <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.7 }}>
@@ -1124,7 +1645,6 @@ function PremiumLeague() {
               )}
             </div>
 
-            {/* COMO SE FORMAM AS EQUIPAS */}
             <div style={{ ...S.card, padding: 14 }}>
               <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 6, color: C.plPurple }}>⚖️ Como se formam as equipas</div>
               {superOk ? (
@@ -1144,7 +1664,6 @@ function PremiumLeague() {
               )}
             </div>
 
-            {/* IMPOSTO DO ATRASO / MULTAS */}
             <div style={{ ...S.card, padding: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                 <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, color: C.plPurple }}>💸 Imposto do atraso</div>
@@ -1182,7 +1701,6 @@ function PremiumLeague() {
               ))}
             </div>
 
-            {/* PONTUAÇÃO */}
             <div style={{ ...S.card, padding: 14 }}>
               <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 8, color: C.plPurple }}>Pontuação</div>
               {[["V", "Vitória"], ["E", "Empate"], ["D", "Derrota"], ["D1", "Desistência desde sábado (inclusive)"], ["D2", "Desistência desde 2ª às 00h"]].map(([k, lab]) => (
@@ -1201,7 +1719,6 @@ function PremiumLeague() {
               </p>
             </div>
 
-            {/* JOGADORES */}
             <div style={{ ...S.card, padding: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
                 <span style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, color: C.plPurple }}>Jogadores — {season.name}</span>
@@ -1733,9 +2250,7 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
             </div>
           )}
           
-          {/* DRAG AND DROP AREAS */}
           <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
-            {/* Branca */}
             <div style={{ ...card, flex: 1, minWidth: 140, padding: 8 }}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -1753,7 +2268,6 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
               </div>
             </div>
 
-            {/* Preta */}
             <div style={{ ...card, flex: 1, minWidth: 140, padding: 8 }}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -1772,7 +2286,6 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
             </div>
           </div>
 
-          {/* Reservas */}
           <div style={{ ...card, padding: 8, marginBottom: 10 }}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
@@ -1820,7 +2333,6 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
             </div>
           </div>
 
-          {/* Marcadores dos Golos por Jogo */}
           <div style={{ ...card, padding: 14, marginBottom: 10 }}>
             <div style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 700, marginBottom: 8, color: C.plPurple }}>⚽ Marcadores dos Golos</div>
             <p style={{ fontSize: 12, color: C.sub, margin: "0 0 10px" }}>Regista quantos golos cada jogador marcou nesta jornada (alimenta o Top Scorers e os Golos pessoais).</p>
