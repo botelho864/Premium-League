@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#37003c">
+<meta name="theme-color" content="#16181A">
 <title>Premium League</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
-<style>html,body{margin:0;background:#121212;color:#f6f6f6;font-family:'Premier Sans','Barlow',sans-serif}</style>
+<style>html,body{margin:0;background:#EDF0EC}</style>
 </head>
 <body>
 <div id="root"></div>
@@ -33,9 +33,7 @@ const CATCHPHRASES = [
   "«Por mais jogos e mais amizade» 🤝⚽",
   "«Onde a amizade acaba e a bola começa» 🔥",
   "«Mais do que uma liga, um estilo de vida» 🏆",
-  "«Quem não corre, leva multa» 💸🏃‍♂️",
-  "«Craques à segunda, lesionados à terça» 😂",
-  "«O importante é competir... mas ganhar sabe melhor» 🥇"
+  "«Quem não corre, leva multa» 💸🏃‍♂️"
 ];
 
 function normalize(d) {
@@ -57,14 +55,13 @@ function normalize(d) {
   return d;
 }
 const DAYS = ["domingo", "2ª feira", "3ª feira", "4ª feira", "5ª feira", "6ª feira", "sábado"];
-
 const C = {
-  bg: "#121212", surface: "#1e1e24", ink: "#ffffff", sub: "#a6a6b2",
-  line: "#2c2c35", primary: "#37003c", neonGreen: "#00ff87", neonPink: "#ff2882",
-  gold: "#ffd700", red: "#ff4d4d", blue: "#00bfff", borderDark: "#33333d"
+  bg: "#EDF0EC", surface: "#FFFFFF", ink: "#16181A", sub: "#6B7069",
+  line: "#DCE0DA", green: "#1E6B40", gold: "#C99700", red: "#B3372B",
+  preta: "#141414", brancaBorder: "#C4C7C1", blue: "#3A6EA5",
 };
-const FONT_NUM = "'Premier Sans',sans-serif";
-const FONT = "'Premier Sans',sans-serif";
+const FONT_NUM = "'Barlow Condensed','Arial Narrow','Helvetica Neue',sans-serif";
+const FONT = "'Barlow','Helvetica Neue',Arial,sans-serif";
 
 const eur = (n) => `${Number(n).toFixed(2).replace(".", ",")}€`;
 function fmtDate(iso) {
@@ -160,7 +157,7 @@ function computeTopScorers(season) {
 
 function weekSummary(w) {
   const nB = Object.values(w.marks).filter(m => m === "B").length;
-  const nP = Object.values(w.marks).filter(m => m === "P").length;
+  const nP = Object.values(w.marks).filter(m === "P").length;
   const hasScore = w.gB !== null && w.gB !== "" && w.gP !== null && w.gP !== "";
   let winner = null;
   if (hasScore) winner = Number(w.gB) > Number(w.gP) ? "Branca" : Number(w.gP) > Number(w.gB) ? "Preta" : "Empate";
@@ -192,14 +189,14 @@ function Countdown({ season }) {
   const convOpen = jogo < conv;
   const chip = (icon, top, bottom, hot) => (
     <div style={{
-      flex: 1, background: hot ? "#26002b" : C.surface, color: hot ? C.neonGreen : C.ink,
-      border: `1px solid ${hot ? C.neonGreen : C.line}`, borderRadius: 8, padding: "10px 12px",
-      display: "flex", alignItems: "center", gap: 10, minWidth: 0,
+      flex: 1, background: hot ? C.ink : C.surface, color: hot ? "#fff" : C.ink,
+      border: `1px solid ${hot ? C.ink : C.line}`, borderRadius: 10, padding: "8px 10px",
+      display: "flex", alignItems: "center", gap: 8, minWidth: 0,
     }}>
-      <span style={{ fontSize: 22 }}>{icon}</span>
+      <span style={{ fontSize: 20 }}>{icon}</span>
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700, lineHeight: 1.1 }}>{top}</div>
-        <div style={{ fontSize: 11, color: C.sub, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{bottom}</div>
+        <div style={{ fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, lineHeight: 1.1 }}>{top}</div>
+        <div style={{ fontSize: 11, opacity: 0.75, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{bottom}</div>
       </div>
     </div>
   );
@@ -214,11 +211,11 @@ function Countdown({ season }) {
 
 function FormDots({ form }) {
   if (!form.length) return null;
-  const col = { V: C.neonGreen, E: "#71717a", D: C.neonPink };
+  const col = { V: C.green, E: "#9AA096", D: C.red };
   return (
     <span style={{ display: "inline-flex", gap: 3, marginLeft: 6, verticalAlign: "middle" }}>
       {form.map((f, i) => (
-        <span key={i} title={f} style={{ width: 6, height: 6, borderRadius: "50%", background: col[f], display: "inline-block" }} />
+        <span key={i} title={f} style={{ width: 7, height: 7, borderRadius: 7, background: col[f], display: "inline-block" }} />
       ))}
     </span>
   );
@@ -250,7 +247,7 @@ function PremiumLeague() {
   const firstLoad = useRef(true);
   const seedTried = useRef(false);
   const goodPin = useRef(null);
-  
+
   const setWithPin = (ref, obj) => {
     const p = pinRef.current || "";
     const variants = goodPin.current !== null ? [goodPin.current]
@@ -265,7 +262,6 @@ function PremiumLeague() {
   const configured = !!FIREBASE_CONFIG.databaseURL;
 
   useEffect(() => {
-    // Escolher uma catchphrase aleatória ao carregar a página
     const randomPhrase = CATCHPHRASES[Math.floor(Math.random() * CATCHPHRASES.length)];
     setCatchphrase(randomPhrase);
 
@@ -416,7 +412,7 @@ function PremiumLeague() {
 
   if (!data) return (
     <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONT, color: C.sub }}>
-      A carregar a Premier League…
+      A carregar a liga…
     </div>
   );
 
@@ -441,75 +437,65 @@ function PremiumLeague() {
   const S = {
     tabBtn: (on) => ({
       flex: 1, padding: "10px 0", border: "none", cursor: "pointer",
-      background: on ? C.neonGreen : "transparent", color: on ? "#121212" : C.ink,
-      fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, letterSpacing: "0.03em", borderRadius: 6,
-      transition: "0.2s",
+      background: on ? C.ink : "transparent", color: on ? "#fff" : C.ink,
+      fontFamily: FONT_NUM, fontSize: 16, fontWeight: 600, letterSpacing: "0.02em", borderRadius: 6,
     }),
     card: { background: C.surface, border: `1px solid ${C.line}`, borderRadius: 10, overflow: "hidden" },
-    input: { border: `1px solid ${C.line}`, borderRadius: 6, padding: "6px 8px", fontFamily: FONT, fontSize: 14, background: "#121212", color: "#fff" },
+    input: { border: `1px solid ${C.line}`, borderRadius: 6, padding: "6px 8px", fontFamily: FONT, fontSize: 14, background: "#fff" },
     lbl: { fontSize: 12, color: C.sub, display: "block", marginBottom: 2 },
   };
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.ink, paddingBottom: 40 }}>
-      <style>{`
-        input:focus, button:focus, select:focus, textarea:focus { outline: 2px solid ${C.neonGreen}; outline-offset: 1px; }
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap');
+        input:focus, button:focus, select:focus, textarea:focus { outline: 2px solid ${C.green}; outline-offset: 1px; }
         table { border-spacing: 0; }
       `}</style>
 
-      {/* PL Official Style Header Banner com Logo e Catchphrase */}
-      <div style={{ background: C.primary, borderBottom: `4px solid ${C.neonGreen}`, padding: "16px 12px 12px" }}>
-        <div style={{ maxWidth: 520, margin: "0 auto" }}>
+      <div style={{ maxWidth: 520, margin: "0 auto", padding: "0 12px" }}>
+        <header style={{ padding: "18px 2px 10px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ background: C.neonGreen, color: "#121212", borderRadius: 8, padding: "4px 10px", fontWeight: 900, fontFamily: FONT_NUM, fontSize: 20, display: "flex", alignItems: "center", gap: 4 }}>
-                <span>PL</span>
-                <span style={{ fontSize: 14 }}>🦁</span>
-              </div>
-              <div>
-                <h1 style={{ margin: 0, fontFamily: FONT_NUM, fontWeight: 800, fontSize: 22, letterSpacing: "0.02em", color: "#fff", lineHeight: 1.1 }}>
-                  PREMIER LEAGUE
-                </h1>
-                <span style={{ fontSize: 11, color: C.neonGreen, fontStyle: "italic", fontWeight: 600 }}>{catchphrase}</span>
-              </div>
+            <div>
+              <h1 style={{ margin: 0, fontFamily: FONT_NUM, fontWeight: 700, fontSize: 30, letterSpacing: "0.01em", whiteSpace: "nowrap" }}>
+                Premium League ⚽
+              </h1>
+              {catchphrase && <p style={{ margin: "2px 0 0", fontSize: 11.5, color: C.green, fontStyle: "italic", fontWeight: 600 }}>{catchphrase}</p>}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <select value={sIdx} onChange={e => { setSIdx(Number(e.target.value)); setOpenWeek(null); setOpenPlayer(null); }}
-                style={{ fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, color: C.primary, border: `1px solid ${C.neonGreen}`, borderRadius: 8, padding: "4px 6px", background: C.neonGreen, maxWidth: 110, cursor: "pointer" }}>
+                style={{ fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: C.green, border: `1px solid ${C.line}`, borderRadius: 8, padding: "4px 6px", background: "#fff", maxWidth: 110 }}>
                 {data.seasons.map((s, i) => <option key={s.id} value={i}>{s.name}</option>)}
               </select>
               {superOk && <button onClick={() => setNewSeason(v => !v)} title="Nova época" style={{
-                fontFamily: FONT_NUM, fontSize: 18, fontWeight: 700, width: 34, height: 34, borderRadius: 8,
-                border: `1.5px solid ${newSeason ? C.neonPink : C.neonGreen}`, background: newSeason ? C.neonPink : "transparent",
-                color: "#fff", cursor: "pointer", lineHeight: 1,
+                fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, width: 34, height: 34, borderRadius: 8,
+                border: `1.5px solid ${newSeason ? C.ink : C.green}`, background: newSeason ? C.ink : "transparent",
+                color: newSeason ? "#fff" : C.green, cursor: "pointer", lineHeight: 1,
               }}>{newSeason ? "×" : "+"}</button>}
               <button onClick={askPin} title="PIN de organizador" style={{
-                fontSize: 15, width: 34, height: 34, borderRadius: 8, border: `1.5px solid ${pin && saveState !== "denied" ? C.neonGreen : saveState === "denied" ? C.red : C.line}`,
-                background: "transparent", cursor: "pointer", lineHeight: 1, color: "#fff"
+                fontSize: 16, width: 34, height: 34, borderRadius: 8, border: `1.5px solid ${pin && saveState !== "denied" ? C.green : saveState === "denied" ? C.red : C.line}`,
+                background: "transparent", cursor: "pointer", lineHeight: 1,
               }}>{pin && saveState !== "denied" ? "🔓" : "🔒"}</button>
             </div>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 8 }}>
-            <p style={{ margin: 0, fontSize: 12, color: C.sub }}>
-              {season.venue} · {DAYS[season.gameDay]} às {season.gameTime}{role === "super" ? " · admin total" : role === "admin" ? " · admin jornadas" : ""}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 4 }}>
+            <p style={{ margin: "2px 0 0", fontSize: 13, color: C.sub }}>
+              {season.venue} · {DAYS[season.gameDay]} às {season.gameTime}{role === "super" ? " · acesso total" : role === "admin" ? " · acesso: jornadas" : ""}
             </p>
-            <span style={{ fontSize: 11, color: (saveState === "local" || saveState === "denied") ? C.red : C.neonGreen }}>
-              {saveState === "saving" ? "a sincronizar…" : saveState === "saved" ? "sincronizado ✓" : saveState === "denied" ? "🔒 sem permissão" : saveState === "local" ? "offline" : ""}
+            <span style={{ fontSize: 11, color: (saveState === "local" || saveState === "denied") ? C.red : C.sub }}>
+              {saveState === "saving" ? "a sincronizar…" : saveState === "saved" ? "sincronizado ✓" : saveState === "denied" ? "🔒 sem permissão" : saveState === "local" ? "sem ligação — não gravado" : ""}
             </span>
           </div>
-        </div>
-      </div>
+        </header>
 
-      <div style={{ maxWidth: 520, margin: "0 auto", padding: "12px 12px 0" }}>
         {!storageOk && (
-          <div style={{ background: "#3a0011", border: `1px solid ${C.neonPink}`, color: "#ff8fa3", borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 10 }}>
-            Modo demonstração / sem ligação à base de dados.
+          <div style={{ background: "#FCEFEA", border: `1px solid ${C.red}`, color: C.red, borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 10 }}>
+            Modo demonstração / sem ligação à base de dados — as alterações não ficam gravadas.
           </div>
         )}
 
         {saveState === "denied" && (
-          <div style={{ background: "#3a0011", border: `1px solid ${C.neonPink}`, color: "#ff8fa3", borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 10 }}>
-            A alteração foi recusada. Introduz um PIN válido no cadeado 🔒.
+          <div style={{ background: "#FCEFEA", border: `1px solid ${C.red}`, color: C.red, borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 10 }}>
+            A alteração foi recusada. Toca no cadeado 🔒 lá em cima e introduz um PIN válido.
           </div>
         )}
 
@@ -537,19 +523,26 @@ function PremiumLeague() {
               </div>
             ) : (
               <>
-                {/* Official PL Styled Table */}
+                {/* CLASSIFICAÇÃO COM AS 4 SECÇÕES PEDIDAS E ALINHADAS */}
                 <div style={S.card}>
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontVariantNumeric: "tabular-nums", textAlign: "left" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontVariantNumeric: "tabular-nums", tableLayout: "fixed" }}>
                     <thead>
-                      <tr style={{ background: "#26002b", color: C.sub, fontFamily: FONT_NUM, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: `2px solid ${C.line}` }}>
-                        <th style={{ padding: "10px 4px", textAlign: "center", width: 32 }}>#</th>
-                        <th style={{ padding: "10px 6px" }}>Clube / Jogador</th>
-                        <th style={{ padding: "10px 4px", textAlign: "center", width: 36 }}>PJ</th>
-                        <th style={{ padding: "10px 4px", textAlign: "center", width: 36 }}>V</th>
-                        <th style={{ padding: "10px 4px", textAlign: "center", width: 36 }}>E</th>
-                        <th style={{ padding: "10px 4px", textAlign: "center", width: 36 }}>D</th>
-                        <th style={{ padding: "10px 4px", textAlign: "center", width: 42, color: C.neonGreen }}>GF</th>
-                        <th style={{ padding: "10px 6px", textAlign: "center", width: 44, color: "#fff", fontWeight: 800 }}>PTS</th>
+                      <tr style={{ background: C.ink, color: "#fff", fontFamily: FONT_NUM, fontSize: 14 }}>
+                        <th style={{ padding: "8px 2px", textAlign: "center", width: 26 }}>#</th>
+                        <th style={{ padding: "8px 4px", textAlign: "left" }}>Jogador</th>
+                        {/* Secção 1: Pontos (destacada) */}
+                        <th style={{ padding: "8px 2px", textAlign: "center", width: 44, background: C.green, color: "#fff" }}>PTS</th>
+                        {/* Secção 2: Jogos, V, E, D */}
+                        <th style={{ padding: "8px 2px", textAlign: "center", width: 32 }}>J</th>
+                        <th style={{ padding: "8px 2px", textAlign: "center", width: 28 }}>V</th>
+                        <th style={{ padding: "8px 2px", textAlign: "center", width: 28 }}>E</th>
+                        <th style={{ padding: "8px 2px", textAlign: "center", width: 28 }}>D</th>
+                        {/* Secção 3: D1 e D2 */}
+                        <th style={{ padding: "8px 2px", textAlign: "center", width: 28, color: "#ffd2d2" }}>D1</th>
+                        <th style={{ padding: "8px 2px", textAlign: "center", width: 28, color: "#ffd2d2" }}>D2</th>
+                        {/* Secção 4: Golos e Golos equipa */}
+                        <th style={{ padding: "8px 2px", textAlign: "center", width: 36, color: "#d2ffd2" }}>G</th>
+                        <th style={{ padding: "8px 2px", textAlign: "center", width: 36 }}>GE</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -558,33 +551,34 @@ function PremiumLeague() {
                         const open = openPlayer === r.name;
                         return [
                           <tr key={r.name} onClick={() => setOpenPlayer(open ? null : r.name)} style={{
-                            borderBottom: `1px solid ${C.line}`, cursor: "pointer",
-                            background: open ? "#2a2a35" : i === 0 ? "#1e2922" : i < 4 ? "#181f24" : "transparent",
+                            borderTop: `1px solid ${C.line}`, cursor: "pointer",
+                            background: open ? "#EAF2EC" : i === 0 ? "#FBF3DC" : i === 1 ? "#F1F2F0" : i === 2 ? "#F6EBDD" : "transparent",
                           }}>
-                            <td style={{ padding: "10px 4px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 14, fontWeight: 700, color: i === 0 ? C.neonGreen : i < 4 ? "#fff" : C.sub }}>
-                              {r.pos}
-                            </td>
-                            <td style={{ padding: "10px 6px", maxWidth: 150 }}>
-                              <div style={{ fontWeight: 600, fontSize: 13.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "#fff" }}>
-                                {r.name}
-                                {r.streak >= 3 && <span title={`${r.streak} vitórias seguidas`} style={{ fontSize: 11, marginLeft: 4 }}>🔥</span>}
-                              </div>
-                              <div style={{ fontSize: 10, color: C.gold, fontWeight: 700 }}>
-                                {prize ? `${prize.icon} ${prize.label}` : ""}
-                              </div>
+                            <td style={{ padding: "7px 2px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700, color: i < 3 ? C.gold : C.sub }}>{r.pos}</td>
+                            <td style={{ padding: "7px 4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                              <span style={{ fontWeight: prize ? 600 : 400, fontSize: 13.5 }}>{r.name}</span>
+                              {r.streak >= 3 && <span title={`${r.streak} vitórias seguidas`} style={{ fontSize: 11, marginLeft: 3 }}>🔥</span>}
+                              <div style={{ fontSize: 9.5, color: C.gold, fontWeight: 700, lineHeight: 1 }}>{prize ? `${prize.icon} ${prize.label}` : ""}</div>
                               <FormDots form={r.form} />
                             </td>
-                            <td style={{ padding: "10px 4px", textAlign: "center", fontSize: 13, color: C.sub }}>{r.J}</td>
-                            <td style={{ padding: "10px 4px", textAlign: "center", fontSize: 13, color: C.sub }}>{r.V}</td>
-                            <td style={{ padding: "10px 4px", textAlign: "center", fontSize: 13, color: C.sub }}>{r.E}</td>
-                            <td style={{ padding: "10px 4px", textAlign: "center", fontSize: 13, color: C.sub }}>{r.D}</td>
-                            <td style={{ padding: "10px 4px", textAlign: "center", fontSize: 13, fontWeight: 600, color: C.neonGreen }}>{r.golosPessoais}</td>
-                            <td style={{ padding: "10px 6px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 800, color: C.neonGreen }}>{r.pts}</td>
+                            {/* Secção 1: PTS Destacados */}
+                            <td style={{ padding: "7px 2px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 18, fontWeight: 800, background: "#E8F5EE", color: C.green }}>{r.pts}</td>
+                            {/* Secção 2: J, V, E, D */}
+                            <td style={{ padding: "7px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.J}</td>
+                            <td style={{ padding: "7px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.V}</td>
+                            <td style={{ padding: "7px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.E}</td>
+                            <td style={{ padding: "7px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.D}</td>
+                            {/* Secção 3: D1, D2 */}
+                            <td style={{ padding: "7px 2px", textAlign: "center", fontSize: 12.5, color: r.D1 > 0 ? C.red : C.sub }}>{r.D1}</td>
+                            <td style={{ padding: "7px 2px", textAlign: "center", fontSize: 12.5, color: r.D2 > 0 ? C.red : C.sub }}>{r.D2}</td>
+                            {/* Secção 4: Golos, Golos Equipa */}
+                            <td style={{ padding: "7px 2px", textAlign: "center", fontSize: 12.5, fontWeight: 700, color: C.green }}>{r.golosPessoais}</td>
+                            <td style={{ padding: "7px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.golosEquipa}</td>
                           </tr>,
                           open && (
-                            <tr key={r.name + "_d"} style={{ background: "#252530" }}>
-                              <td colSpan={8} style={{ padding: "10px 12px", fontSize: 12, color: C.sub }}>
-                                <b style={{ color: "#fff" }}>{r.name}</b> — desistências: {r.D1} × D1, {r.D2} × D2 (−{r.lost} pts) · faltas: {r.F} · golos equipa: {r.golosEquipa}
+                            <tr key={r.name + "_d"} style={{ background: "#F6F8F5" }}>
+                              <td colSpan={11} style={{ padding: "8px 12px", fontSize: 12, color: C.sub }}>
+                                <b style={{ color: C.ink }}>{r.name}</b> — desistências: {r.D1} × D1, {r.D2} × D2 (−{r.lost} pts) · faltas: {r.F}
                                 <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 6 }}>
                                   {season.weeks.map((w, wi) => {
                                     const mk = w.marks[r.name];
@@ -596,9 +590,10 @@ function PremiumLeague() {
                                       const theirs = mk === "B" ? Number(w.gP) : Number(w.gB);
                                       res = mine > theirs ? "V" : mine === theirs ? "E" : "D";
                                     }
-                                    const pGolos = w.scorers && w.scorers[r.name] ? ` (${w.scorers[r.name]}g)` : "";
+                                    const bg = res === "V" ? "#DFF0E4" : res === "D" ? "#F9E3DE" : res === "E" ? "#EDEEEC" : "#FBF3DC";
+                                    const pGolos = w.scorers && w.scorers[r.name] ? ` (${w.scorers[r.name]} golos)` : "";
                                     return (
-                                      <span key={wi} style={{ background: "#121212", border: `1px solid ${C.line}`, borderRadius: 4, padding: "2px 6px", fontSize: 11, color: "#fff" }}>
+                                      <span key={wi} style={{ background: bg, border: `1px solid ${C.line}`, borderRadius: 6, padding: "2px 6px", fontSize: 11, color: C.ink }}>
                                         J{wi + 1} {mk === "B" ? "⚪" : mk === "P" ? "⚫" : mk}{res ? ` ${w.gB}–${w.gP} ${res}` : ""}{pGolos}
                                       </span>
                                     );
@@ -613,29 +608,27 @@ function PremiumLeague() {
                   </table>
                 </div>
 
-                {/* Top Scorers Table Aligned */}
+                {/* Top Scorers / Marcadores */}
                 {topScorers.length > 0 && (
                   <div style={{ marginTop: 20 }}>
-                    <div style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 800, marginBottom: 8, color: "#fff" }}>⚽ TOP SCORERS (MARCADORES)</div>
+                    <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 8 }}>⚽ Top Scorers (Marcadores)</div>
                     <div style={S.card}>
-                      <table style={{ width: "100%", borderCollapse: "collapse", fontVariantNumeric: "tabular-nums", textAlign: "left" }}>
+                      <table style={{ width: "100%", borderCollapse: "collapse", fontVariantNumeric: "tabular-nums" }}>
                         <thead>
-                          <tr style={{ background: "#26002b", color: C.sub, fontFamily: FONT_NUM, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: `2px solid ${C.line}` }}>
-                            <th style={{ padding: "10px 6px", textAlign: "center", width: 36 }}>#</th>
-                            <th style={{ padding: "10px 8px" }}>Jogador</th>
-                            <th style={{ padding: "10px 8px", textAlign: "center", width: 60, color: C.neonGreen }}>Golos</th>
-                            <th style={{ padding: "10px 8px", textAlign: "center", width: 60 }}>Jogos</th>
-                            <th style={{ padding: "10px 8px", textAlign: "center", width: 60 }}>Média</th>
+                          <tr style={{ background: C.ink, color: "#fff", fontFamily: FONT_NUM, fontSize: 15 }}>
+                            {["#", "Jogador", "Golos", "Jogos", "Média"].map((h, i) => (
+                              <th key={i} style={{ padding: "7px 6px", textAlign: i === 1 ? "left" : "center", fontWeight: 600 }}>{h}</th>
+                            ))}
                           </tr>
                         </thead>
                         <tbody>
                           {topScorers.map((ts, idx) => (
-                            <tr key={ts.name} style={{ borderBottom: `1px solid ${C.line}`, background: idx === 0 ? "#1e2922" : "transparent" }}>
-                              <td style={{ padding: "10px 6px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 14, fontWeight: 700, color: idx === 0 ? C.neonGreen : C.sub }}>{idx + 1}</td>
-                              <td style={{ padding: "10px 8px", fontWeight: 600, fontSize: 13.5, color: "#fff" }}>{ts.name}</td>
-                              <td style={{ padding: "10px 8px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 800, color: C.neonGreen }}>{ts.golos}</td>
-                              <td style={{ padding: "10px 8px", textAlign: "center", fontSize: 13, color: C.sub }}>{ts.J}</td>
-                              <td style={{ padding: "10px 8px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 13, color: "#fff" }}>{ts.media}</td>
+                            <tr key={ts.name} style={{ borderTop: `1px solid ${C.line}`, background: idx === 0 ? "#FBF3DC" : idx === 1 ? "#F1F2F0" : idx === 2 ? "#F6EBDD" : "transparent" }}>
+                              <td style={{ padding: "6px 6px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700, color: idx < 3 ? C.gold : C.sub, width: 32 }}>{idx + 1}</td>
+                              <td style={{ padding: "6px 6px", fontWeight: idx < 3 ? 600 : 400, fontSize: 14 }}>{ts.name}</td>
+                              <td style={{ padding: "6px 6px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: C.green }}>{ts.golos}</td>
+                              <td style={{ padding: "6px 6px", textAlign: "center", fontSize: 13, color: C.sub }}>{ts.J}</td>
+                              <td style={{ padding: "6px 6px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 14, fontWeight: 600 }}>{ts.media}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -649,14 +642,14 @@ function PremiumLeague() {
               <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
                 {[["Jornadas", `${played.length}/${season.weeks.length}`], ["Branca", `${winB} vit.`], ["Preta", `${winP} vit.`], ["Empates", `${emp}`], ["Golos", `${totGolos}`]].map(([l, v]) => (
                   <div key={l} style={{ ...S.card, flex: "1 1 80px", padding: "8px 10px", textAlign: "center" }}>
-                    <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 800, color: "#fff" }}>{v}</div>
+                    <div style={{ fontFamily: FONT_NUM, fontSize: 22, fontWeight: 700 }}>{v}</div>
                     <div style={{ fontSize: 11, color: C.sub }}>{l}</div>
                   </div>
                 ))}
               </div>
             )}
-            <p style={{ fontSize: 11.5, color: C.sub, marginTop: 10 }}>
-              Toca num jogador para ver o histórico detalhado. Critérios de desempate oficiais da liga.
+            <p style={{ fontSize: 12, color: C.sub, marginTop: 10 }}>
+              Toca num jogador para ver o percurso jornada a jornada. Desempate: pontos → assiduidade → vitórias → menos pontos perdidos em desistências.
             </p>
           </>
         )}
@@ -668,23 +661,24 @@ function PremiumLeague() {
               return (
                 <button key={i} onClick={() => setOpenWeek(i)} style={{
                   ...S.card, display: "flex", alignItems: "center", justifyContent: "space-between",
-                  padding: "12px 14px", cursor: "pointer", textAlign: "left", fontFamily: FONT, width: "100%", color: "#fff"
+                  padding: "10px 14px", cursor: "pointer", textAlign: "left", fontFamily: FONT, width: "100%",
                 }}>
                   <div>
-                    <div style={{ fontFamily: FONT_NUM, fontWeight: 700, fontSize: 16 }}>Jornada {i + 1}</div>
+                    <div style={{ fontFamily: FONT_NUM, fontWeight: 600, fontSize: 18 }}>Jornada {i + 1}</div>
                     <div style={{ fontSize: 12, color: C.sub }}>{fmtDate(w.date)} · {s.nB} Branca / {s.nP} Preta</div>
                   </div>
                   {s.hasScore ? (
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 800, color: C.neonGreen }}>{w.gB}–{w.gP}</span>
+                      <span style={{ fontFamily: FONT_NUM, fontSize: 24, fontWeight: 700 }}>{w.gB}–{w.gP}</span>
                       <span style={{
-                        fontSize: 11, padding: "2px 8px", borderRadius: 4, fontWeight: 700,
-                        background: s.winner === "Preta" ? "#000" : s.winner === "Branca" ? "#fff" : "#333",
-                        color: s.winner === "Branca" ? "#000" : "#fff",
+                        fontSize: 11, padding: "3px 8px", borderRadius: 20, fontWeight: 600,
+                        background: s.winner === "Preta" ? C.preta : s.winner === "Branca" ? "#fff" : C.bg,
+                        color: s.winner === "Preta" ? "#fff" : C.ink,
+                        border: `1px solid ${s.winner === "Branca" ? C.brancaBorder : "transparent"}`,
                       }}>{s.winner}</span>
                     </div>
                   ) : (
-                    <span style={{ fontSize: 12, color: C.neonGreen, fontWeight: 700 }}>por jogar →</span>
+                    <span style={{ fontSize: 12, color: C.green, fontWeight: 600 }}>por jogar →</span>
                   )}
                 </button>
               );
@@ -692,7 +686,7 @@ function PremiumLeague() {
             {(superOk || (role === "admin" && !season.archived)) && <button onClick={() => {
               setSeason({ weeks: [...season.weeks, { date: "", gB: "", gP: "", marks: {}, convOrder: [], format: 8, scorers: {} }] });
               setOpenWeek(season.weeks.length);
-            }} style={{ padding: "12px", border: `1.5px dashed ${C.neonGreen}`, borderRadius: 10, background: "transparent", color: C.neonGreen, fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700, cursor: "pointer" }}>
+            }} style={{ padding: "12px", border: `1.5px dashed ${C.green}`, borderRadius: 10, background: "transparent", color: C.green, fontFamily: FONT_NUM, fontSize: 17, fontWeight: 600, cursor: "pointer" }}>
               + Nova jornada
             </button>}
           </div>
@@ -716,44 +710,55 @@ function PremiumLeague() {
         {tab === "rules" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {!superOk && (
-              <div style={{ background: "#26002b", border: `1px solid ${C.neonGreen}`, color: "#fff", borderRadius: 8, padding: "8px 12px", fontSize: 13 }}>
-                Modo consulta — para editar o regulamento, toca no cadeado 🔒 e usa o PIN de gestor.
+              <div style={{ background: "#FBF3DC", border: `1px solid ${C.gold}`, color: "#7A5C00", borderRadius: 8, padding: "8px 12px", fontSize: 13 }}>
+                Modo consulta — a edição do regulamento é exclusiva da password de gestor{role === "admin" ? " (estás com o PIN de administrador: só jornadas)" : ""}.
               </div>
             )}
 
-            <div style={{ ...S.card, padding: 14, background: "#1b1b22", color: "#fff" }}>
-              <div style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 800, marginBottom: 10, color: C.neonGreen }}>🏆 PRÉMIOS DA ÉPOCA</div>
+            <div style={{ ...S.card, padding: 14, background: C.ink, color: "#fff", border: "none" }}>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 10 }}>🏆 Prémios — se a época acabasse hoje</div>
               {(season.prizes || []).map(p => {
                 const holder = stats[p.pos - 1];
                 return (
-                  <div key={p.pos} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0", borderTop: `1px solid ${C.line}` }}>
-                    <span style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 800, width: 26, color: C.neonGreen }}>{p.pos}º</span>
-                    <span style={{ fontSize: 16 }}>{p.icon}</span>
-                    <span style={{ flex: 1, fontSize: 13.5, fontWeight: 600 }}>{holder ? holder.name : "—"}</span>
-                    <span style={{ fontFamily: FONT_NUM, fontSize: 15, fontWeight: 800, color: C.gold }}>{p.label}</span>
+                  <div key={p.pos} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0", borderTop: "1px solid #333" }}>
+                    <span style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, width: 26, color: p.pos <= 3 ? "#F0C64B" : "#bbb" }}>{p.pos}º</span>
+                    <span style={{ fontSize: 18 }}>{p.icon}</span>
+                    <span style={{ flex: 1, fontSize: 14, fontWeight: 600 }}>{holder ? holder.name : "—"}</span>
+                    <span style={{ fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: "#F0C64B" }}>{p.label}</span>
                   </div>
                 );
               })}
             </div>
 
             <div style={{ ...S.card, padding: 14 }}>
-              <div style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 800, marginBottom: 6, color: "#fff" }}>📣 CONVOCATÓRIA</div>
-              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.7, color: C.sub }}>
-                <li>Sai <b>{DAYS[season.convDay]} às {season.convTime}</b>.</li>
-                <li>Os <b>primeiros {season.convSlots}</b> a enviar "." ficam convocados.</li>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 6 }}>📣 Convocatória</div>
+              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.7 }}>
+                <li>Sai <b>{DAYS[season.convDay]} às {season.convTime}</b> (hora de Portugal continental).</li>
+                <li>Os <b>primeiros {season.convSlots}</b> a enviar "." estão convocados.</li>
                 <li>Jogos <b>{DAYS[season.gameDay]} às {season.gameTime}</b>, {season.venue}.</li>
+              </ul>
+              {season.convNotes && <p style={{ fontSize: 13, color: C.sub, margin: "6px 0 0", lineHeight: 1.6 }}>{season.convNotes}</p>}
+            </div>
+
+            <div style={{ ...S.card, padding: 14 }}>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 6 }}>⚖️ Como se formam as equipas</div>
+              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.7 }}>
+                <li>A ordem de inscrição na convocatória define os titulares: os primeiros <b>{season.convSlots}</b> contam; os seguintes ficam como <b>reservas</b>.</li>
+                <li>As equipas <b>Branca</b> e <b>Preta</b> são geradas automaticamente de forma equilibrada, com base no índice de cada jogador.</li>
+                <li>Os organizadores podem ajustar manualmente qualquer jogador entre Branca, Preta e reservas (suporte a arrastar e largar / Drag-and-Drop).</li>
               </ul>
             </div>
 
             <div style={{ ...S.card, padding: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 800, color: "#fff" }}>💸 IMPOSTO DO ATRASO</div>
+                <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700 }}>💸 Imposto do atraso</div>
                 <div style={{ fontSize: 13, color: C.sub }}>
-                  pote: <b style={{ color: C.neonGreen }}>{eur(finesPaid * season.fineAmount)}</b>
+                  pote: <b style={{ color: C.green }}>{eur(finesPaid * season.fineAmount)}</b>
+                  {finesOwed > 0 && <span style={{ color: C.red }}> · por cobrar: {eur(finesOwed * season.fineAmount)}</span>}
                 </div>
               </div>
               <p style={{ fontSize: 12.5, color: C.sub, margin: "0 0 8px", lineHeight: 1.6 }}>
-                <b style={{ color: "#fff" }}>{eur(season.fineAmount)}</b> por atraso (tolerância de <b>{season.fineTolerance}</b>).
+                <b style={{ color: C.ink }}>{eur(season.fineAmount)}</b> a quem chegar atrasado (tolerância de <b>{season.fineTolerance}</b>). {season.fineNotes}
               </p>
               {superOk && leaguePlayers.length > 0 && (
                 <AddFine players={leaguePlayers} amount={season.fineAmount} onAdd={(name) => {
@@ -762,10 +767,10 @@ function PremiumLeague() {
               )}
               {(season.fines || []).map(f => (
                 <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 0", borderTop: `1px solid ${C.line}`, fontSize: 13 }}>
-                  <span style={{ flex: 1, color: "#fff" }}>{f.name} <span style={{ color: C.sub, fontSize: 11 }}>({fmtDate(f.date)})</span></span>
+                  <span style={{ flex: 1 }}>{f.name} <span style={{ color: C.sub, fontSize: 11 }}>({fmtDate(f.date)})</span></span>
                   <button onClick={() => { if (!superOk) return; setSeason({ fines: season.fines.map(x => x.id === f.id ? { ...x, paid: !x.paid } : x) }); }} style={{
-                    fontSize: 12, padding: "3px 10px", borderRadius: 20, cursor: "pointer", fontWeight: 700,
-                    border: `1px solid ${f.paid ? C.neonGreen : C.neonPink}`, background: f.paid ? "#003b1f" : "#3a0011", color: f.paid ? C.neonGreen : C.neonPink,
+                    fontSize: 12, padding: "3px 10px", borderRadius: 20, cursor: "pointer", fontWeight: 600,
+                    border: `1px solid ${f.paid ? C.green : C.red}`, background: f.paid ? "#DFF0E4" : "#FCE4DC", color: f.paid ? C.green : C.red,
                   }}>{f.paid ? "pago ✓" : "por pagar"}</button>
                   {superOk && <button onClick={() => setSeason({ fines: season.fines.filter(x => x.id !== f.id) })} style={{ border: "none", background: "none", color: C.sub, cursor: "pointer" }}>×</button>}
                 </div>
@@ -773,23 +778,56 @@ function PremiumLeague() {
             </div>
 
             <div style={{ ...S.card, padding: 14 }}>
-              <div style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 800, marginBottom: 8, color: "#fff" }}>JOGADORES — {season.name}</div>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Pontuação</div>
+              {[["V", "Vitória"], ["E", "Empate"], ["D", "Derrota"], ["D1", "Desistência desde sábado (inclusive)"], ["D2", "Desistência desde 2ª às 00h"]].map(([k, lab]) => (
+                <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderTop: `1px solid ${C.line}` }}>
+                  <span style={{ fontSize: 14 }}>{lab} ({k})</span>
+                  <input type="number" value={season.points[k]} disabled={!superOk}
+                    onChange={e => setSeason({ points: { ...season.points, [k]: Number(e.target.value) } })}
+                    style={{ ...S.input, width: 60, textAlign: "center", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700 }} />
+                </div>
+              ))}
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", borderTop: `1px solid ${C.line}`, fontSize: 14, color: C.sub }}>
+                <span>Falta (F)</span><span style={{ fontFamily: FONT_NUM, fontWeight: 700 }}>0</span>
+              </div>
+            </div>
+
+            <div style={{ ...S.card, padding: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+                <span style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700 }}>Jogadores — {season.name}</span>
+                <span style={{ fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, color: C.green }}>
+                  {leaguePlayers.length} da liga{guests.length ? ` + ${guests.length} conv.` : ""}
+                </span>
+              </div>
               {superOk && <AddPlayer onAdd={(name, guest) => {
                 const nm = name.trim();
                 if (!nm || season.players.some(p => p.name === nm)) return;
                 if (/[.#$\[\]\/]/.test(nm)) { alert("O nome não pode conter . # $ [ ] /"); return; }
                 setSeason({ players: [...season.players, { name: nm, guest }] });
               }} />}
+              {superOk && data.seasons.some((s, i) => i !== sIdx && s.players.length > 0) && (
+                <button onClick={() => {
+                  const others = data.seasons.filter((s, i) => i !== sIdx && s.players.length > 0);
+                  const src = others[others.length - 1];
+                  const existing = new Set(season.players.map(p => p.name));
+                  const add = src.players.filter(p => !p.guest && !existing.has(p.name)).map(p => ({ name: p.name, guest: false }));
+                  setSeason({ players: [...season.players, ...add] });
+                }} style={{ width: "100%", marginBottom: 8, padding: "9px", border: `1.5px dashed ${C.green}`, borderRadius: 8, background: "transparent", color: C.green, fontWeight: 600, fontSize: 13.5, cursor: "pointer" }}>
+                  ⤵ Importar os jogadores da época anterior
+                </button>
+              )}
               {[...leaguePlayers].sort((a, b) => a.name.localeCompare(b.name, "pt")).concat([...guests].sort((a, b) => a.name.localeCompare(b.name, "pt"))).map(p => (
-                <div key={p.name} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderTop: `1px solid ${C.line}` }}>
-                  <span style={{ fontSize: 13.5, fontStyle: p.guest ? "italic" : "normal", color: p.guest ? C.sub : "#fff" }}>{p.name}</span>
+                <div key={p.name} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderTop: `1px solid ${C.line}` }}>
+                  <span style={{ fontSize: 14, fontStyle: p.guest ? "italic" : "normal", color: p.guest ? C.sub : C.ink }}>{p.name}</span>
                   {superOk && <div style={{ display: "flex", gap: 6 }}>
-                    <button onClick={() => renamePlayer(p.name)} title="Editar nome" style={{ fontSize: 11, border: `1px solid ${C.line}`, background: "transparent", borderRadius: 4, padding: "2px 6px", cursor: "pointer", color: C.sub }}>✎</button>
-                    <button onClick={() => setSeason({ players: season.players.map(x => x.name === p.name ? { ...x, guest: !x.guest } : x) })} style={{ fontSize: 11, border: `1px solid ${C.line}`, background: "transparent", borderRadius: 4, padding: "2px 6px", cursor: "pointer", color: C.sub }}>
-                      {p.guest ? "liga" : "conv."}
+                    <button onClick={() => renamePlayer(p.name)} title="Editar nome"
+                      style={{ fontSize: 12, border: `1px solid ${C.line}`, background: "transparent", borderRadius: 6, padding: "3px 8px", cursor: "pointer", color: C.sub }}>✎</button>
+                    <button onClick={() => setSeason({ players: season.players.map(x => x.name === p.name ? { ...x, guest: !x.guest } : x) })}
+                      style={{ fontSize: 12, border: `1px solid ${C.line}`, background: "transparent", borderRadius: 6, padding: "3px 8px", cursor: "pointer", color: C.sub }}>
+                      {p.guest ? "tornar da liga" : "tornar convidado"}
                     </button>
                     <button onClick={() => {
-                      if (confirm(`Remover ${p.name}?`)) {
+                      if (confirm(`Remover ${p.name} da época ${season.name}?`)) {
                         const weeks = season.weeks.map(w => {
                           const m = { ...w.marks }; delete m[p.name];
                           const sc = { ...(w.scorers || {}) }; delete sc[p.name];
@@ -797,7 +835,7 @@ function PremiumLeague() {
                         });
                         setSeason({ weeks, players: season.players.filter(x => x.name !== p.name) });
                       }
-                    }} style={{ fontSize: 11, border: "none", background: "transparent", color: C.neonPink, cursor: "pointer" }}>remover</button>
+                    }} style={{ fontSize: 12, border: "none", background: "transparent", color: C.red, cursor: "pointer" }}>remover</button>
                   </div>}
                 </div>
               ))}
@@ -830,15 +868,15 @@ function SeasonSettings({ season, setSeason, S, canDelete, onDelete }) {
   );
   return (
     <div style={{ ...S.card, padding: 14 }}>
-      <button onClick={() => setOpen(o => !o)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: FONT_NUM, color: "#fff" }}>
-        <span style={{ fontSize: 18, fontWeight: 800 }}>⚙️ Definições da época</span>
-        <span style={{ fontSize: 16, color: C.sub }}>{open ? "▴" : "▾"}</span>
+      <button onClick={() => setOpen(o => !o)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: FONT_NUM }}>
+        <span style={{ fontSize: 20, fontWeight: 700, color: C.ink }}>⚙️ Definições da época</span>
+        <span style={{ fontSize: 18, color: C.sub }}>{open ? "▴" : "▾"}</span>
       </button>
       {open && (
         <div style={{ marginTop: 12 }}>
           <div style={row}>
             <div style={{ flex: 1, minWidth: 120 }}>
-              <label style={S.lbl}>Nome</label>
+              <label style={S.lbl}>Nome da época</label>
               <input value={season.name} onChange={e => setSeason({ name: e.target.value })} style={{ ...S.input, width: "100%", boxSizing: "border-box" }} />
             </div>
             <div style={{ flex: 2, minWidth: 160 }}>
@@ -846,8 +884,46 @@ function SeasonSettings({ season, setSeason, S, canDelete, onDelete }) {
               <input value={season.venue} onChange={e => setSeason({ venue: e.target.value })} style={{ ...S.input, width: "100%", boxSizing: "border-box" }} />
             </div>
           </div>
+          <label style={{ fontSize: 13, display: "flex", gap: 6, alignItems: "center", marginBottom: 8 }}>
+            <input type="checkbox" checked={!!season.archived} onChange={e => setSeason({ archived: e.target.checked })} />
+            Época arquivada
+          </label>
+          <div style={row}>
+            <div style={{ flex: 1 }}>
+              <label style={S.lbl}>Dia do jogo</label>
+              {daySelect(season.gameDay, e => setSeason({ gameDay: Number(e.target.value) }))}
+            </div>
+            <div>
+              <label style={S.lbl}>Hora do jogo</label>
+              <input type="time" value={season.gameTime} onChange={e => setSeason({ gameTime: e.target.value })} style={S.input} />
+            </div>
+          </div>
+          <div style={row}>
+            <div style={{ flex: 1 }}>
+              <label style={S.lbl}>Dia da convocatória</label>
+              {daySelect(season.convDay, e => setSeason({ convDay: Number(e.target.value) }))}
+            </div>
+            <div>
+              <label style={S.lbl}>Hora</label>
+              <input type="time" value={season.convTime} onChange={e => setSeason({ convTime: e.target.value })} style={S.input} />
+            </div>
+            <div>
+              <label style={S.lbl}>Convocados</label>
+              <input type="number" min="2" value={season.convSlots} onChange={e => setSeason({ convSlots: num(e.target.value, 16) })} style={{ ...S.input, width: 64, textAlign: "center" }} />
+            </div>
+          </div>
+          <div style={row}>
+            <div>
+              <label style={S.lbl}>Multa (€)</label>
+              <input type="number" step="0.5" min="0" value={season.fineAmount} onChange={e => setSeason({ fineAmount: num(e.target.value, 2.5) })} style={{ ...S.input, width: 80, textAlign: "center" }} />
+            </div>
+            <div>
+              <label style={S.lbl}>Tolerância</label>
+              <input type="number" min="0" value={season.fineTolerance} onChange={e => setSeason({ fineTolerance: num(e.target.value, 1) })} style={{ ...S.input, width: 80, textAlign: "center" }} />
+            </div>
+          </div>
           {canDelete && (
-            <button onClick={onDelete} style={{ fontSize: 12, border: `1px solid ${C.neonPink}`, color: C.neonPink, background: "none", borderRadius: 6, padding: "6px 12px", cursor: "pointer", marginTop: 4 }}>
+            <button onClick={onDelete} style={{ fontSize: 12.5, border: `1px solid ${C.red}`, color: C.red, background: "none", borderRadius: 6, padding: "6px 12px", cursor: "pointer", marginTop: 4 }}>
               Apagar esta época
             </button>
           )}
@@ -863,10 +939,10 @@ function NewSeasonForm({ base, S, onCreate }) {
   const [start, setStart] = useState("");
   const [n, setN] = useState(14);
   return (
-    <div style={{ ...S.card, padding: 14, marginBottom: 14, border: `1.5px solid ${C.neonGreen}` }}>
-      <div style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 800, marginBottom: 10, color: "#fff" }}>Nova Época</div>
+    <div style={{ ...S.card, padding: 14, marginBottom: 14, border: `1.5px solid ${C.green}` }}>
+      <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 10 }}>Nova época</div>
       <div style={{ display: "flex", gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
-        <input value={name} onChange={e => setName(e.target.value)} placeholder="Nome (ex: 2026/3)" style={{ ...S.input, flex: 1 }} />
+        <input value={name} onChange={e => setName(e.target.value)} placeholder="Nome (ex.: 2026/4)" style={{ ...S.input, flex: 1 }} />
         <input value={venue} onChange={e => setVenue(e.target.value)} placeholder="Campo" style={{ ...S.input, flex: 2 }} />
       </div>
       <button onClick={() => {
@@ -878,8 +954,8 @@ function NewSeasonForm({ base, S, onCreate }) {
           points: { ...base.points }, players: base.players.filter(p => !p.guest).map(p => ({ name: p.name, guest: false })),
           weeks: Array.from({ length: n }, () => ({ date: "", gB: "", gP: "", marks: {}, convOrder: [], format: 8, scorers: {} })), fines: []
         });
-      }} style={{ width: "100%", background: C.neonGreen, color: "#121212", border: "none", borderRadius: 8, padding: "10px", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 800, cursor: "pointer" }}>
-        Criar Época
+      }} style={{ width: "100%", background: C.green, color: "#fff", border: "none", borderRadius: 8, padding: "11px", fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, cursor: "pointer" }}>
+        Criar época
       </button>
     </div>
   );
@@ -924,7 +1000,7 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
   const naoConv = alpha.filter(pl => !convOrder.includes(pl.name));
 
   const card = { background: C.surface, border: `1px solid ${C.line}`, borderRadius: 10, overflow: "hidden" };
-  const inp = { border: `1px solid ${C.line}`, borderRadius: 6, padding: "6px 8px", fontFamily: FONT, fontSize: 14, background: "#121212", color: "#fff" };
+  const inp = { border: `1px solid ${C.line}`, borderRadius: 6, padding: "6px 8px", fontFamily: FONT, fontSize: 14, background: "#fff" };
 
   const setWeek = (patch) => {
     if (!canW) return;
@@ -1016,19 +1092,18 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
   const subBtn = (n, lab, badge) => (
     <button onClick={() => setSub(n)} style={{
       flex: 1, padding: "8px 2px", border: "none", cursor: "pointer", borderRadius: 6,
-      background: sub === n ? C.neonGreen : "transparent", color: sub === n ? "#121212" : "#fff",
-      fontFamily: FONT_NUM, fontSize: 13, fontWeight: 700,
+      background: sub === n ? C.green : "transparent", color: sub === n ? "#fff" : C.ink,
+      fontFamily: FONT_NUM, fontSize: 14.5, fontWeight: 600,
     }}>{lab}{badge ? ` (${badge})` : ""}</button>
   );
   const statusBtn = (name, code, lab) => {
     const on = w.marks[name] === code;
     return (
       <button key={code} onClick={(e) => { e.stopPropagation(); setStatus(name, code); }} disabled={!canW} style={{
-        minWidth: 28, padding: "3px 4px", borderRadius: 4, cursor: canW ? "pointer" : "default",
-        fontFamily: FONT_NUM, fontSize: 11, fontWeight: 700,
-        border: `1px solid ${on ? C.neonPink : C.line}`,
-        background: on ? C.neonPink : "transparent",
-        color: on ? "#fff" : C.sub,
+        minWidth: 30, padding: "4px", borderRadius: 6, cursor: canW ? "pointer" : "default",
+        fontFamily: FONT_NUM, fontSize: 12, fontWeight: 700,
+        border: `1.5px solid ${on ? C.red : C.line}`,
+        background: on ? "#FCE4DC" : "transparent", color: on ? C.red : C.sub,
       }}>{lab}</button>
     );
   };
@@ -1037,44 +1112,41 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
     <div key={name} draggable={canW} onDragStart={(e) => e.dataTransfer.setData("text/plain", name)}
       style={{ display: "flex", gap: 4, marginBottom: 4, cursor: canW ? "grab" : "default" }}>
       <button onClick={() => cycleTeam(name)} disabled={!canW} style={{
-        flex: 1, minWidth: 0, textAlign: "left", padding: "6px 8px", borderRadius: 6,
-        background: mk === "P" ? "#000" : mk === "B" ? "#fff" : "#2a2a35",
-        color: mk === "P" ? "#fff" : mk === "B" ? "#000" : "#fff",
-        border: `1px solid ${C.line}`, fontSize: 13,
+        flex: 1, minWidth: 0, textAlign: "left", padding: "6px 8px", borderRadius: 8,
+        background: mk === "P" ? C.preta : mk === "B" ? "#fff" : "#FBF3DC",
+        color: mk === "P" ? "#fff" : C.ink, border: `1.5px solid ${C.line}`, fontSize: 13.5,
         overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
       }}>{name}{isGuest(name) ? " ᶜ" : ""}</button>
-      {canW && <button onClick={() => toggleConv(name)} style={{ width: 24, borderRadius: 6, border: `1px solid ${C.line}`, background: "transparent", color: C.sub, cursor: "pointer" }}>×</button>}
+      {canW && <button onClick={() => toggleConv(name)} style={{ width: 26, borderRadius: 8, border: `1px solid ${C.line}`, background: "transparent", color: C.sub, cursor: "pointer" }}>×</button>}
     </div>
   );
 
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-        <button onClick={() => setOpenWeek(null)} style={{ background: "none", border: "none", color: C.neonGreen, fontWeight: 700, fontSize: 14, cursor: "pointer", padding: 0 }}>← Voltar às jornadas</button>
-        {superOk && <button onClick={onToggleLock} style={{ fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4, cursor: "pointer", border: `1px solid ${locked ? C.neonPink : C.line}`, background: locked ? "#3a0011" : "transparent", color: locked ? C.neonPink : C.sub }}>{locked ? "🔒 Desbloquear" : "🔓 Bloquear"}</button>}
+        <button onClick={() => setOpenWeek(null)} style={{ background: "none", border: "none", color: C.green, fontWeight: 600, fontSize: 14, cursor: "pointer", padding: 0 }}>← Jornadas</button>
+        {superOk && <button onClick={onToggleLock} style={{ fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 20, cursor: "pointer", border: `1.5px solid ${locked ? C.red : C.line}`, background: locked ? "#FCE4DC" : "transparent", color: locked ? C.red : C.sub }}>{locked ? "🔒 Desbloquear" : "🔓 Bloquear"}</button>}
       </div>
 
       <div style={{ ...card, padding: 12, marginBottom: 10 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 800, color: "#fff" }}>Jornada {openWeek + 1}</div>
+          <div style={{ fontFamily: FONT_NUM, fontSize: 22, fontWeight: 700 }}>Jornada {openWeek + 1}</div>
           <input type="date" value={w.date || ""} disabled={!canW} onChange={e => setWeek({ date: e.target.value })} style={inp} />
         </div>
-        <div style={{ display: "flex", gap: 4, marginTop: 10, background: "#121212", borderRadius: 8, padding: 3 }}>
-          {subBtn(1, "1.Convocatória", activeConv.length)}
-          {subBtn(2, "2.Equipas")}
-          {subBtn(3, "3.Resultado")}
+        <div style={{ display: "flex", gap: 4, marginTop: 10, background: "#F2F4F0", borderRadius: 8, padding: 3 }}>
+          {subBtn(1, "1·Convocatória", activeConv.length)}
+          {subBtn(2, "2·Equipas")}
+          {subBtn(3, "3·Resultado")}
         </div>
       </div>
 
       {sub === 1 && (
         <div>
           <div style={{ ...card, padding: "10px 12px", marginBottom: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontFamily: FONT_NUM, fontSize: 16, fontWeight: 800, color: C.neonGreen }}>{Math.min(activeConv.length, cap)}/{cap} convocados</span>
-            <span style={{ fontSize: 12, color: C.sub }}>{reservasAuto.length > 0 ? `+ ${reservasAuto.length} reservas` : ""}</span>
+            <span style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 700, color: C.green }}>{Math.min(activeConv.length, cap)}/{cap} convocados</span>
           </div>
           <div style={{ ...card }}>
             {alpha.map((pl, k) => {
-              const mk = w.marks[pl.name];
               const inConv = convOrder.includes(pl.name);
               const pos = activeConv.indexOf(pl.name);
               const isRes = pos >= cap;
@@ -1082,15 +1154,15 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
                 <div key={pl.name} onClick={() => toggleConv(pl.name)} style={{
                   display: "flex", alignItems: "center", gap: 8, padding: "7px 10px",
                   borderTop: k ? `1px solid ${C.line}` : "none", cursor: canW ? "pointer" : "default",
-                  background: inConv ? (isRes ? "#2a2200" : "#003b1f") : "transparent",
+                  background: inConv ? (isRes ? "#FBF3DC" : "#EAF2EC") : "transparent",
                 }}>
                   <span style={{
-                    width: 24, height: 24, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center",
-                    fontFamily: FONT_NUM, fontSize: 12, fontWeight: 800,
-                    background: pos >= 0 ? (isRes ? C.gold : C.neonGreen) : "transparent",
-                    color: pos >= 0 ? "#121212" : C.sub, border: pos >= 0 ? "none" : `1px dashed ${C.line}`
+                    width: 26, height: 26, borderRadius: 13, display: "flex", alignItems: "center", justifyContent: "center",
+                    fontFamily: FONT_NUM, fontSize: 13, fontWeight: 700,
+                    background: pos >= 0 ? (isRes ? C.gold : C.green) : "transparent", color: pos >= 0 ? "#fff" : "#C0C4BD",
+                    border: pos >= 0 ? "none" : `1.5px dashed ${C.line}`
                   }}>{pos >= 0 ? (isRes ? "R" : pos + 1) : "+"}</span>
-                  <span style={{ flex: 1, fontSize: 13.5, color: "#fff", fontStyle: pl.guest ? "italic" : "normal" }}>{pl.name}{pl.guest ? " ᶜ" : ""}</span>
+                  <span style={{ flex: 1, fontSize: 14, fontStyle: pl.guest ? "italic" : "normal" }}>{pl.name}{pl.guest ? " ᶜ" : ""}</span>
                   {inConv && <span style={{ display: "flex", gap: 3 }} onClick={e => e.stopPropagation()}>
                     {statusBtn(pl.name, "D1", "D1")}
                     {statusBtn(pl.name, "D2", "D2")}
@@ -1101,13 +1173,6 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
               );
             })}
           </div>
-          {canW && (
-            <div style={{ display: "flex", gap: 6, alignItems: "center", marginTop: 10 }}>
-              <input value={nName} onChange={e => setNName(e.target.value)} placeholder="Novo jogador..." onKeyDown={e => { if (e.key === "Enter") addPlayer(); }} style={{ ...inp, flex: 1 }} />
-              <label style={{ fontSize: 12, color: C.sub, display: "flex", alignItems: "center", gap: 4 }}><input type="checkbox" checked={nGuest} onChange={e => setNGuest(e.target.checked)} /> conv.</label>
-              <button onClick={addPlayer} style={{ background: C.neonGreen, color: "#121212", border: "none", borderRadius: 6, padding: "7px 12px", fontWeight: 700, cursor: "pointer" }}>Adicionar</button>
-            </div>
-          )}
         </div>
       )}
 
@@ -1116,23 +1181,23 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
           <div style={{ ...card, padding: 12, marginBottom: 10 }}>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               {[8, 11].map(f => (
-                <button key={f} onClick={() => setWeek({ format: f })} style={{ padding: "4px 10px", borderRadius: 4, background: (w.format || 8) === f ? C.neonGreen : "transparent", color: (w.format || 8) === f ? "#121212" : "#fff", border: `1px solid ${C.line}`, fontWeight: 700 }}>{f}v{f}</button>
+                <button key={f} onClick={() => setWeek({ format: f })} style={{ padding: "5px 12px", borderRadius: 20, background: (w.format || 8) === f ? C.ink : "transparent", color: (w.format || 8) === f ? "#fff" : C.sub, border: `1.5px solid ${C.line}`, fontWeight: 700 }}>{f}v{f}</button>
               ))}
-              <button onClick={gerarEquipas} disabled={!canW || titulares.length < 2} style={{ marginLeft: "auto", background: C.neonGreen, color: "#121212", border: "none", borderRadius: 6, padding: "6px 12px", fontWeight: 800, cursor: "pointer" }}>⚖️ Gerar equipas</button>
+              <button onClick={gerarEquipas} disabled={!canW || titulares.length < 2} style={{ marginLeft: "auto", background: C.green, color: "#fff", border: "none", borderRadius: 8, padding: "7px 12px", fontWeight: 700, cursor: "pointer" }}>⚖️ Gerar equipas</button>
             </div>
           </div>
           <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
             <div style={{ ...card, flex: 1, padding: 8 }} onDragOver={e => e.preventDefault()} onDrop={e => { e.preventDefault(); const name = e.dataTransfer.getData("text/plain"); if (name) setPlayerTeam(name, "B"); }}>
-              <div style={{ fontFamily: FONT_NUM, fontSize: 14, fontWeight: 800, marginBottom: 6, color: "#fff" }}>⚪ Branca ({Bs.length})</div>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, marginBottom: 6 }}>⚪ Branca ({Bs.length})</div>
               {Bs.map(n => teamChip(n, "B"))}
             </div>
             <div style={{ ...card, flex: 1, padding: 8 }} onDragOver={e => e.preventDefault()} onDrop={e => { e.preventDefault(); const name = e.dataTransfer.getData("text/plain"); if (name) setPlayerTeam(name, "P"); }}>
-              <div style={{ fontFamily: FONT_NUM, fontSize: 14, fontWeight: 800, marginBottom: 6, color: "#fff" }}>⚫ Preta ({Ps.length})</div>
+              <div style={{ fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, marginBottom: 6 }}>⚫ Preta ({Ps.length})</div>
               {Ps.map(n => teamChip(n, "P"))}
             </div>
           </div>
           {(Bs.length + Ps.length) > 0 && (
-            <button onClick={copyWhats} style={{ width: "100%", padding: "10px", borderRadius: 8, border: `1px solid ${C.neonGreen}`, background: copied ? C.neonGreen : "transparent", color: copied ? "#121212" : C.neonGreen, fontFamily: FONT_NUM, fontSize: 15, fontWeight: 800, cursor: "pointer" }}>
+            <button onClick={copyWhats} style={{ width: "100%", padding: "11px", borderRadius: 8, border: `1.5px solid ${C.green}`, background: copied ? C.green : "transparent", color: copied ? "#fff" : C.green, fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700, cursor: "pointer" }}>
               {copied ? "✓ Copiado!" : "📋 Copiar para o WhatsApp"}
             </button>
           )}
@@ -1144,25 +1209,25 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
           <div style={{ ...card, padding: 14, marginBottom: 10 }}>
             <div style={{ display: "flex", gap: 10 }}>
               {[["Branca", "gB"], ["Preta", "gP"]].map(([lab, key]) => (
-                <div key={key} style={{ flex: 1, background: "#121212", border: `1px solid ${C.line}`, borderRadius: 8, padding: "10px", textAlign: "center" }}>
-                  <div style={{ fontFamily: FONT_NUM, fontSize: 14, fontWeight: 700, marginBottom: 4, color: "#fff" }}>{lab}</div>
-                  <input type="number" min="0" max="60" value={w[key] === null ? "" : w[key]} onChange={e => setWeek({ [key]: e.target.value === "" ? "" : Number(e.target.value) })} style={{ width: 60, fontFamily: FONT_NUM, fontSize: 28, fontWeight: 800, textAlign: "center", background: "transparent", color: C.neonGreen, border: "none", borderBottom: `2px solid ${C.neonGreen}` }} />
+                <div key={key} style={{ flex: 1, background: "#fff", border: `1px solid ${C.line}`, borderRadius: 10, padding: "10px", textAlign: "center" }}>
+                  <div style={{ fontFamily: FONT_NUM, fontSize: 16, fontWeight: 600, marginBottom: 4 }}>{lab}</div>
+                  <input type="number" min="0" max="60" value={w[key] === null ? "" : w[key]} onChange={e => setWeek({ [key]: e.target.value === "" ? "" : Number(e.target.value) })} style={{ width: 70, fontFamily: FONT_NUM, fontSize: 34, fontWeight: 700, textAlign: "center", background: "transparent", border: "none", borderBottom: `2px solid ${C.green}` }} />
                 </div>
               ))}
             </div>
           </div>
 
           <div style={{ ...card, padding: 14, marginBottom: 10 }}>
-            <div style={{ fontFamily: FONT_NUM, fontSize: 16, fontWeight: 800, marginBottom: 8, color: "#fff" }}>⚽ Marcadores</div>
+            <div style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 700, marginBottom: 8 }}>⚽ Marcadores dos Golos</div>
             {activeConv.map(n => (
               <div key={n} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 0", borderTop: `1px solid ${C.line}` }}>
-                <span style={{ fontSize: 13.5, color: "#fff" }}>{n}</span>
+                <span style={{ fontSize: 14 }}>{n}</span>
                 <input type="number" min="0" max="30" value={(w.scorers || {})[n] || ""} onChange={e => {
                   const val = e.target.value === "" ? "" : Number(e.target.value);
                   const next = { ...(w.scorers || {}) };
                   if (val === "" || val === 0) delete next[n]; else next[n] = val;
                   setWeek({ scorers: next });
-                }} style={{ ...inp, width: 50, textAlign: "center", fontFamily: FONT_NUM, fontWeight: 800 }} />
+                }} style={{ ...inp, width: 55, textAlign: "center", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700 }} />
               </div>
             ))}
           </div>
@@ -1174,13 +1239,10 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
 
 function Setup({ onDemo }) {
   return (
-    <div style={{ minHeight: "100vh", background: "#121212", fontFamily: FONT, color: "#fff", padding: "24px 12px" }}>
+    <div style={{ minHeight: "100vh", background: "#EDF0EC", fontFamily: FONT, color: "#16181A", padding: "24px 12px" }}>
       <div style={{ maxWidth: 520, margin: "0 auto" }}>
-        <h1 style={{ fontFamily: FONT_NUM, fontWeight: 800, fontSize: 26, color: C.neonGreen, margin: "0 0 10px" }}>Configuração Inicial — Premier League</h1>
-        <p style={{ fontSize: 14, color: C.sub, lineHeight: 1.6, marginBottom: 20 }}>
-          Cole as regras do Firebase e os dados de configuração para começar a usar a aplicação com o visual oficial.
-        </p>
-        <button onClick={onDemo} style={{ width: "100%", padding: "12px", borderRadius: 8, border: `2px solid ${C.neonGreen}`, background: "transparent", color: C.neonGreen, fontFamily: FONT_NUM, fontSize: 16, fontWeight: 800, cursor: "pointer" }}>
+        <h1 style={{ fontFamily: FONT_NUM, fontWeight: 700, fontSize: 32, margin: "0 0 4px" }}>Configuração Inicial</h1>
+        <button onClick={onDemo} style={{ width: "100%", padding: "12px", borderRadius: 8, border: "1.5px solid #1E6B40", background: "transparent", color: "#1E6B40", fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, cursor: "pointer" }}>
           Ver em modo demonstração
         </button>
       </div>
@@ -1193,9 +1255,9 @@ function AddPlayer({ onAdd }) {
   const [guest, setGuest] = useState(false);
   return (
     <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 8 }}>
-      <input value={name} onChange={e => setName(e.target.value)} placeholder="Nome do jogador" onKeyDown={e => { if (e.key === "Enter") { onAdd(name, guest); setName(""); } }} style={{ flex: 1, border: "1px solid #2c2c35", borderRadius: 6, padding: "6px 8px", background: "#121212", color: "#fff" }} />
-      <label style={{ fontSize: 12, color: "#a6a6b2", display: "flex", gap: 4 }}><input type="checkbox" checked={guest} onChange={e => setGuest(e.target.checked)} /> conv.</label>
-      <button onClick={() => { onAdd(name, guest); setName(""); }} style={{ background: "#00ff87", color: "#121212", border: "none", borderRadius: 6, padding: "6px 12px", fontWeight: 700, cursor: "pointer" }}>Adicionar</button>
+      <input value={name} onChange={e => setName(e.target.value)} placeholder="Nome do jogador" onKeyDown={e => { if (e.key === "Enter") { onAdd(name, guest); setName(""); } }} style={{ flex: 1, border: "1px solid #DCE0DA", borderRadius: 6, padding: "7px 10px", fontSize: 14 }} />
+      <label style={{ fontSize: 12, color: "#6B7069", display: "flex", gap: 4 }}><input type="checkbox" checked={guest} onChange={e => setGuest(e.target.checked)} /> conv.</label>
+      <button onClick={() => { onAdd(name, guest); setName(""); }} style={{ background: "#1E6B40", color: "#fff", border: "none", borderRadius: 6, padding: "7px 12px", fontWeight: 600, cursor: "pointer" }}>Adicionar</button>
     </div>
   );
 }
@@ -1204,10 +1266,10 @@ function AddFine({ players, amount, onAdd }) {
   const [name, setName] = useState(players[0]?.name || "");
   return (
     <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
-      <select value={name} onChange={e => setName(e.target.value)} style={{ flex: 1, border: "1px solid #2c2c35", borderRadius: 6, padding: "6px", background: "#121212", color: "#fff" }}>
+      <select value={name} onChange={e => setName(e.target.value)} style={{ flex: 1, border: "1px solid #DCE0DA", borderRadius: 6, padding: "7px", background: "#fff" }}>
         {players.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
       </select>
-      <button onClick={() => name && onAdd(name)} style={{ background: "#ff2882", color: "#fff", border: "none", borderRadius: 6, padding: "6px 10px", fontWeight: 700, cursor: "pointer" }}>Multar</button>
+      <button onClick={() => name && onAdd(name)} style={{ background: "#B3372B", color: "#fff", border: "none", borderRadius: 6, padding: "7px 12px", fontWeight: 600, cursor: "pointer" }}>Multar</button>
     </div>
   );
 }
