@@ -32,58 +32,408 @@ const FIREBASE_CONFIG = {
 const DB_PATH = "premium_league";
 // ============================================================
 
-// As 50 Frases Corny / Cromo para o topo da página
+// As 400 frases Corny / Cromo para o loop contínuo
 const CROMO_QUOTES = [
-  "Amigos, Paz, Amizade e dois toques na bola!",
-  "Mais vale um golo de calcanhar do que um Audi A4 a andar.",
-  "Quem não marca, sofre... e paga as minis.",
-  "Futebol sem fintas é como jantar de família sem discussão política.",
-  "O meu coração bate mais forte do que o central a tentar apanhar-me.",
-  "Bate a bota, rola a bola, se fores tu a marcar, pago a viola.",
-  "Craque em campo, perna de pau no encanto.",
-  "Mais vale cair com estilo do que correr sem sentido.",
-  "A nossa amizade é como fora de jogo: milimétrica e polémica.",
-  "Se a vida te der limões, faz uma caipirinha para o pós-jogo.",
-  "O relvado pode ter buracos, mas a nossa técnica tem crateras.",
-  "Treino muito para jogar pouco, mas com muita classe.",
-  "Se correr fosse sinónimo de sucesso, eu era o Usain Bolt da distrital.",
-  "Correr para quê se a bola pode vir ter comigo?",
-  "Tática de equipa: chutar para a frente e logo se vê.",
-  "Fintar o defesa é fácil, difícil é acertar na baliza.",
-  "Não sou o Messi, mas também sei cair na área sem ninguém me tocar.",
-  "O balneário cheira a unguex e a amizade verdadeira.",
-  "Chuteira nova, bolha velha nos calcanhares.",
-  "Amigo que é amigo avisa quando vais passar vergonha.",
-  "O árbitro está cego ou comprou os óculos na feira da ladra?",
-  "Futebol total: total falta de pontaria.",
-  "Nenhum adversário é tão perigoso como a nossa própria defesa.",
-  "Golo de letra? Só se for no dicionário.",
-  "A união faz a força, mas os bicos para a bancada fazem o espetáculo.",
-  "Craques na esplanada, craques na bancada.",
-  "Quem tem amigos na baliza nunca passa sede.",
-  "A bola é redonda, mas as nossas pernas são quadradas.",
-  "Sempre a rasgar... as calças do equipamento.",
-  "Futebol champagne com bolor do bom.",
-  "Dribles de luxo, finalizações para o quinto anel.",
-  "Mais vale chutar com força do que com inteligência.",
-  "O espírito de equipa vive-se no multibanco a pagar as quotas.",
-  "Faltas táticas: quando sabes que vais perder na corrida.",
-  "Fora de jogo só se for mental.",
-  "Golos cantados e cantgas desafinadas.",
-  "O mister explicou tudo, mas nós percebemos zero.",
-  "Marcar de cabeça? Só se for contra a própria baliza.",
-  "De perto ninguém é normal, muito menos a nossa linha defensiva.",
-  "Atitude de campeão com pulmões de fumador.",
-  "O relvado é verde, a nossa alma é branca e preta.",
-  "Craques do improviso e da falta de comparência.",
-  "Quem joga com o coração acaba sempre a coxear.",
-  "Fintar a gravidade e cair de rasto no chão.",
-  "Um por todos e todos a culpar o guarda-redes.",
-  "Reserva de luxo: o banco é o meu habitat natural.",
-  "Se a bola vai à trave, a culpa é do vento.",
-  "Sola dura, coração mole e cerveja fresca no fim.",
-  "A tática é segredo de estado: nem nós sabemos como vamos jogar.",
-  "Que comece o espetáculo e que Deus nos acuda!"
+  "O teu único defeito é que a bola no pé atrapalha.",
+  "Vieram direto do escritório para o campo espalhar o caos e a vergonha.",
+  "Passaste o dia a aturar o chefe para chegares aqui e fazeres figura de urso.",
+  "O teu aquecimento foi uma mini e duas bifanas mal cozinhadas.",
+  "Tens dois pés esquerdos e ambos estão engessados.",
+  "O teu talento cabe todo na cabeça de um alfinete.",
+  "A tua inteligência tática cabe num bilhete de metro usado.",
+  "O teu único drible conhecido é tropeçar nas próprias canelas.",
+  "Tens a velocidade punta de um caixote de correio com rodas quadradas.",
+  "O teu passe longo vai sempre ter com o vizinho do lado.",
+  "És a prova viva de que a gravidade odeia os teus remates frouxos.",
+  "O teu golo mais famoso da carreira foi um auto-golo de calcanhar.",
+  "Tens o instinto matador de uma ovelha mansa com medo de moscas.",
+  "O teu radar de jogo está sempre fora de serviço e desligado da tomada.",
+  "És um craque... mas só nos teus sonhos mais distantes.",
+  "A tua classe em campo dá vontade de apagar a luz do estádio.",
+  "O teu lugar reservado é sempre no banco imaginário dos suplentes.",
+  "Tens a mobilidade de um frigorífico antigo a ser arrastado pelas escadas.",
+  "O teu remate foi tão torto que a bola pediu asilo político na rua.",
+  "A tua técnica lembra um acidente de viação em câmara lenta.",
+  "O teu fôlego dura exatamente o tempo de ires buscar a bola ao mato.",
+  "Tens o porte físico de um palito em dia de jejum prolongado.",
+  "O teu cabeceamento é espetacular: passas a bola a quem está na bancada.",
+  "A tua visão de jogo resume-se a ver a bola a passar longe de ti.",
+  "Tens a compostura de um gato a cair de paraquedas num balde de tinta.",
+  "O teu carrinho à defesa limpa as pernas e a paciência de todos.",
+  "A tua garra em campo é a mesma de um peluche esquecido no sofá.",
+  "O teu desodorizante já desistiu de lutar contra o teu suor de segunda.",
+  "Tens o toque de bola de quem tenta calçar um elefante com sapatos 38.",
+  "O teu plano tático é rezar para que o adversário seja pior do que tu.",
+  "O teu estilo de corrida faz lembrar uma galinha sem cabeça e sem rumo.",
+  "Tens a mira tão afinada que acertar na baliza é um milagre divino.",
+  "O teu forte é o fair-play: nunca fizeste falta porque nunca apanhaste ninguém.",
+  "A tua presença em campo enfraquece a moral da tua própria equipa.",
+  "Tens a capacidade de liderança de uma pedra no fundo de um poço.",
+  "O teu pique em profundidade durou meio metro antes do colapso total.",
+  "A tua classe técnica faz corar os pinos de treino do municipal.",
+  "Tens o hábito saudável de estorvar todas as jogadas de ataque promissoras.",
+  "O teu cruzamento milimétrico acertou em cheio na cabeça de um transeunte.",
+  "A tua alegria de segunda-feira acaba sempre no primeiro minuto de jogo.",
+  "Tens a leveza de um tanque de guerra atolado na lama até aos eixos.",
+  "O teu remate de meia-distância assustou os pombos que comiam no telhado.",
+  "A tua leitura de jogo é tão lenta que a bola já mudou de século.",
+  "Tens a dom natural de transformar jogadas simples em tragédias gregas.",
+  "O teu esforço físico é inversamente proporcional à tua utilidade prática.",
+  "A tua postura corporal em campo é um insulto à anatomia humana.",
+  "Tens a rapidez mental de um computador com o Windows 95 avariado.",
+  "O teu empurrãozinho ao adversário foi mais frouxo que um abraço de tia.",
+  "A tua classe de saltador em altura deixou a barra intacta a dois metros.",
+  "Tens a serenidade de um criminoso em pânico numa esquadra de polícia.",
+  "O teu futebol champagne tem sabor a vinagre de vinho rançoso.",
+  "Tens a coragem de um leão de peluche metido numa máquina de lavar.",
+  "O teu desempenho fez o relvado pedir licença para se desintegrar.",
+  "Tens a capacidade criativa de um tijolo cinzento acabado de cozer.",
+  "O teu golo de honra foi marcado na baliza errada por puro engano.",
+  "Tens a postura de quem foi forçado a vir jogar sob ameaça de morte.",
+  "O teu histórico de lesões falsas é mais longo que a tua carreira real.",
+  "Tens o carisma de uma porta de armazém velha e enferrujada.",
+  "O teu passe de calcanhar acertou nos teus próprios dentes da frente.",
+  "Tens a precisão cirúrgica de um carpenteiro a usar uma serra cega.",
+  "O teu rendimento coletivo afunda mais rápido que o Titanic no escuro.",
+  "Tens a leveza de espírito de um elefante com dores de dentes agudas.",
+  "O teu entusiasmo à segunda-feira é contagiante... pela negativa total.",
+  "Tens a elegância de um pinguim a tentar dançar tango num pântano.",
+  "O teu pontapé de saída mandou a bola para fora do complexo desportivo.",
+  "Tens a agilidade de um bloco de cimento armado de dois andares.",
+  "O teu domínio de bola faz lembrar um combate corpo a corpo perdido.",
+  "Tens a inteligência emocional de uma torradeira sem fio à chuva.",
+  "O teu remate foi tão fraco que a bola pediu desculpa por não entrar.",
+  "Tens a capacidade atlética de um saco de areia molhada na berma.",
+  "O teu cruzamento saiu tão torto que regressou ao ponto de partida.",
+  "Tens a postura de quem acha que o campo é um dormitório público.",
+  "O teu pique curto durou três segundos e meio de puro sofrimento.",
+  "Tens a delicadeza de um rinoceronte numa loja de porcelana fina.",
+  "O teu golo de cabeça foi feito com as costas viradas para a baliza.",
+  "Tens a energia de uma pilha gasta encontrada numa gaveta velha.",
+  "O teu sentido de oportunidade é igual ao de um cometa que já passou.",
+  "Tens a velocidade de um caracol asmático a subir uma ladeira íngreme.",
+  "O teu remate à baliza só assustou o bandeirolas que estava a distrair-se.",
+  "Tens a técnica apurada de quem nunca viu uma bola na vida real.",
+  "O teu rendimento de segunda-feira dá direito a subsídio de desemprego.",
+  "Tens a flexibilidade corporal de uma tábua de passar a ferro velha.",
+  "O teu passe milimétrico foi parar diretamente ao bolso do árbitro.",
+  "Tens a classe de um aristocrata falido a pedir trocos na praça.",
+  "O teu instinto defensivo resume-se a desviar o rosto da bola a voar.",
+  "Tens a energia positiva de uma tempestade de granizo em pleno agosto.",
+  "O teu remate cruzado cruzou o campo todo e foi sair pela linha lateral.",
+  "Tens a simpatia de um fiscal de contribuições em dia de fechar contas.",
+  "O teu papel na equipa é servir de aviso vivo do que não se deve fazer.",
+  "Tens a agilidade de um mamute preso num bloco de gelo polar eterno.",
+  "O teu golo de penálti conseguiu bater no poste e ir para fora.",
+  "Tens a eficácia de um guarda-chuvas com buracos do tamanho de punhos.",
+  "O teu entusiasmo pré-jogo durou até calçares as meias furadas.",
+  "Tens a mobilidade de uma estátua de sal esquecida no deserto.",
+  "O teu remate indefensável foi agarrado a rir pelo guarda-redes suplente.",
+  "Tens a classe de um cavalo selvagem dentro de um salão de chá inglês.",
+  "O teu passe rasteiro conseguiu levantar poeira do relvado sintético.",
+  "Tens a inteligência tática de uma couve flor deixada ao sol quente.",
+  "O teu desempenho em campo é um teste severo à paciência dos amigos.",
+  "Tens a categoria de um artista de rua que não sabe assobiar sequer.",
+  "O teu único trunfo é aparecer sempre para pagar a fatura do café.",
+  "A tua tática principal é fingir que estás a marcar alguém para não correr.",
+  "O teu pulmão esquerdo pediu demissão ao minuto dez da primeira parte.",
+  "A tua sola de chuteira tem mais marcas de tropeços do que de golos.",
+  "O teu passe de calcanhar é a desculpa perfeita para ires ao chão.",
+  "A tua barriga de cerveja faz sombra no relvado inteiro aos adeptos.",
+  "O teu remate de trivela faz a bola chorar por clemência imediata.",
+  "A tua velocidade de recuperação faz lembrar o governo a baixar impostos.",
+  "O teu posicionamento tático está sempre no sítio onde a bola não vai.",
+  "A tua classe técnica faz corar os peões de fábrica mais cansados.",
+  "O teu grito a pedir a bola serve apenas para assustar os teus colegas.",
+  "A tua finta corporal foi tão subtil que ninguém deu por ela, nem tu.",
+  "O teu estilo de jogo envergonha até os amadores de fim de semana.",
+  "A tua contribuição ofensiva resume-se a perder a bola na nossa área.",
+  "O teu sentido de direção com a bola nos pés é completamente nulo.",
+  "A tua arrancada em velocidade parece um carro preso com o travão de mão.",
+  "O teu remate foi tão frouxo que a bola adormeceu a meio do caminho.",
+  "A tua presença em campo obriga os outros a trabalhar por dois.",
+  "O teu histórico de golos perdidos dava um livro de comédia dramática.",
+  "A tua classe de médio criativo reduz-se a passes de metro para trás.",
+  "O teu colega de equipa já evitetou olhar para ti de cada vez que tens a bola.",
+  "A tua vontade de correr desaparece logo a seguir ao apito inicial.",
+  "O teu remate de cabeça acertou na nuca do teu próprio companheiro.",
+  "A tua atitude em campo é de quem está a cumprir pena de prisão preventiva.",
+  "O teu passe longo fez a bola aterrar no tejadilho de um carro em marcha.",
+  "A tua consistência de jogo é perfeita: és sempre igualmente horrível.",
+  "O teu fôlego acabou antes mesmo de terminares o teu aquecimento mental.",
+  "A tua postura de craque desmorona-se mal dás o primeiro toque na redondinha.",
+  "O teu remate saiu tão ao lado que o fiscal de linha teve de saltar.",
+  "A tua contribuição para a equipa é manter a média de derrotas estável.",
+  "O teu estilo de passe faz lembrar um cego a atirar pedras no escuro.",
+  "A tua rapidez de raciocínio empata com o crescimento das árvores seculares.",
+  "O teu remate de primeira foi direto para las mãos do dono do terreno.",
+  "A tua classe a defender faz lembrar uma autoestrada sem portagens.",
+  "O teu drible acrobático terminou com uma queda dramática de costas.",
+  "A tua visão periférica não alcança sequer a ponta das tuas chuteiras.",
+  "O teu remate colocado colocou a bola na lua sem permissão de voo.",
+  "A tua garra competitiva derrete-se ao primeiro pingo de suor na testa.",
+  "O teu passe de rotura rompeu apenas a paciência de quem te atura.",
+  "A tua categoria em campo é um segredo bem guardado por ti próprio.",
+  "O teu golo anulado foi o único momento de destaque na tua carreira de sofrimento.",
+  "A tua entrada em campo gelou a espinha dos vossos próprios adeptos.",
+  "O teu remate de meia distância atingiu a carrinha de venda de cachorros.",
+  "A tua mobilidade lateral faz lembrar um pinheiro plantado na calçada.",
+  "O teu cruzamento da esquerda foi sair pela linha de fundo do lado oposto.",
+  "A tua leitura tática do lance é sempre a pior possível em todas as jogadas.",
+  "O teu espírito de sacrifício limita-se a recusar ir buscar a bola ao mato.",
+  "O teu remate acrobático acabou numa distensão muscular desnecessária.",
+  "A tua classe de avançado de ponta é um mito urbano sem qualquer fundamento.",
+  "O teu desempenho de segunda à noite devia ser proibido por decreto-lei.",
+  "O teu remate foi tão forte que a rede tremeu... de pena do teu esforço.",
+  "A tua classe em campo faz inveja a um caixote de lixo orgânico municipal.",
+  "O teu passe longo encontrou um pombo desprevenido a voar baixo.",
+  "A tua inteligência futebolística cabe confortavelmente numa casca de noz vazia.",
+  "O teu aquecimento consistiu em apertar os cordões e suspirar fundo.",
+  "A tua velocidade estonteante faz as tartarugas sentirem-se injustiçadas.",
+  "O teu remate de calcanhar acertou na própria canela de apoio.",
+  "A tua presença em campo faz parecer que jogam com menos dois elementos.",
+  "O teu sentido de oportunidade falha sempre o momento exato de dar à sola.",
+  "A tua categoria técnica está registada nos anais da comédia involuntária.",
+  "O teu cruzamento milimétrico acertou na trave da baliza de treino ao lado.",
+  "A tua postura de líder da equipa resume-se a mandar calar os outros.",
+  "O teu remate colocado foi tão suave que o redes o apanhou a dormir.",
+  "A tua agilidade mental desapareceu algures entre o escritório e o relvado.",
+  "O teu passe em profundidade encontrou um buraco negro no meio-campo.",
+  "A tua combatividade defensiva resume-se a afastar-te do portador da bola.",
+  "O teu golo de ressalto foi o ponto mais alto da tua vidinha de craque.",
+  "A tua classe a receber a bola lembra um acrobata a pisar sabão em pó.",
+  "O teu remate de primeira conseguiu falhar o chão e a própria bola.",
+  "A tua garra competitiva evapora-se assim que o adversário acelera o passo.",
+  "O teu passe curto foi interceptado por uma toupeira distraída no relvado.",
+  "A tua categoria atlética faz rir os veteranos reformados da bancada.",
+  "O teu remate cruzado cruzou o distrito inteiro sem encontrar baliza.",
+  "A tua leitura de jogo consiste em olhar para o céu a ver se chove.",
+  "O teu estilo de corrida parece um boneco de mola partido a meio.",
+  "A tua contribuição tática é criar espaços livres... para o adversário marcar.",
+  "O teu remate de trivela curvou tanto que acabou por ir para trás.",
+  "A tua classe de médio organizador desorganiza a equipa inteira em segundos.",
+  "O teu pique longo durou o tempo de um suspiro abafado de cansaço.",
+  "A tua presença no relvado é o equivalente desportivo a um castigo divino.",
+  "O teu remate de cabeça foi feito com a parte lateral do crânio desatenta.",
+  "A tua inteligência em campo está em regime de poupança permanente.",
+  "O teu passe milimétrico falhou o alvo por meros três metros de largura.",
+  "A tua categoria a fintar restringe-se a fintar a própria sombra no chão.",
+  "O teu remate indefensável foi defendido com o peito por um defesa distendido.",
+  "A tua garra de vencedor nota-se na forma como pedes para sair aos dez minutos.",
+  "O teu passe longo fez a bola aterrar no tejadilho da ambulância de plantão.",
+  "A tua classe técnica faz corar os manequins de montra de centro comercial.",
+  "O teu remate de meia volta deu uma volta completa ao eixo e falhou.",
+  "A tua postura de capitão de equipa é a de quem quer ir embora jantar.",
+  "O teu pique em profundidade levou-te direto aos balneários por engano.",
+  "A tua categoria a defender obriga o guarda-redes a rezar todos os santos.",
+  "O teu remate de primeira mandou a bola para a copa das árvores vizinhas.",
+  "A tua inteligência futebolística está num nível inferior ao zero absoluto.",
+  "O teu passe em rosca desenhou um círculo perfeito de incompetência pura.",
+  "A tua classe de craque internacional é um delírio febril das segundas-feiras.",
+  "O teu remate colocado colocou a bola na via rápida municipal ao lado.",
+  "A tua garra competitiva é do tamanho de um grão de areia na praia.",
+  "O teu contributo para o espetáculo foi a única razão para rirmos alto.",
+  "A tua carreira futebolística de segunda-feira merecia um prémio de paciência.",
+  "O teu remate de trivela acertou em cheio na bandeirola de canto.",
+  "A tua classe técnica faz parecer fácil o que é impossível de ver.",
+  "O teu passe longo foi interceptado pelo vento fraco de segunda-feira.",
+  "A tua inteligência em campo está de férias permanentes no estrangeiro.",
+  "O teu aquecimento foi feito a ver os outros correrem no relvado.",
+  "A tua velocidade de ponta faz inveja a uma geleia derretida ao sol.",
+  "O teu remate de calcanhar partiu a unha do dedo grande do pé.",
+  "A tua presença em campo faz parecer que a baliza tem o dobro do tamanho.",
+  "O teu sentido de oportunidade chega sempre atrasado para a festa.",
+  "A tua categoria atlética assusta qualquer médico do desporto atento.",
+  "O teu cruzamento da direita foi sair pela linha de fundo da esquerda.",
+  "A tua postura de líder inquestionável é aceite apenas por ti próprio.",
+  "O teu remate indefensável bateu no poste e voltou para o meio-campo.",
+  "A tua agilidade mental evaporou-se com a primeira lufada de vento frio.",
+  "O teu passe em profundidade encontrou um guarda-redes que já dormia.",
+  "A tua combatividade defensiva resume-se a gritar com o colega do lado.",
+  "O teu golo de calcanhar foi feito na baliza errada por puro azar.",
+  "A tua classe a receber a bola lembra um elefante a pisar ovos crus.",
+  "O teu remate de primeira falhou a bola de forma memorável e épica.",
+  "A tua garra competitiva evapora-se mal o árbitro apita o início.",
+  "O teu passe curto foi interceptado pelas tuas próprias chuteiras novas.",
+  "A tua categoria técnica faz rir os adeptos da equipa adversária toda.",
+  "O teu remate cruzado cruzou o campo e saiu pela linha lateral oposta.",
+  "A tua leitura de jogo consiste em procurar o banco de suplentes livre.",
+  "O teu estilo de corrida parece um camião a perder óleo na subida.",
+  "A tua contribuição tática é abrir crateras na defesa da tua equipa.",
+  "O teu remate de trivela curvou tanto que foi parar à bancada vazia.",
+  "A tua classe de médio organizador desorganiza até o balneário feminino.",
+  "O teu pique longo durou o tempo de um relâmpago numa noite calma.",
+  "A tua presença no relvado é um teste de resistência aos teus amigos.",
+  "O teu remate de cabeça foi feito com a testa apontada para o céu.",
+  "A tua inteligência em campo está em modo de poupança ultra profunda.",
+  "O teu passe milimétrico falhou o alvo por meia légua de distância.",
+  "A tua categoria a fintar resume-se a cair sozinho sem contacto físico.",
+  "O teu remate foi defendido com a sola da bota por um defesa tonto.",
+  "A tua garra de vencedor nota-se na maneira como finges lesões graves.",
+  "O teu passe longo fez a bola aterrar dentro de uma carrinha aberta.",
+  "A tua classe técnica faz corar os manequins de feira de província.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi para fora.",
+  "A tua postura de capitão de equipa é a de quem quer ir beber uma imperial.",
+  "O teu pique em profundidade levou-te direto ao café mais próximo.",
+  "A tua categoria a defender obriga o guarda-redes a chorar baba e ranho.",
+  "O teu remate de primeira mandou a bola por cima da rede de proteção.",
+  "A tua inteligência futebolística está abaixo do nível do solo pantanoso.",
+  "O teu passe em rosca desenhou um círculo vicioso de pura mediocridade.",
+  "A tua classe de craque internacional é uma alucinação de segunda-feira.",
+  "O teu remate colocado colocou a bola na traseira de um carro em andamento.",
+  "A tua garra competitiva é do tamanho de uma bactéria vista ao microscópio.",
+  "O teu contributo para o espetáculo foi a razão principal do nosso tédio.",
+  "A tua carreira de futebolista de segunda merecia um Óscar de comédia.",
+  "O teu remate de trivela acertou em cheio no rabo de um cão vadio.",
+  "A tua classe técnica faz parecer penoso o ato simples de caminhar.",
+  "O teu passe longo foi interceptado por uma lufada de vento contrário.",
+  "A tua inteligência em campo está a cumprir pena de prisão perpétua.",
+  "O teu aquecimento foi feito a olhar para o telemóvel no banco.",
+  "A tua velocidade de ponta faz as foquinhas parecerem atletas de elite.",
+  "O teu remate de calcanhar partiu as tuas próprias costas de repente.",
+  "A tua presença em campo faz parecer que a bola pesa cinquenta quilos.",
+  "O teu sentido de oportunidade chega sempre a reboque da confusão.",
+  "A tua categoria atlética assusta qualquer cardiologista precavido.",
+  "O teu cruzamento da esquerda foi sair pela linha de fundo da direita.",
+  "A tua postura de líder indiscutível é contestada pelas tuas próprias pernas.",
+  "O teu remate indefensável bateu no bandeirolas e foi ter ao mato.",
+  "A tua agilidade mental evaporou-se logo a seguir ao primeiro minuto.",
+  "O teu passe em profundidade encontrou um vazio existencial profundo.",
+  "A tua combatividade defensiva resume-se a olhar o adversário passar.",
+  "O teu golo de calcanhar foi um milagre que nunca mais vai acontecer.",
+  "A tua classe a receber a bola lembra um pato a tentar voar num lago.",
+  "O teu remate de primeira falhou a bola com requintes de malvadez.",
+  "A tua garra competitiva evapora-se antes mesmo de entrares no relvado.",
+  "O teu passe curto foi interceptado pelas tuas próprias meias caídas.",
+  "A tua categoria técnica faz rir os apanha-bolas mais novos do campo.",
+  "O teu remate cruzado cruzou o distrito e foi cair na rotunda vizinha.",
+  "A tua leitura de jogo consiste em tentar adivinhar onde está a cantina.",
+  "O teu estilo de corrida parece um espantalho sacudido por temporal.",
+  "A tua contribuição tática é abrir autoestradas para o contra-ataque.",
+  "O teu remate de trivela curvou tanto que voltou para os teus pés.",
+  "A tua classe de médio organizador desorganiza a mente de quem vê.",
+  "O teu pique longo durou o tempo de um flash fotográfico rápido.",
+  "A tua presença no relvado é um castigo autoinfligido sem sentido.",
+  "O teu remate de cabeça foi feito com o nariz a apontar para baixo.",
+  "A tua inteligência em campo está desligada por falta de pagamento.",
+  "O teu passe milimétrico falhou o alvo por uma milha de distância.",
+  "A tua categoria a fintar resume-se a perder a bola sem oposição.",
+  "O teu remate foi defendido com os olhos fechados por um defesa tonto.",
+  "A tua garra de vencedor nota-se na pressa com que pedes a substituição.",
+  "O teu passe longo fez a bola aterrar dentro do contentor do lixo.",
+  "A tua classe técnica faz corar os manequins de saldo de armazém.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi para a rua.",
+  "A tua postura de capitão de equipa é a de quem quer ir ver a novela.",
+  "O teu pique em profundidade levou-te direto aos balneários a chorar.",
+  "A tua categoria a defender obriga o guarda-redes a pedir reforma.",
+  "O teu remate de primeira mandou a bola por cima da cobertura alta.",
+  "A tua inteligência futebolística está abaixo do nível do subsolo argiloso.",
+  "O teu passe em rosca desenhou um ziguezague de pura desgraça motora.",
+  "A tua classe de craque internacional é uma miragem típica de segunda.",
+  "O teu remate colocado colocou a bola por cima do muro de vedação.",
+  "A tua garra competitiva é do tamanho de um átomo perdido no espaço.",
+  "O teu contributo para o espetáculo foi a piada principal da noite.",
+  "A tua carreira de futebolista de segunda merecia um atestado de óbito.",
+  "O teu remate de trivela acertou em cheio na porta do bar fechado.",
+  "A tua classe técnica faz parecer doloroso o simples ato de respirar.",
+  "O teu passe longo foi interceptado por um vento lateral ligeiro.",
+  "A tua inteligência em campo está bloqueada por excesso de erros.",
+  "O teu aquecimento foi feito sentado no banco a comer amendoins.",
+  "A tua velocidade de ponta faz os caracóis parecerem bólides de corrida.",
+  "O teu remate de calcanhar partiu as tuas próprias ilusões de craque.",
+  "A tua presença em campo faz parecer que a bola tem picos venenosos.",
+  "O teu sentido de oportunidade chega sempre atrasado para o banquete.",
+  "A tua categoria atlética assusta qualquer instrutor de fitness louco.",
+  "O teu cruzamento da direita foi sair pela linha de fundo da esquerda.",
+  "A tua postura de líder indiscutível é ignorada pelas tuas pernas.",
+  "O teu remate indefensável bateu no poste e foi ter ao parque infantil.",
+  "A tua agilidade mental evaporou-se na viagem de carro até ao campo.",
+  "O teu passe em profundidade encontrou um buraco negro defensivo.",
+  "A tua combatividade defensiva resume-se a rezar para que não chutassem.",
+  "O teu golo de calcanhar foi um acidente feliz que nunca repetirás.",
+  "A tua classe a receber a bola lembra um pinguim a escorregar no óleo.",
+  "O teu remate de primeira falhou a bola com uma precisão matemática.",
+  "A tua garra competitiva evapora-se assim que o árbitro mexe o apito.",
+  "O teu passe curto foi interceptado pelas tuas próprias ataduras soltas.",
+  "A tua categoria técnica faz rir os cães que passeiam na rua ao lado.",
+  "O teu remate cruzado cruzou o campo e foi bater na carrinha estacionada.",
+  "A tua leitura de jogo consiste em adivinhar a que horas acaba o sofrimento.",
+  "O teu estilo de corrida parece um robô desarticulado sem bateria.",
+  "A tua contribuição tática é criar pesadelos recorrentes ao treinador imaginário.",
+  "O teu remate de trivela curvou tanto que foi parar às mãos do teu tio.",
+  "A tua classe de médio organizador desorganiza até o relvado sintético.",
+  "O teu pique longo durou o tempo de um piscar de olhos cansado.",
+  "A tua presença no relvado é um teste de paciência para os anjos.",
+  "O teu remate de cabeça foi feito com o pescoço completamente torto.",
+  "A tua inteligência em campo está em suspensão de pagamento vitalícia.",
+  "O teu passe milimétrico falhou o alvo por uma distância intergaláctica.",
+  "A tua categoria a fintar resume-se a perder a bola por distração pura.",
+  "O teu remate foi defendido com a ponta do nariz por um defesa desprevenido.",
+  "A tua garra de vencedor nota-se na pressa com que pedes água fria.",
+  "O teu passe longo fez a bola aterrar dentro de um balde de tinta fresca.",
+  "A tua classe técnica faz corar os manequins de plástico mais baratos.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi para o mato.",
+  "A tua postura de capitão de equipa é a de quem quer ir dormir cedo.",
+  "O teu pique em profundidade levou-te direto aos bilhares do café.",
+  "A tua categoria a defender obriga o guarda-redes a chorar de desespero.",
+  "O teu remate de primeira mandou a bola por cima da copa das árvores.",
+  "A tua inteligência futebolística está abaixo de zero graus kelvin.",
+  "O teu passe em rosca desenhou um semicírculo perfeito de incompetência.",
+  "A tua classe de craque internacional é uma piada sem graça nenhuma.",
+  "O teu remate colocado colocou a bola na varanda do primeiro andar.",
+  "A tua garra competitiva é do tamanho de uma poeira cósmica invisível.",
+  "O teu contributo para o espetáculo foi a causa principal das nossas gargalhadas.",
+  "A tua carreira de futebolista de segunda-feira merecia ser esquecida já.",
+  "O teu remate de trivela acertou em cheio na perna do teu colega infeliz.",
+  "A tua classe técnica faz parecer hercúleo o ato simples de dar um passo.",
+  "O teu passe longo foi interceptado por uma brisa ligeira de outono.",
+  "A tua inteligência em campo está bloqueada por excesso de peso morto.",
+  "O teu aquecimento foi feito a ver os carros passarem na estrada nacional.",
+  "A tua velocidade de ponta faz os caracóis sentirem-se velocistas olímpicos.",
+  "O teu remate de calcanhar partiu as tuas próprias esperanças de glória.",
+  "A tua presença em campo faz parecer que a bola tem alergia aos teus pés.",
+  "O teu sentido de oportunidade chega sempre a reboque da catástrofe.",
+  "A tua categoria atlética assusta qualquer professor de ginástica reformado.",
+  "O teu cruzamento da direita foi sair pela linha de fundo da esquerda.",
+  "A tua postura de líder indiscutível é desmentida pela tua barriga de cerveja.",
+  "O teu remate indefensável bateu no poste e foi ter ao meio da rua.",
+  "A tua agilidade mental evaporou-se no exato momento em que vestiste a camisola.",
+  "O teu passe em profundidade encontrou um abismo profundo sem fundo.",
+  "A tua combatividade defensiva resume-se a pedir falta de forma preventiva.",
+  "O teu golo de calcanhar foi um milagre estatístico que nunca se repetirá.",
+  "A tua classe a receber a bola lembra um urso a tentar dançar ballete.",
+  "O teu remate de primeira falhou a bola com uma pontaria impressionante.",
+  "A tua garra competitiva evapora-se logo após o apito inicial do árbitro.",
+  "O teu passe curto foi interceptado pelas tuas próprias chuteiras desafinadas.",
+  "A tua categoria técnica faz rir os transeuntes na paragem de autocarro.",
+  "O teu remate cruzado cruzou o relvado e foi bater no muro de cimento.",
+  "A tua leitura de jogo consiste em calcular quantas minis vais beber a seguir.",
+  "O teu estilo de corrida parece um boneco de corda com uma mola partida.",
+  "A tua contribuição tática é abrir autoestradas centrais para o adversário.",
+  "O teu remate de trivela curvou tanto que foi parar às mãos do guarda-redes.",
+  "A tua classe de médio organizador desorganiza a paciência de quem joga.",
+  "O teu pique longo durou o tempo de um suspiro abafado de exaustão.",
+  "A tua presença no relvado é um castigo perpétuo para os teus colegas.",
+  "O teu remate de cabeça foi feito com a orelha esquerda apontada ao céu.",
+  "A tua inteligência em campo está em modo de falência técnica total.",
+  "O teu passe milimétrico falhou o alvo por uma distância astronómica.",
+  "A tua categoria a fintar resume-se a perder a bola sem luta nenhuma.",
+  "O teu remate foi defendido com a barriga por um defesa assustado.",
+  "A tua garra de vencedor nota-se na pressa com que vais para o balneário.",
+  "O teu passe longo fez a bola aterrar dentro de uma carrinha de caixa aberta.",
+  "A tua classe técnica faz corar os manequins de plástico das lojas chinesas.",
+  "O teu remate de meia volta deu uma volta ao eixo e foi para fora do campo.",
+  "A tua postura de capitão de equipa é a de quem quer ir jantar a casa cedo.",
+  "O teu pique em profundidade levou-te direto ao bar do pavilhão municipal.",
+  "A tua categoria a defender obriga o guarda-redes a chorar baba e ranho.",
+  "O teu remate de primeira mandou a bola por cima da vedação de segurança.",
+  "A tua inteligência futebolística está abaixo de zero no termómetro do clube.",
+  "O teu passe em rosca desenhou um círculo vicioso de pura mediocridade.",
+  "A tua classe de craque internacional é uma alucinação coletiva de segunda.",
+  "O teu remate colocado colocou a bola na cobertura de fibrocimento do bar.",
+  "A tua garra competitiva é do tamanho de um micróbio visto à lupa.",
+  "O teu contributo para o espetáculo foi a única piada válida da noite.",
+  "A tua carreira de futebolista de segunda-feira merecia um fim imediato."
 ];
 
 function CromoBanner() {
@@ -106,9 +456,6 @@ function CromoBanner() {
       boxShadow: "0 4px 12px rgba(55,0,60,0.15)",
       border: "1px solid rgba(255,255,255,0.2)"
     }}>
-      <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, opacity: 0.9, marginBottom: 2 }}>
-        ✨ Pensamento Cromo do Dia ✨
-      </div>
       <div style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, fontStyle: "italic", textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}>
         "{CROMO_QUOTES[idx]}"
       </div>
@@ -138,7 +485,6 @@ const KEY = "premium_league_2026_2";
 const CODES = ["B", "P", "F", "D1", "D2", "DOE", "?"];
 const DAYS = ["domingo", "2ª feira", "3ª feira", "4ª feira", "5ª feira", "6ª feira", "sábado"];
 
-// Premier League Theme Palette with White Background
 const C = {
   bg: "#FFFFFF", surface: "#FFFFFF", ink: "#37003c", sub: "#6c757d",
   line: "#e5e9f0", green: "#00ff87", gold: "#f9a825", red: "#ff2882",
@@ -536,7 +882,7 @@ function PremiumLeague() {
 
       <div style={{ maxWidth: 520, margin: "0 auto", padding: "0 12px" }}>
         
-        {/* Adicionado o Banner das 50 Frases Corny / Cromo no topo */}
+        {/* Banner das Frases Corny em loop contínuo sem cabeçalho */}
         <div style={{ paddingTop: 14 }}>
           <CromoBanner />
         </div>
@@ -608,13 +954,46 @@ function PremiumLeague() {
               </div>
             ) : (
               <>
-                <div style={S.card}>
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontVariantNumeric: "tabular-nums" }}>
+                <div style={{ ...S.card, overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontVariantNumeric: "tabular-nums", tableLayout: "fixed" }}>
+                    <colgroup>
+                      <col style={{ width: "26px" }} />
+                      <col style={{ width: "114px" }} />
+                      {/* Secção 1: PONTOS */}
+                      <col style={{ width: "46px" }} />
+                      {/* Secção 2: Jogos, V, E, D */}
+                      <col style={{ width: "30px" }} />
+                      <col style={{ width: "30px" }} />
+                      <col style={{ width: "30px" }} />
+                      <col style={{ width: "30px" }} />
+                      {/* Secção 3: D1 e D2 */}
+                      <col style={{ width: "32px" }} />
+                      <col style={{ width: "32px" }} />
+                      {/* Secção 4: Golos e Golos Equipa */}
+                      <col style={{ width: "38px" }} />
+                      <col style={{ width: "42px" }} />
+                    </colgroup>
                     <thead>
-                      <tr style={{ background: C.plPurple, color: "#fff", fontFamily: FONT_NUM, fontSize: 15 }}>
-                        {["", "Jogador", "Pts", "J", "V", "E", "D", "Golos", "Golos Equipa"].map((h, i) => (
-                          <th key={i} style={{ padding: "7px 4px", textAlign: i === 1 ? "left" : "center", fontWeight: 600 }}>{h}</th>
-                        ))}
+                      <tr style={{ background: C.plPurple, color: "#fff", fontFamily: FONT_NUM, fontSize: 13 }}>
+                        <th style={{ padding: "6px 2px", textAlign: "center" }}>#</th>
+                        <th style={{ padding: "6px 4px", textAlign: "left" }}>Jogador</th>
+                        
+                        {/* Secção 1: PONTOS */}
+                        <th style={{ padding: "6px 2px", textAlign: "center", background: "#250029", borderLeft: "1px solid rgba(255,255,255,0.2)", borderRight: "1px solid rgba(255,255,255,0.2)" }} title="Secção 1: PONTOS">Pts</th>
+                        
+                        {/* Secção 2: Jogos, V, E, D */}
+                        <th style={{ padding: "6px 2px", textAlign: "center" }} title="Jogos">J</th>
+                        <th style={{ padding: "6px 2px", textAlign: "center" }} title="Vitórias">V</th>
+                        <th style={{ padding: "6px 2px", textAlign: "center" }} title="Empates">E</th>
+                        <th style={{ padding: "6px 2px", textAlign: "center" }} title="Derrotas">D</th>
+                        
+                        {/* Secção 3: D1 e D2 */}
+                        <th style={{ padding: "6px 2px", textAlign: "center", borderLeft: "1px solid rgba(255,255,255,0.1)" }} title="Desistência 1">D1</th>
+                        <th style={{ padding: "6px 2px", textAlign: "center" }} title="Desistência 2">D2</th>
+                        
+                        {/* Secção 4: Golos e Golos Equipa */}
+                        <th style={{ padding: "6px 2px", textAlign: "center", borderLeft: "1px solid rgba(255,255,255,0.1)" }} title="Golos Pessoais">G</th>
+                        <th style={{ padding: "6px 2px", textAlign: "center" }} title="Golos Equipa">GE</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -626,26 +1005,34 @@ function PremiumLeague() {
                             borderTop: `1px solid ${C.line}`, cursor: "pointer",
                             background: open ? "#f8fafc" : i === 0 ? "#fffbeb" : i === 1 ? "#f8fafc" : i === 2 ? "#fff7ed" : "#FFFFFF",
                           }}>
-                            <td style={{ padding: "6px 4px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: i < 3 ? C.gold : C.sub, width: 28 }}>{r.pos}</td>
-                            <td style={{ padding: "6px 4px" }}>
-                              <span style={{ fontWeight: prize ? 600 : 400, fontSize: 14 }}>{r.name}</span>
-                              {r.streak >= 3 && <span title={`${r.streak} vitórias seguidas`} style={{ fontSize: 12, marginLeft: 4 }}>🔥{r.streak}</span>}
-                              <br />
-                              <span style={{ fontSize: 10.5, color: C.gold, fontWeight: 700 }}>
-                                {prize ? `${prize.icon} ${prize.label}` : ""}
-                              </span>
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, color: i < 3 ? C.gold : C.sub }}>{r.pos}</td>
+                            <td style={{ padding: "6px 4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                              <span style={{ fontWeight: prize ? 600 : 400, fontSize: 13.5 }}>{r.name}</span>
+                              {r.streak >= 3 && <span title={`${r.streak} vitórias seguidas`} style={{ fontSize: 11, marginLeft: 2 }}>🔥{r.streak}</span>}
+                              {prize && <span style={{ fontSize: 9.5, color: C.gold, fontWeight: 700, display: "block" }}>{prize.icon} {prize.label}</span>}
                               <FormDots form={r.form} />
                             </td>
-                            <td style={{ padding: "6px 4px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 19, fontWeight: 700 }}>{r.pts}</td>
-                            {[r.J, r.V, r.E, r.D].map((v, k) => (
-                              <td key={k} style={{ padding: "6px 3px", textAlign: "center", fontSize: 13, color: C.sub }}>{v}</td>
-                            ))}
-                            <td style={{ padding: "6px 3px", textAlign: "center", fontSize: 13, fontWeight: 700, color: C.plPurple }}>{r.golosPessoais}</td>
-                            <td style={{ padding: "6px 3px", textAlign: "center", fontSize: 13, color: C.sub }}>{r.golosEquipa}</td>
+                            
+                            {/* Secção 1: PONTOS (Destaque máximo) */}
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 18, fontWeight: 700, background: i === 0 ? "#fef3c7" : "#f8fafc", color: C.plPurple, borderLeft: `1px solid ${C.line}`, borderRight: `1px solid ${C.line}` }}>{r.pts}</td>
+                            
+                            {/* Secção 2: Jogos, V, E, D */}
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.J}</td>
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.V}</td>
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.E}</td>
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.D}</td>
+                            
+                            {/* Secção 3: D1 e D2 */}
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12, color: r.D1 > 0 ? C.red : C.sub, borderLeft: `1px solid ${C.line}` }}>{r.D1}</td>
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12, color: r.D2 > 0 ? C.red : C.sub }}>{r.D2}</td>
+                            
+                            {/* Secção 4: Golos e Golos Equipa */}
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12.5, fontWeight: 700, color: C.plPurple, borderLeft: `1px solid ${C.line}` }}>{r.golosPessoais}</td>
+                            <td style={{ padding: "6px 2px", textAlign: "center", fontSize: 12.5, color: C.sub }}>{r.golosEquipa}</td>
                           </tr>,
                           open && (
                             <tr key={r.name + "_d"} style={{ background: "#f8fafc" }}>
-                              <td colSpan={9} style={{ padding: "8px 12px", fontSize: 12, color: C.sub }}>
+                              <td colSpan={11} style={{ padding: "8px 12px", fontSize: 12, color: C.sub }}>
                                 <b style={{ color: C.ink }}>{r.name}</b> — desistências: {r.D1} × D1, {r.D2} × D2 (−{r.lost} pts) · faltas: {r.F}
                                 <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 6 }}>
                                   {season.weeks.map((w, wi) => {
@@ -784,21 +1171,45 @@ function PremiumLeague() {
               </div>
             )}
 
+            {/* SECÇÃO PRÉMIOS TOTALMENTE EDITÁVEL PARA O SUPERADMIN */}
             <div style={{ ...S.card, padding: 14, background: C.plPurple, color: "#fff", border: "none" }}>
-              <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 10 }}>🏆 Prémios — se a época acabasse hoje</div>
-              {(season.prizes || []).map(p => {
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700 }}>🏆 Prémios — se a época acabasse hoje</div>
+              </div>
+              {(season.prizes || []).map((p, i) => {
                 const holder = stats[p.pos - 1];
                 return (
                   <div key={p.pos} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
                     <span style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, width: 26, color: p.pos <= 3 ? C.gold : "#bbb" }}>{p.pos}º</span>
-                    <span style={{ fontSize: 18 }}>{p.icon}</span>
-                    <span style={{ flex: 1, fontSize: 14, fontWeight: 600 }}>{holder ? holder.name : "—"}</span>
-                    <span style={{ fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: C.gold }}>{p.label}</span>
+                    {superOk ? (
+                      <>
+                        <input value={p.icon} onChange={e => setSeason({ prizes: season.prizes.map((x, j) => j === i ? { ...x, icon: e.target.value } : x) })}
+                          style={{ ...S.input, width: 36, textAlign: "center", fontSize: 16 }} />
+                        <span style={{ flex: 1, fontSize: 14, fontWeight: 600 }}>{holder ? holder.name : "—"}</span>
+                        <input value={p.label} onChange={e => setSeason({ prizes: season.prizes.map((x, j) => j === i ? { ...x, label: e.target.value } : x) })}
+                          style={{ ...S.input, width: 90, textAlign: "right", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700 }} />
+                        <button onClick={() => setSeason({ prizes: season.prizes.filter((_, j) => j !== i).map((x, j) => ({ ...x, pos: j + 1 })) })}
+                          style={{ border: "none", background: "none", color: "#ff8080", cursor: "pointer", fontSize: 16 }}>×</button>
+                      </>
+                    ) : (
+                      <>
+                        <span style={{ fontSize: 18 }}>{p.icon}</span>
+                        <span style={{ flex: 1, fontSize: 14, fontWeight: 600 }}>{holder ? holder.name : "—"}</span>
+                        <span style={{ fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: C.gold }}>{p.label}</span>
+                      </>
+                    )}
                   </div>
                 );
               })}
+              {superOk && (
+                <button onClick={() => setSeason({ prizes: [...(season.prizes || []), { pos: (season.prizes || []).length + 1, icon: "🎁", label: "" }] })}
+                  style={{ marginTop: 8, fontSize: 12.5, border: `1px solid rgba(255,255,255,0.3)`, color: "#fff", background: "rgba(255,255,255,0.1)", borderRadius: 6, padding: "4px 10px", cursor: "pointer" }}>
+                  + Adicionar Prémio
+                </button>
+              )}
             </div>
 
+            {/* CONVOCATÓRIA EDITÁVEL */}
             <div style={{ ...S.card, padding: 14 }}>
               <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 6, color: C.plPurple }}>📣 Convocatória</div>
               <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.7 }}>
@@ -806,19 +1217,38 @@ function PremiumLeague() {
                 <li>Os <b>primeiros {season.convSlots}</b> a enviar "." estão convocados.</li>
                 <li>Jogos <b>{DAYS[season.gameDay]} às {season.gameTime}</b>, {season.venue}.</li>
               </ul>
-              {season.convNotes && <p style={{ fontSize: 13, color: C.sub, margin: "6px 0 0", lineHeight: 1.6 }}>{season.convNotes}</p>}
+              {superOk ? (
+                <div style={{ marginTop: 8 }}>
+                  <label style={S.lbl}>Notas da convocatória (Editável)</label>
+                  <textarea value={season.convNotes || ""} onChange={e => setSeason({ convNotes: e.target.value })} rows={2}
+                    style={{ ...S.input, width: "100%", boxSizing: "border-box", resize: "vertical", fontFamily: FONT, lineHeight: 1.5 }} />
+                </div>
+              ) : (
+                season.convNotes && <p style={{ fontSize: 13, color: C.sub, margin: "6px 0 0", lineHeight: 1.6 }}>{season.convNotes}</p>
+              )}
             </div>
 
+            {/* COMO SE FORMAM AS EQUIPAS */}
             <div style={{ ...S.card, padding: 14 }}>
               <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 6, color: C.plPurple }}>⚖️ Como se formam as equipas</div>
-              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.7 }}>
-                <li>A ordem de inscrição na convocatória define os titulares: os primeiros <b>{season.convSlots}</b> contam; os seguintes ficam como <b>reservas</b>.</li>
-                <li>As equipas <b>Branca</b> e <b>Preta</b> são geradas automaticamente de forma equilibrada, com base no índice de cada jogador — a média de pontos por jogo em todas as épocas (jogadores sem histórico recebem a média da liga).</li>
-                <li>Os organizadores podem ajustar manualmente qualquer jogador entre Branca, Preta e reservas antes do jogo (agora com suporte de arrastar e largar / Drag-and-Drop).</li>
-                <li>Formatos suportados: <b>8v8</b> (16 titulares) ou <b>11v11</b> (22 titulares). Estrangeiros (ᶜ) contam para a equipa mas não para a classificação.</li>
-              </ul>
+              {superOk ? (
+                <div>
+                  <label style={S.lbl}>Texto explicativo das equipas (Editável)</label>
+                  <textarea value={season.notes || ""} onChange={e => setSeason({ notes: e.target.value })} rows={4}
+                    style={{ ...S.input, width: "100%", boxSizing: "border-box", resize: "vertical", fontFamily: FONT, lineHeight: 1.5 }} />
+                </div>
+              ) : (
+                <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.7 }}>
+                  <li>A ordem de inscrição na convocatória define os titulares: os primeiros <b>{season.convSlots}</b> contam; os seguintes ficam como <b>reservas</b>.</li>
+                  <li>As equipas <b>Branca</b> e <b>Preta</b> são geradas automaticamente de forma equilibrada, com base no índice de cada jogador — a média de pontos por jogo em todas as épocas (jogadores sem histórico recebem a média da liga).</li>
+                  <li>Os organizadores podem ajustar manualmente qualquer jogador entre Branca, Preta e reservas antes do jogo (agora com suporte de arrastar e largar / Drag-and-Drop).</li>
+                  <li>Formatos suportados: <b>8v8</b> (16 titulares) ou <b>11v11</b> (22 titulares). Estrangeiros (ᶜ) contam para a equipa mas não para a classificação.</li>
+                  {season.notes && <li style={{ marginTop: 6, listStyleType: "none" }}>{season.notes}</li>}
+                </ul>
+              )}
             </div>
 
+            {/* IMPOSTO DO ATRASO / MULTAS */}
             <div style={{ ...S.card, padding: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                 <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, color: C.plPurple }}>💸 Imposto do atraso</div>
@@ -828,8 +1258,17 @@ function PremiumLeague() {
                 </div>
               </div>
               <p style={{ fontSize: 12.5, color: C.sub, margin: "0 0 8px", lineHeight: 1.6 }}>
-                <b style={{ color: C.ink }}>{eur(season.fineAmount)}</b> a quem chegar atrasado (tolerância de <b>{season.fineTolerance}</b> atraso{season.fineTolerance === 1 ? "" : "s"} para todos). {season.fineNotes}
+                <b style={{ color: C.ink }}>{eur(season.fineAmount)}</b> a quem chegar atrasado (tolerância de <b>{season.fineTolerance}</b> atraso{season.fineTolerance === 1 ? "" : "s"} para todos).
               </p>
+              {superOk ? (
+                <div style={{ marginBottom: 8 }}>
+                  <label style={S.lbl}>Definição de atraso / regra da multa (Editável)</label>
+                  <textarea value={season.fineNotes || ""} onChange={e => setSeason({ fineNotes: e.target.value })} rows={2}
+                    style={{ ...S.input, width: "100%", boxSizing: "border-box", resize: "vertical", fontFamily: FONT, lineHeight: 1.5 }} />
+                </div>
+              ) : (
+                season.fineNotes && <p style={{ fontSize: 12.5, color: C.sub, margin: "0 0 8px", lineHeight: 1.6 }}>{season.fineNotes}</p>
+              )}
               {superOk && leaguePlayers.length > 0 && (
                 <AddFine players={leaguePlayers} amount={season.fineAmount} onAdd={(name) => {
                   setSeason({ fines: [...(season.fines || []), { id: Date.now(), name, date: new Date().toISOString().slice(0, 10), paid: false }] });
@@ -847,6 +1286,7 @@ function PremiumLeague() {
               ))}
             </div>
 
+            {/* PONTUAÇÃO */}
             <div style={{ ...S.card, padding: 14 }}>
               <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 8, color: C.plPurple }}>Pontuação</div>
               {[["V", "Vitória"], ["E", "Empate"], ["D", "Derrota"], ["D1", "Desistência desde sábado (inclusive)"], ["D2", "Desistência desde 2ª às 00h"]].map(([k, lab]) => (
@@ -863,9 +1303,9 @@ function PremiumLeague() {
               <p style={{ fontSize: 12.5, color: C.sub, margin: "8px 0 0", lineHeight: 1.6 }}>
                 Em caso de empate: <b>1ª</b> assiduidade, <b>2ª</b> mais vitórias, <b>3ª</b> menos pontos perdidos por desistências.
               </p>
-              {season.notes && <p style={{ fontSize: 12.5, color: C.sub, margin: "4px 0 0", lineHeight: 1.6 }}>{season.notes}</p>}
             </div>
 
+            {/* JOGADORES */}
             <div style={{ ...S.card, padding: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
                 <span style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, color: C.plPurple }}>Jogadores — {season.name}</span>
@@ -1013,31 +1453,6 @@ function SeasonSettings({ season, setSeason, S, canDelete, onDelete }) {
               <input type="number" min="0" value={season.fineTolerance} onChange={e => setSeason({ fineTolerance: num(e.target.value, 1) })} style={{ ...S.input, width: 80, textAlign: "center" }} />
             </div>
           </div>
-          <div style={{ marginBottom: 8 }}>
-            <label style={S.lbl}>Prémios (um por posição)</label>
-            {(season.prizes || []).map((p, i) => (
-              <div key={i} style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 4 }}>
-                <span style={{ fontFamily: FONT_NUM, fontWeight: 700, width: 24 }}>{p.pos}º</span>
-                <input value={p.icon} onChange={e => setSeason({ prizes: season.prizes.map((x, j) => j === i ? { ...x, icon: e.target.value } : x) })}
-                  style={{ ...S.input, width: 44, textAlign: "center" }} />
-                <input value={p.label} onChange={e => setSeason({ prizes: season.prizes.map((x, j) => j === i ? { ...x, label: e.target.value } : x) })}
-                  style={{ ...S.input, flex: 1, minWidth: 0 }} />
-                <button onClick={() => setSeason({ prizes: season.prizes.filter((_, j) => j !== i).map((x, j) => ({ ...x, pos: j + 1 })) })}
-                  style={{ border: "none", background: "none", color: C.sub, cursor: "pointer", fontSize: 16 }}>×</button>
-              </div>
-            ))}
-            <button onClick={() => setSeason({ prizes: [...(season.prizes || []), { pos: (season.prizes || []).length + 1, icon: "🎁", label: "" }] })}
-              style={{ fontSize: 12.5, border: `1.5px dashed ${C.plPurple}`, color: C.plPurple, background: "none", borderRadius: 6, padding: "4px 10px", cursor: "pointer" }}>
-              + prémio
-            </button>
-          </div>
-          {[["convNotes", "Notas da convocatória"], ["fineNotes", "Definição de atraso / regra da multa"], ["notes", "Outras notas do regulamento"]].map(([k, lab]) => (
-            <div key={k} style={{ marginBottom: 8 }}>
-              <label style={S.lbl}>{lab}</label>
-              <textarea value={season[k] || ""} onChange={e => setSeason({ [k]: e.target.value })} rows={2}
-                style={{ ...S.input, width: "100%", boxSizing: "border-box", resize: "vertical", fontFamily: FONT, lineHeight: 1.5 }} />
-            </div>
-          ))}
           {canDelete && (
             <button onClick={onDelete} style={{ fontSize: 12.5, border: `1px solid ${C.red}`, color: C.red, background: "none", borderRadius: 6, padding: "6px 12px", cursor: "pointer", marginTop: 4 }}>
               Apagar esta época
