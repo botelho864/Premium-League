@@ -18,12 +18,11 @@
 <script type="text/babel" data-presets="react">
 const { useState, useEffect, useRef } = React;
 
-const SEED = {"version": 3, "seasons": [{"id": "2026_2", "name": "2026/2", "venue": "Campo das Salésias", "points": {"V": 4, "E": 2, "D": 1, "D1": -1, "D2": -2}, "players": [{"name": "Jota", "guest": false}, {"name": "Botelho", "guest": false}, {"name": "Manel MA", "guest": false}, {"name": "Miguel Almeida", "guest": false}, {"name": "Lucas", "guest": false}, {"name": "PTP", "guest": false}, {"name": "Gui", "guest": false}, {"name": "Monteiro", "guest": false}, {"name": "Biu", "guest": false}, {"name": "Zanatti", "guest": false}, {"name": "Miguel Pereira", "guest": false}, {"name": "Ataide", "guest": false}, {"name": "Martim", "guest": false}, {"name": "Manel PS", "guest": false}, {"name": "Lou", "guest": false}, {"name": "Mendes", "guest": false}, {"name": "Cortes", "guest": false}, {"name": "Lourenço", "guest": false}, {"name": "António FC", "guest": false}, {"name": "Augusto", "guest": false}, {"name": "Tavares", "guest": false}, {"name": "Fernandes", "guest": false}, {"name": "Miguel Freitas", "guest": false}, {"name": "Aguiar", "guest": true}, {"name": "Am - Lucas", "guest": true}, {"name": "Amigo Zanatti", "guest": true}, {"name": "Anacoreta", "guest": true}, {"name": "Anahory", "guest": true}, {"name": "Figueira", "guest": true}, {"name": "Guy Gaign", "guest": true}, {"name": "Horta", "guest": true}, {"name": "Kanté", "guest": true}, {"name": "Lourenço Andrade", "guest": true}, {"name": "Manel Sampaio", "guest": true}, {"name": "Siqueira", "guest": true}, {"name": "Tomás", "guest": true}, {"name": "Treinador Belem", "guest": true}, {"name": "Zé PG", "guest": true}], "weeks": [{"date": "2026-04-20", "gB": 3, "gP": 3, "marks": {"António FC": "B", "Botelho": "B", "Lucas": "B", "Mendes": "B", "Monteiro": "B", "Tavares": "B", "Aguiar": "B", "Am - Lucas": "B", "Biu": "P", "Gui": "P", "Jota": "P", "Manel MA": "P", "Miguel Almeida": "P", "Miguel Pereira": "P", "PTP": "P", "Zanatti": "P", "Lou": "D2"}}, {"date": "2026-04-27", "gB": 6, "gP": 4, "marks": {"Gui": "B", "Jota": "B", "Miguel Pereira": "B", "Mendes": "B", "Manel MA": "B", "PTP": "B", "António FC": "B", "Siqueira": "B", "Lucas": "P", "Monteiro": "P", "Miguel Almeida": "P", "Zanatti": "P", "Ataide": "P", "Lourenço": "P", "Biu": "P", "Cortes": "P", "Botelho": "D1", "Tavares": "D2", "Fernandes": "D2"}}, {"date": "2026-05-04", "gB": 5, "gP": 6, "marks": {"Biu": "B", "Fernandes": "B", "Tavares": "B", "Lou": "B", "Lucas": "B", "António FC": "B", "Horta": "B", "Treinador Belem": "B", "Cortes": "P", "Jota": "P", "Monteiro": "P", "Mendes": "P", "Ataide": "P", "Aguiar": "P", "Siqueira": "P", "Manel Sampaio": "P", "Miguel Pereira": "D1", "Miguel Almeida": "D2"}}, {"date": "2026-05-11", "gB": 6, "gP": 5, "marks": {"Jota": "B", "Biu": "B", "Ataide": "B", "Gui": "B", "Miguel Pereira": "B", "Botelho": "B", "Manel MA": "B", "Manel Sampaio": "B", "Tavares": "P", "Zanatti": "P", "Monteiro": "P", "Lucas": "P", "Lou": "P", "Mendes": "P", "Fernandes": "P", "Siqueira": "P", "Manel PS": "D1"}}, {"date": "2026-05-18", "gB": 5, "gP": 5, "marks": {"Fernandes": "B", "Tavares": "B", "Ataide": "B", "Jota": "B", "Miguel Almeida": "B", "Manel MA": "B", "Monteiro": "B", "Manel PS": "B", "Lucas": "P", "Lou": "P", "Zanatti": "P", "Martim": "P", "Botelho": "P", "Gui": "P", "PTP": "P", "Miguel Pereira": "P", "Lourenço": "D2"}}, {"date": "2026-05-25", "gB": 4, "gP": 5, "marks": {"Tavares": "B", "Miguel Almeida": "B", "Monteiro": "B", "Martim": "B", "PTP": "B", "António FC": "B", "Miguel Pereira": "B", "Anacoreta": "B", "Lucas": "P", "Zanatti": "P", "Botelho": "P", "Gui": "P", "Ataide": "P", "Jota": "P", "Manel PS": "P", "Biu": "P", "Fernandes": "D1", "Manel MA": "DOE", "Mendes": "DOE", "Augusto": "DOE"}}, {"date": "2026-06-01", "gB": 5, "gP": 6, "marks": {"Gui": "B", "Miguel Pereira": "B", "Fernandes": "B", "Martim": "B", "Cortes": "B", "Augusto": "B", "Monteiro": "B", "Kanté": "B", "Miguel Almeida": "P", "Mendes": "P", "Jota": "P", "Manel MA": "P", "Manel PS": "P", "PTP": "P", "Botelho": "P", "Anahory": "P"}}, {"date": "2026-06-08", "gB": 3, "gP": 0, "marks": {"Martim": "B", "Zanatti": "B", "Miguel Almeida": "B", "Botelho": "B", "Lou": "B", "Manel MA": "B", "Gui": "B", "Figueira": "B", "Mendes": "P", "Monteiro": "P", "Biu": "P", "Lourenço": "P", "Jota": "P", "Miguel Pereira": "P", "Lucas": "P", "PTP": "P", "Augusto": "D1"}}, {"date": "2026-06-15", "gB": 3, "gP": 3, "marks": {"PTP": "B", "Manel MA": "B", "Fernandes": "B", "Miguel Almeida": "B", "Biu": "B", "Lucas": "B", "Manel PS": "B", "Cortes": "B", "Zanatti": "P", "Miguel Pereira": "P", "Augusto": "P", "Mendes": "P", "Monteiro": "P", "Lou": "P", "Botelho": "P", "Lourenço": "P", "Ataide": "D2", "Jota": "DOE"}}, {"date": "2026-06-22", "gB": 6, "gP": 3, "marks": {"PTP": "B", "Lou": "B", "Botelho": "B", "Miguel Pereira": "B", "Martim": "B", "Lucas": "B", "Jota": "B", "Augusto": "B", "Monteiro": "P", "Lourenço": "P", "Manel MA": "P", "Zanatti": "P", "Manel PS": "P", "Fernandes": "P", "Miguel Almeida": "P", "Aguiar": "P", "Ataide": "?"}}, {"date": "2026-06-29", "gB": 4, "gP": 8, "marks": {"Zanatti": "B", "Ataide": "B", "Monteiro": "B", "Lourenço": "B", "Lucas": "B", "Manel PS": "B", "PTP": "B", "Anacoreta": "B", "Manel MA": "P", "Miguel Freitas": "P", "Jota": "P", "Botelho": "P", "Biu": "P", "Miguel Almeida": "P", "Cortes": "P", "Aguiar": "P", "Martim": "?"}}, {"date": "2026-07-13", "gB": 4, "gP": 6, "marks": {"Lucas": "B", "Augusto": "B", "Jota": "B", "Martim": "B", "Cortes": "B", "Gui": "B", "Lourenço": "B", "Aguiar": "B", "Zanatti": "P", "Manel MA": "P", "Monteiro": "P", "PTP": "P", "Manel PS": "P", "Miguel Almeida": "P", "Biu": "P", "Anacoreta": "P", "Ataide": "D1"}}, {"date": "2026-07-20", "gB": 3, "gP": 0, "marks": {"Jota": "B", "Botelho": "B", "Miguel Almeida": "B", "Monteiro": "B", "Lucas": "B", "Martim": "B", "Ataide": "B", "Anacoreta": "B", "Manel MA": "P", "PTP": "P", "Gui": "P", "Zanatti": "P", "Lou": "P", "Lourenço": "P", "Lourenço Andrade": "P", "Guy Gaign": "P", "Mendes": "D2", "Augusto": "D2"}}, {"date": "2026-07-27", "gB": 5, "gP": 7, "marks": {"Biu": "B", "Martim": "B", "Miguel Almeida": "B", "PTP": "B", "Ataide": "B", "Augusto": "B", "Tomás": "B", "Siqueira": "B", "Lourenço": "P", "Jota": "P", "Lucas": "P", "Gui": "P", "Lou": "P", "Amigo Zanatti": "P", "Anacoreta": "P", "Zé PG": "P", "Zanatti": "D2"}}], "fines": [], "gameDay": 1, "gameTime": "21:45", "convDay": 5, "convTime": "13:00", "convSlots": 16, "fineAmount": 2.5, "fineTolerance": 1, "prizes": [{"pos": 1, "icon": "🏆", "label": "70€"}, {"pos": 2, "icon": "🥈", "label": "45€"}, {"pos": 3, "icon": "🥉", "label": "20€"}, {"pos": 4, "icon": "💶", "label": "10€"}, {"pos": 5, "icon": "⚽", "label": "bola da época (usada)"}], "convNotes": "Só conta a seguir à hora marcada! Estrangeiros (convidados) admitidos a partir de sábado, inclusive.", "fineNotes": "Chegar atrasado = o jogo já podia ter começado mas não começou porque estamos à tua espera, ou depois das 21:05. A multa tem de ser saldada antes da inscrição do jogo seguinte, sob pena de a inscrição não ser válida.", "notes": "Doença (DOE) não penaliza. Falta (F) vale 0 pontos."}, {"id": "2026_3", "name": "2026/3", "venue": "Campo Atlético Club", "points": {"V": 4, "E": 2, "D": 1, "D1": -1, "D2": -2}, "players": [], "weeks": [{"date": "2026-09-07", "gB": "", "gP": "", "marks": {}}, {"date": "2026-09-14", "gB": "", "gP": "", "marks": {}}, {"date": "2026-09-21", "gB": "", "gP": "", "marks": {}}, {"date": "2026-09-28", "gB": "", "gP": "", "marks": {}}, {"date": "2026-10-05", "gB": "", "gP": "", "marks": {}}, {"date": "2026-10-12", "gB": "", "gP": "", "marks": {}}, {"date": "2026-10-19", "gB": "", "gP": "", "marks": {}}, {"date": "2026-10-26", "gB": "", "gP": "", "marks": {}}, {"date": "2026-11-02", "gB": "", "gP": "", "marks": {}}, {"date": "2026-11-09", "gB": "", "gP": "", "marks": {}}, {"date": "2026-11-16", "gB": "", "gP": "", "marks": {}}, {"date": "2026-11-23", "gB": "", "gP": "", "marks": {}}, {"date": "2026-11-30", "gB": "", "gP": "", "marks": {}}, {"date": "2026-12-07", "gB": "", "gP": "", "marks": {}}], "fines": [], "gameDay": 1, "gameTime": "21:45", "convDay": 5, "convTime": "13:00", "convSlots": 16, "fineAmount": 2.5, "fineTolerance": 1, "prizes": [{"pos": 1, "icon": "🏆", "label": "70€"}, {"pos": 2, "icon": "🥈", "label": "45€"}, {"pos": 3, "icon": "🥉", "label": "20€"}, {"pos": 4, "icon": "💶", "label": "10€"}, {"pos": 5, "icon": "⚽", "label": "bola da época (usada)"}], "convNotes": "Só conta a seguir à hora marcada! Estrangeiros (convidados) admitidos a partir de sábado, inclusive.", "fineNotes": "Chegar atrasado = o jogo já podia ter começado mas não começou porque estamos à tua espera, ou depois das 21:05. A multa tem de ser saldada antes da inscrição do jogo seguinte, sob pena de a inscrição não ser válida.", "notes": "Doença (DOE) não penaliza. Falta (F) vale 0 pontos."}]};
+const SEED = {"version": 3, "seasons": [{"id": "2026_2", "name": "2026/2", "venue": "Campo das Salésias", "points": {"V": 4, "E": 2, "D": 1, "D1": -1, "D2": -2}, "players": [{"name": "Jota", "guest": false}, {"name": "Botelho", "guest": false}, {"name": "Manel MA", "guest": false}, {"name": "Miguel Almeida", "guest": false}, {"name": "Lucas", "guest": false}, {"name": "PTP", "guest": false}, {"name": "Gui", "guest": false}, {"name": "Monteiro", "guest": false}, {"name": "Biu", "guest": false}, {"name": "Zanatti", "guest": false}, {"name": "Miguel Pereira", "guest": false}, {"name": "Ataide", "guest": false}, {"name": "Martim", "guest": false}, {"name": "Manel PS", "guest": false}, {"name": "Lou", "guest": false}, {"name": "Mendes", "guest": false}, {"name": "Cortes", "guest": false}, {"name": "Lourenço", "guest": false}, {"name": "António FC", "guest": false}, {"name": "Augusto", "guest": false}, {"name": "Tavares", "guest": false}, {"name": "Fernandes", "guest": false}, {"name": "Miguel Freitas", "guest": false}, {"name": "Aguiar", "guest": true}, {"name": "Am - Lucas", "guest": true}, {"name": "Amigo Zanatti", "guest": true}, {"name": "Anacoreta", "guest": true}, {"name": "Anahory", "guest": true}, {"name": "Figueira", "guest": true}, {"name": "Guy Gaign", "guest": true}, {"name": "Horta", "guest": true}, {"name": "Kanté", "guest": true}, {"name": "Lourenço Andrade", "guest": true}, {"name": "Manel Sampaio", "guest": true}, {"name": "Siqueira", "guest": true}, {"name": "Tomás", "guest": true}, {"name": "Treinador Belem", "guest": true}, {"name": "Zé PG", "guest": true}], "weeks": [{"date": "2026-04-20", "gB": 3, "gP": 3, "marks": {"António FC": "B", "Botelho": "B", "Lucas": "B", "Mendes": "B", "Monteiro": "B", "Tavares": "B", "Aguiar": "B", "Am - Lucas": "B", "Biu": "P", "Gui": "P", "Jota": "P", "Manel MA": "P", "Miguel Almeida": "P", "Miguel Pereira": "P", "PTP": "P", "Zanatti": "P", "Lou": "D2"}, "scorers": {}}, {"date": "2026-04-27", "gB": 6, "gP": 4, "marks": {"Gui": "B", "Jota": "B", "Miguel Pereira": "B", "Mendes": "B", "Manel MA": "B", "PTP": "B", "António FC": "B", "Siqueira": "B", "Lucas": "P", "Monteiro": "P", "Miguel Almeida": "P", "Zanatti": "P", "Ataide": "P", "Lourenço": "P", "Biu": "P", "Cortes": "P", "Botelho": "D1", "Tavares": "D2", "Fernandes": "D2"}, "scorers": {}}, {"date": "2026-05-04", "gB": 5, "gP": 6, "marks": {"Biu": "B", "Fernandes": "B", "Tavares": "B", "Lou": "B", "Lucas": "B", "António FC": "B", "Horta": "B", "Treinador Belem": "B", "Cortes": "P", "Jota": "P", "Monteiro": "P", "Mendes": "P", "Ataide": "P", "Aguiar": "P", "Siqueira": "P", "Manel Sampaio": "P", "Miguel Pereira": "D1", "Miguel Almeida": "D2"}, "scorers": {}}, {"date": "2026-05-11", "gB": 6, "gP": 5, "marks": {"Jota": "B", "Biu": "B", "Ataide": "B", "Gui": "B", "Miguel Pereira": "B", "Botelho": "B", "Manel MA": "B", "Manel Sampaio": "B", "Tavares": "P", "Zanatti": "P", "Monteiro": "P", "Lucas": "P", "Lou": "P", "Mendes": "P", "Fernandes": "P", "Siqueira": "P", "Manel PS": "D1"}, "scorers": {}}, {"date": "2026-05-18", "gB": 5, "gP": 5, "marks": {"Fernandes": "B", "Tavares": "B", "Ataide": "B", "Jota": "B", "Miguel Almeida": "B", "Manel MA": "B", "Monteiro": "B", "Manel PS": "B", "Lucas": "P", "Lou": "P", "Zanatti": "P", "Martim": "P", "Botelho": "P", "Gui": "P", "PTP": "P", "Miguel Pereira": "P", "Lourenço": "D2"}, "scorers": {}}, {"date": "2026-05-25", "gB": 4, "gP": 5, "marks": {"Tavares": "B", "Miguel Almeida": "B", "Monteiro": "B", "Martim": "B", "PTP": "B", "António FC": "B", "Miguel Pereira": "B", "Anacoreta": "B", "Lucas": "P", "Zanatti": "P", "Botelho": "P", "Gui": "P", "Ataide": "P", "Jota": "P", "Manel PS": "P", "Biu": "P", "Fernandes": "D1", "Manel MA": "DOE", "Mendes": "DOE", "Augusto": "DOE"}, "scorers": {}}, {"date": "2026-06-01", "gB": 5, "gP": 6, "marks": {"Gui": "B", "Miguel Pereira": "B", "Fernandes": "B", "Martim": "B", "Cortes": "B", "Augusto": "B", "Monteiro": "B", "Kanté": "B", "Miguel Almeida": "P", "Mendes": "P", "Jota": "P", "Manel MA": "P", "Manel PS": "P", "PTP": "P", "Botelho": "P", "Anahory": "P"}, "scorers": {}}, {"date": "2026-06-08", "gB": 3, "gP": 0, "marks": {"Martim": "B", "Zanatti": "B", "Miguel Almeida": "B", "Botelho": "B", "Lou": "B", "Manel MA": "B", "Gui": "B", "Figueira": "B", "Mendes": "P", "Monteiro": "P", "Biu": "P", "Lourenço": "P", "Jota": "P", "Miguel Pereira": "P", "Lucas": "P", "PTP": "P", "Augusto": "D1"}, "scorers": {}}, {"date": "2026-06-15", "gB": 3, "gP": 3, "marks": {"PTP": "B", "Manel MA": "B", "Fernandes": "B", "Miguel Almeida": "B", "Biu": "B", "Lucas": "B", "Manel PS": "B", "Cortes": "B", "Zanatti": "P", "Miguel Pereira": "P", "Augusto": "P", "Mendes": "P", "Monteiro": "P", "Lou": "P", "Botelho": "P", "Lourenço": "P", "Ataide": "D2", "Jota": "DOE"}, "scorers": {}}, {"date": "2026-06-22", "gB": 6, "gP": 3, "marks": {"PTP": "B", "Lou": "B", "Botelho": "B", "Miguel Pereira": "B", "Martim": "B", "Lucas": "B", "Jota": "B", "Augusto": "B", "Monteiro": "P", "Lourenço": "P", "Manel MA": "P", "Zanatti": "P", "Manel PS": "P", "Fernandes": "P", "Miguel Almeida": "P", "Aguiar": "P", "Ataide": "?"}, "scorers": {}}, {"date": "2026-06-29", "gB": 4, "gP": 8, "marks": {"Zanatti": "B", "Ataide": "B", "Monteiro": "B", "Lourenço": "B", "Lucas": "B", "Manel PS": "B", "PTP": "B", "Anacoreta": "B", "Manel MA": "P", "Miguel Freitas": "P", "Jota": "P", "Botelho": "P", "Biu": "P", "Miguel Almeida": "P", "Cortes": "P", "Aguiar": "P", "Martim": "?"}, "scorers": {}}, {"date": "2026-07-13", "gB": 4, "gP": 6, "marks": {"Lucas": "B", "Augusto": "B", "Jota": "B", "Martim": "B", "Cortes": "B", "Gui": "B", "Lourenço": "B", "Aguiar": "B", "Zanatti": "P", "Manel MA": "P", "Monteiro": "P", "PTP": "P", "Manel PS": "P", "Miguel Almeida": "P", "Biu": "P", "Anacoreta": "P", "Ataide": "D1"}, "scorers": {}}, {"date": "2026-07-20", "gB": 3, "gP": 0, "marks": {"Jota": "B", "Botelho": "B", "Miguel Almeida": "B", "Monteiro": "B", "Lucas": "B", "Martim": "B", "Ataide": "B", "Anacoreta": "B", "Manel MA": "P", "PTP": "P", "Gui": "P", "Zanatti": "P", "Lou": "P", "Lourenço": "P", "Lourenço Andrade": "P", "Guy Gaign": "P", "Mendes": "D2", "Augusto": "D2"}, "scorers": {}}, {"date": "2026-07-27", "gB": 5, "gP": 7, "marks": {"Biu": "B", "Martim": "B", "Miguel Almeida": "B", "PTP": "B", "Ataide": "B", "Augusto": "B", "Tomás": "B", "Siqueira": "B", "Lourenço": "P", "Jota": "P", "Lucas": "P", "Gui": "P", "Lou": "P", "Amigo Zanatti": "P", "Anacoreta": "P", "Zé PG": "P", "Zanatti": "D2"}, "scorers": {}}], "fines": [], "gameDay": 1, "gameTime": "21:45", "convDay": 5, "convTime": "13:00", "convSlots": 16, "fineAmount": 2.5, "fineTolerance": 1, "prizes": [{"pos": 1, "icon": "🏆", "label": "70€"}, {"pos": 2, "icon": "🥈", "label": "45€"}, {"pos": 3, "icon": "🥉", "label": "20€"}, {"pos": 4, "icon": "💶", "label": "10€"}, {"pos": 5, "icon": "⚽", "label": "bola da época (usada)"}], "convNotes": "Só conta a seguir à hora marcada! Estrangeiros (convidados) admitidos a partir de sábado, inclusive.", "fineNotes": "Chegar atrasado = o jogo já podia ter começado mas não começou porque estamos à tua espera, ou depois das 21:05. A multa tem de ser saldada antes da inscrição do jogo seguinte, sob pena de a inscrição não ser válida.", "notes": "Doença (DOE) não penaliza. Falta (F) vale 0 pontos."}, {"id": "2026_3", "name": "2026/3", "venue": "Campo Atlético Club", "points": {"V": 4, "E": 2, "D": 1, "D1": -1, "D2": -2}, "players": [], "weeks": [{"date": "2026-09-07", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-09-14", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-09-21", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-09-28", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-10-05", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-10-12", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-10-19", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-10-26", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-11-02", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-11-09", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-11-16", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-11-23", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-11-30", "gB": "", "gP": "", "marks": {}, "scorers": {}}, {"date": "2026-12-07", "gB": "", "gP": "", "marks": {}, "scorers": {}}], "fines": [], "gameDay": 1, "gameTime": "21:45", "convDay": 5, "convTime": "13:00", "convSlots": 16, "fineAmount": 2.5, "fineTolerance": 1, "prizes": [{"pos": 1, "icon": "🏆", "label": "70€"}, {"pos": 2, "icon": "🥈", "label": "45€"}, {"pos": 3, "icon": "🥉", "label": "20€"}, {"pos": 4, "icon": "💶", "label": "10€"}, {"pos": 5, "icon": "⚽", "label": "bola da época (usada)"}], "convNotes": "Só conta a seguir à hora marcada! Estrangeiros (convidados) admitidos a partir de sábado, inclusive.", "fineNotes": "Chegar atrasado = o jogo já podia ter começado mas não começou porque estamos à tua espera, ou depois das 21:05. A multa tem de ser saldada antes da inscrição do jogo seguinte, sob pena de a inscrição não ser válida.", "notes": "Doença (DOE) não penaliza. Falta (F) vale 0 pontos."}]};
 const DEF = {"gameDay": 1, "gameTime": "21:45", "convDay": 5, "convTime": "13:00", "convSlots": 16, "fineAmount": 2.5, "fineTolerance": 1, "prizes": [{"pos": 1, "icon": "🏆", "label": "70€"}, {"pos": 2, "icon": "🥈", "label": "45€"}, {"pos": 3, "icon": "🥉", "label": "20€"}, {"pos": 4, "icon": "💶", "label": "10€"}, {"pos": 5, "icon": "⚽", "label": "bola da época (usada)"}], "convNotes": "Só conta a seguir à hora marcada! Estrangeiros (convidados) admitidos a partir de sábado, inclusive.", "fineNotes": "Chegar atrasado = o jogo já podia ter começado mas não começou porque estamos à tua espera, ou depois das 21:05. A multa tem de ser saldada antes da inscrição do jogo seguinte, sob pena de a inscrição não ser válida.", "notes": "Doença (DOE) não penaliza. Falta (F) vale 0 pontos."};
 
 // ============================================================
 // CONFIGURAÇÃO DO FIREBASE — preencher UMA vez (ver instruções no ecrã inicial)
-// Cola aqui os valores do teu projeto Firebase (Consola > Definições do projeto > As tuas apps > Config)
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyB1III4bABwJCuliFiQbo6tRV5m3aqoues",
   authDomain: "premium-league-212ee.firebaseapp.com",
@@ -38,8 +37,7 @@ function normalize(d) {
     s = withDefaults(s);
     s.players = s.players || [];
     s.fines = s.fines || [];
-    s.weeks = (s.weeks || []).map(w => ({ date: w.date || "", gB: (w.gB === undefined || w.gB === null) ? "" : w.gB, gP: (w.gP === undefined || w.gP === null) ? "" : w.gP, marks: w.marks || {}, convOrder: w.convOrder || [], format: w.format || 8 }));
-    // uniformizar: qualquer jogador com marca (equipas antigas, ex.: 2026/2) passa a constar da convocatória
+    s.weeks = (s.weeks || []).map(w => ({ date: w.date || "", gB: (w.gB === undefined || w.gB === null) ? "" : w.gB, gP: (w.gP === undefined || w.gP === null) ? "" : w.gP, marks: w.marks || {}, convOrder: w.convOrder || [], format: w.format || 8, scorers: w.scorers || {} }));
     s.weeks.forEach(w => {
       const inCo = new Set(w.convOrder);
       const add = [];
@@ -74,7 +72,6 @@ const withDefaults = (s) => ({ ...DEF, fines: [], ...s, prizes: s.prizes || DEF.
 function migrate(raw) {
   if (raw.version === 3) return { ...raw, seasons: raw.seasons.map(withDefaults) };
   if (raw.version === 2) return { version: 3, seasons: raw.seasons.map(withDefaults) };
-  // v1: época única
   return {
     version: 3,
     seasons: [
@@ -86,7 +83,7 @@ function migrate(raw) {
 
 function computeStats(season) {
   const rows = season.players.filter(p => !p.guest).map((p, idx) => {
-    let V = 0, E = 0, D = 0, D1 = 0, D2 = 0, F = 0, J = 0, golos = 0;
+    let V = 0, E = 0, D = 0, D1 = 0, D2 = 0, F = 0, J = 0, golosEquipa = 0, golosPessoais = 0;
     const form = [];
     season.weeks.forEach(w => {
       const mk = w.marks[p.name];
@@ -100,23 +97,62 @@ function computeStats(season) {
         if (hasScore) {
           const mine = mk === "B" ? Number(w.gB) : Number(w.gP);
           const theirs = mk === "B" ? Number(w.gP) : Number(w.gB);
-          golos += mine;
+          golosEquipa += mine;
           if (mine > theirs) { V++; form.push("V"); }
           else if (mine === theirs) { E++; form.push("E"); }
           else { D++; form.push("D"); }
         }
+      }
+      if (w.scorers && w.scorers[p.name]) {
+        golosPessoais += Number(w.scorers[p.name]) || 0;
       }
     });
     const pts = V * season.points.V + E * season.points.E + D * season.points.D + D1 * season.points.D1 + D2 * season.points.D2;
     const lost = D1 * Math.abs(season.points.D1) + D2 * Math.abs(season.points.D2);
     let streak = 0;
     for (let i = form.length - 1; i >= 0 && form[i] === "V"; i--) streak++;
-    return { name: p.name, pts, J, V, E, D, D1, D2, F, golos, lost, form: form.slice(-5), streak, idx };
+    return { name: p.name, pts, J, V, E, D, D1, D2, F, golosEquipa, golosPessoais, lost, form: form.slice(-5), streak, idx };
   });
-  // Desempate: pontos → assiduidade → vitórias → menos pontos perdidos por desistências
   rows.sort((a, b) => b.pts - a.pts || b.J - a.J || b.V - a.V || a.lost - b.lost || a.idx - b.idx);
   rows.forEach((r, i) => { r.pos = i + 1; });
   return rows;
+}
+
+function computeTopScorers(season) {
+  const map = {};
+  season.players.filter(p => !p.guest).forEach(p => { map[p.name] = { name: p.name, golos: 0, J: 0 }; });
+  season.weeks.forEach(w => {
+    // Computar jogos jogados pelos jogadores na jornada
+    const activeInWeek = new Set();
+    Object.keys(w.marks || {}).forEach(n => {
+      const mk = w.marks[n];
+      if ((mk === "B" || mk === "P") && w.gB !== null && w.gB !== "" && w.gP !== null && w.gP !== "") {
+        activeInWeek.add(n);
+      }
+    });
+    activeInWeek.forEach(n => {
+      if (!map[n]) map[n] = { name: n, golos: 0, J: 0 };
+      map[n].J += 1;
+    });
+
+    // Computar golos dos marcadores
+    if (w.scorers) {
+      Object.keys(w.scorers).forEach(n => {
+        const g = Number(w.scorers[n]) || 0;
+        if (g > 0) {
+          if (!map[n]) map[n] = { name: n, golos: 0, J: 0 };
+          map[n].golos += g;
+        }
+      });
+    }
+  });
+
+  const list = Object.values(map).filter(x => x.golos > 0 || x.J > 0);
+  list.sort((a, b) => b.golos - a.golos || b.J - a.J || a.name.localeCompare(b.name, "pt"));
+  return list.map(item => ({
+    ...item,
+    media: item.J > 0 ? (item.golos / item.J).toFixed(2).replace(".", ",") : "0,00"
+  }));
 }
 
 function weekSummary(w) {
@@ -208,7 +244,7 @@ function PremiumLeague() {
   const lastJson = useRef("");
   const firstLoad = useRef(true);
   const seedTried = useRef(false);
-  const goodPin = useRef(null); // formato do PIN aceite pelo servidor (texto ou número)
+  const goodPin = useRef(null);
   const setWithPin = (ref, obj) => {
     const p = pinRef.current || "";
     const variants = goodPin.current !== null ? [goodPin.current]
@@ -235,7 +271,7 @@ function PremiumLeague() {
       dbRef.current.child("data").on("value", (snap) => {
         const val = snap.val();
         if (!val) {
-          if (seedTried.current) { setSaveState("denied"); return; } // escrita recusada e revertida — manter o que está no ecrã
+          if (seedTried.current) { setSaveState("denied"); return; }
           seedTried.current = true;
           const v = JSON.parse(JSON.stringify(SEED));
           lastJson.current = JSON.stringify(v);
@@ -244,7 +280,7 @@ function PremiumLeague() {
           return;
         }
         const json = JSON.stringify(val);
-        if (json === lastJson.current) return; // eco da nossa própria gravação
+        if (json === lastJson.current) return;
         lastJson.current = json;
         const v3 = normalize(migrate(val));
         setData(v3);
@@ -280,7 +316,7 @@ function PremiumLeague() {
 
   useEffect(() => {
     if (!configured || demo || !data || !pinRef.current || backupDone.current) return;
-    if (saveState !== "saved") return; // só depois de confirmarmos que o PIN funciona
+    if (saveState !== "saved") return;
     backupDone.current = true;
     try {
       const bref = firebase.database().ref("backups");
@@ -345,7 +381,9 @@ function PremiumLeague() {
       weeks: se.weeks.map(w => {
         const marks = {};
         Object.keys(w.marks).forEach(k => { marks[k === oldName ? nm : k] = w.marks[k]; });
-        return { ...w, marks, convOrder: (w.convOrder || []).map(n => n === oldName ? nm : n) };
+        const scorers = {};
+        Object.keys(w.scorers || {}).forEach(k => { scorers[k === oldName ? nm : k] = w.scorers[k]; });
+        return { ...w, marks, scorers, convOrder: (w.convOrder || []).map(n => n === oldName ? nm : n) };
       }),
     }));
     update({ ...data, seasons });
@@ -380,6 +418,7 @@ function PremiumLeague() {
     update({ ...data, seasons });
   };
   const stats = computeStats(season);
+  const topScorers = computeTopScorers(season);
   const leaguePlayers = season.players.filter(p => !p.guest);
   const guests = season.players.filter(p => p.guest);
   const played = season.weeks.filter(w => weekSummary(w).hasScore);
@@ -475,71 +514,104 @@ function PremiumLeague() {
                 Adiciona-os no separador <b>Regulamento → Jogadores</b> — dá para importar os da época anterior num clique.
               </div>
             ) : (
-              <div style={S.card}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontVariantNumeric: "tabular-nums" }}>
-                  <thead>
-                    <tr style={{ background: C.ink, color: "#fff", fontFamily: FONT_NUM, fontSize: 15 }}>
-                      {["", "Jogador", "Pts", "J", "V", "E", "D", "Golos"].map((h, i) => (
-                        <th key={i} style={{ padding: "7px 4px", textAlign: i === 1 ? "left" : "center", fontWeight: 600 }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stats.map((r, i) => {
-                      const prize = (season.prizes || []).find(p => p.pos === r.pos);
-                      const open = openPlayer === r.name;
-                      return [
-                        <tr key={r.name} onClick={() => setOpenPlayer(open ? null : r.name)} style={{
-                          borderTop: `1px solid ${C.line}`, cursor: "pointer",
-                          background: open ? "#EAF2EC" : i === 0 ? "#FBF3DC" : i === 1 ? "#F1F2F0" : i === 2 ? "#F6EBDD" : "transparent",
-                        }}>
-                          <td style={{ padding: "6px 4px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: i < 3 ? C.gold : C.sub, width: 28 }}>{r.pos}</td>
-                          <td style={{ padding: "6px 4px" }}>
-                            <span style={{ fontWeight: prize ? 600 : 400, fontSize: 14 }}>{r.name}</span>
-                            {r.streak >= 3 && <span title={`${r.streak} vitórias seguidas`} style={{ fontSize: 12, marginLeft: 4 }}>🔥{r.streak}</span>}
-                            <br />
-                            <span style={{ fontSize: 10.5, color: C.gold, fontWeight: 700 }}>
-                              {prize ? `${prize.icon} ${prize.label}` : ""}
-                            </span>
-                            <FormDots form={r.form} />
-                          </td>
-                          <td style={{ padding: "6px 4px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 19, fontWeight: 700 }}>{r.pts}</td>
-                          {[r.J, r.V, r.E, r.D].map((v, k) => (
-                            <td key={k} style={{ padding: "6px 3px", textAlign: "center", fontSize: 13, color: C.sub }}>{v}</td>
-                          ))}
-                          <td style={{ padding: "6px 3px", textAlign: "center", fontSize: 13, fontWeight: 600, color: C.green }}>{r.golos}</td>
-                        </tr>,
-                        open && (
-                          <tr key={r.name + "_d"} style={{ background: "#F6F8F5" }}>
-                            <td colSpan={8} style={{ padding: "8px 12px", fontSize: 12, color: C.sub }}>
-                              <b style={{ color: C.ink }}>{r.name}</b> — desistências: {r.D1} × D1, {r.D2} × D2 (−{r.lost} pts) · faltas: {r.F}
-                              <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 6 }}>
-                                {season.weeks.map((w, wi) => {
-                                  const mk = w.marks[r.name];
-                                  if (!mk) return null;
-                                  const s = weekSummary(w);
-                                  let res = "";
-                                  if ((mk === "B" || mk === "P") && s.hasScore) {
-                                    const mine = mk === "B" ? Number(w.gB) : Number(w.gP);
-                                    const theirs = mk === "B" ? Number(w.gP) : Number(w.gB);
-                                    res = mine > theirs ? "V" : mine === theirs ? "E" : "D";
-                                  }
-                                  const bg = res === "V" ? "#DFF0E4" : res === "D" ? "#F9E3DE" : res === "E" ? "#EDEEEC" : "#FBF3DC";
-                                  return (
-                                    <span key={wi} style={{ background: bg, border: `1px solid ${C.line}`, borderRadius: 6, padding: "2px 6px", fontSize: 11, color: C.ink }}>
-                                      J{wi + 1} {mk === "B" ? "⚪" : mk === "P" ? "⚫" : mk}{res ? ` ${w.gB}–${w.gP} ${res}` : ""}
-                                    </span>
-                                  );
-                                })}
-                              </div>
+              <>
+                <div style={S.card}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontVariantNumeric: "tabular-nums" }}>
+                    <thead>
+                      <tr style={{ background: C.ink, color: "#fff", fontFamily: FONT_NUM, fontSize: 15 }}>
+                        {["", "Jogador", "Pts", "J", "V", "E", "D", "Golos", "Golos Equipa"].map((h, i) => (
+                          <th key={i} style={{ padding: "7px 4px", textAlign: i === 1 ? "left" : "center", fontWeight: 600 }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stats.map((r, i) => {
+                        const prize = (season.prizes || []).find(p => p.pos === r.pos);
+                        const open = openPlayer === r.name;
+                        return [
+                          <tr key={r.name} onClick={() => setOpenPlayer(open ? null : r.name)} style={{
+                            borderTop: `1px solid ${C.line}`, cursor: "pointer",
+                            background: open ? "#EAF2EC" : i === 0 ? "#FBF3DC" : i === 1 ? "#F1F2F0" : i === 2 ? "#F6EBDD" : "transparent",
+                          }}>
+                            <td style={{ padding: "6px 4px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: i < 3 ? C.gold : C.sub, width: 28 }}>{r.pos}</td>
+                            <td style={{ padding: "6px 4px" }}>
+                              <span style={{ fontWeight: prize ? 600 : 400, fontSize: 14 }}>{r.name}</span>
+                              {r.streak >= 3 && <span title={`${r.streak} vitórias seguidas`} style={{ fontSize: 12, marginLeft: 4 }}>🔥{r.streak}</span>}
+                              <br />
+                              <span style={{ fontSize: 10.5, color: C.gold, fontWeight: 700 }}>
+                                {prize ? `${prize.icon} ${prize.label}` : ""}
+                              </span>
+                              <FormDots form={r.form} />
                             </td>
+                            <td style={{ padding: "6px 4px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 19, fontWeight: 700 }}>{r.pts}</td>
+                            {[r.J, r.V, r.E, r.D].map((v, k) => (
+                              <td key={k} style={{ padding: "6px 3px", textAlign: "center", fontSize: 13, color: C.sub }}>{v}</td>
+                            ))}
+                            <td style={{ padding: "6px 3px", textAlign: "center", fontSize: 13, fontWeight: 700, color: C.green }}>{r.golosPessoais}</td>
+                            <td style={{ padding: "6px 3px", textAlign: "center", fontSize: 13, color: C.sub }}>{r.golosEquipa}</td>
+                          </tr>,
+                          open && (
+                            <tr key={r.name + "_d"} style={{ background: "#F6F8F5" }}>
+                              <td colSpan={9} style={{ padding: "8px 12px", fontSize: 12, color: C.sub }}>
+                                <b style={{ color: C.ink }}>{r.name}</b> — desistências: {r.D1} × D1, {r.D2} × D2 (−{r.lost} pts) · faltas: {r.F}
+                                <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 6 }}>
+                                  {season.weeks.map((w, wi) => {
+                                    const mk = w.marks[r.name];
+                                    if (!mk) return null;
+                                    const s = weekSummary(w);
+                                    let res = "";
+                                    if ((mk === "B" || mk === "P") && s.hasScore) {
+                                      const mine = mk === "B" ? Number(w.gB) : Number(w.gP);
+                                      const theirs = mk === "B" ? Number(w.gP) : Number(w.gB);
+                                      res = mine > theirs ? "V" : mine === theirs ? "E" : "D";
+                                    }
+                                    const bg = res === "V" ? "#DFF0E4" : res === "D" ? "#F9E3DE" : res === "E" ? "#EDEEEC" : "#FBF3DC";
+                                    const pGolos = w.scorers && w.scorers[r.name] ? ` (${w.scorers[r.name]} golos)` : "";
+                                    return (
+                                      <span key={wi} style={{ background: bg, border: `1px solid ${C.line}`, borderRadius: 6, padding: "2px 6px", fontSize: 11, color: C.ink }}>
+                                        J{wi + 1} {mk === "B" ? "⚪" : mk === "P" ? "⚫" : mk}{res ? ` ${w.gB}–${w.gP} ${res}` : ""}{pGolos}
+                                      </span>
+                                    );
+                                  })}
+                                </div>
+                              </td>
+                            </tr>
+                          ),
+                        ];
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Top Scorers / Marcadores */}
+                {topScorers.length > 0 && (
+                  <div style={{ marginTop: 20 }}>
+                    <div style={{ fontFamily: FONT_NUM, fontSize: 20, fontWeight: 700, marginBottom: 8 }}>⚽ Top Scorers (Marcadores)</div>
+                    <div style={S.card}>
+                      <table style={{ width: "100%", borderCollapse: "collapse", fontVariantNumeric: "tabular-nums" }}>
+                        <thead>
+                          <tr style={{ background: C.ink, color: "#fff", fontFamily: FONT_NUM, fontSize: 15 }}>
+                            {["#", "Jogador", "Golos", "Jogos", "Média"].map((h, i) => (
+                              <th key={i} style={{ padding: "7px 6px", textAlign: i === 1 ? "left" : "center", fontWeight: 600 }}>{h}</th>
+                            ))}
                           </tr>
-                        ),
-                      ];
-                    })}
-                  </tbody>
-                </table>
-              </div>
+                        </thead>
+                        <tbody>
+                          {topScorers.map((ts, idx) => (
+                            <tr key={ts.name} style={{ borderTop: `1px solid ${C.line}`, background: idx === 0 ? "#FBF3DC" : idx === 1 ? "#F1F2F0" : idx === 2 ? "#F6EBDD" : "transparent" }}>
+                              <td style={{ padding: "6px 6px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700, color: idx < 3 ? C.gold : C.sub, width: 32 }}>{idx + 1}</td>
+                              <td style={{ padding: "6px 6px", fontWeight: idx < 3 ? 600 : 400, fontSize: 14 }}>{ts.name}</td>
+                              <td style={{ padding: "6px 6px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 17, fontWeight: 700, color: C.green }}>{ts.golos}</td>
+                              <td style={{ padding: "6px 6px", textAlign: "center", fontSize: 13, color: C.sub }}>{ts.J}</td>
+                              <td style={{ padding: "6px 6px", textAlign: "center", fontFamily: FONT_NUM, fontSize: 14, fontWeight: 600 }}>{ts.media}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
             {stats.length > 0 && (
               <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
@@ -587,7 +659,7 @@ function PremiumLeague() {
               );
             })}
             {(superOk || (role === "admin" && !season.archived)) && <button onClick={() => {
-              setSeason({ weeks: [...season.weeks, { date: "", gB: "", gP: "", marks: {}, convOrder: [], format: 8 }] });
+              setSeason({ weeks: [...season.weeks, { date: "", gB: "", gP: "", marks: {}, convOrder: [], format: 8, scorers: {} }] });
               setOpenWeek(season.weeks.length);
             }} style={{ padding: "12px", border: `1.5px dashed ${C.green}`, borderRadius: 10, background: "transparent", color: C.green, fontFamily: FONT_NUM, fontSize: 17, fontWeight: 600, cursor: "pointer" }}>
               + Nova jornada
@@ -649,7 +721,7 @@ function PremiumLeague() {
               <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.7 }}>
                 <li>A ordem de inscrição na convocatória define os titulares: os primeiros <b>{season.convSlots}</b> contam; os seguintes ficam como <b>reservas</b>.</li>
                 <li>As equipas <b>Branca</b> e <b>Preta</b> são geradas automaticamente de forma equilibrada, com base no índice de cada jogador — a média de pontos por jogo em todas as épocas (jogadores sem histórico recebem a média da liga).</li>
-                <li>Os organizadores podem ajustar manualmente qualquer jogador entre Branca, Preta e reservas antes do jogo.</li>
+                <li>Os organizadores podem ajustar manualmente qualquer jogador entre Branca, Preta e reservas antes do jogo (agora com suporte de arrastar e largar / Drag-and-Drop).</li>
                 <li>Formatos suportados: <b>8v8</b> (16 titulares) ou <b>11v11</b> (22 titulares). Estrangeiros (ᶜ) contam para a equipa mas não para a classificação.</li>
               </ul>
             </div>
@@ -739,7 +811,8 @@ function PremiumLeague() {
                       if (confirm(`Remover ${p.name} da época ${season.name}? Apaga também as marcações dele nas jornadas.`)) {
                         const weeks = season.weeks.map(w => {
                           const m = { ...w.marks }; delete m[p.name];
-                          return { ...w, marks: m, convOrder: (w.convOrder || []).filter(n => n !== p.name) };
+                          const sc = { ...(w.scorers || {}) }; delete sc[p.name];
+                          return { ...w, marks: m, scorers: sc, convOrder: (w.convOrder || []).filter(n => n !== p.name) };
                         });
                         setSeason({ weeks, players: season.players.filter(x => x.name !== p.name) });
                       }
@@ -861,7 +934,7 @@ function SeasonSettings({ season, setSeason, S, canDelete, onDelete }) {
               </div>
             ))}
             <button onClick={() => setSeason({ prizes: [...(season.prizes || []), { pos: (season.prizes || []).length + 1, icon: "🎁", label: "" }] })}
-              style={{ fontSize: 12.5, border: `1px dashed ${C.green}`, color: C.green, background: "none", borderRadius: 6, padding: "4px 10px", cursor: "pointer" }}>
+              style={{ fontSize: 12.5, border: `1.5px dashed ${C.green}`, color: C.green, background: "none", borderRadius: 6, padding: "4px 10px", cursor: "pointer" }}>
               + prémio
             </button>
           </div>
@@ -928,10 +1001,10 @@ function NewSeasonForm({ base, S, onCreate }) {
           gameDay = d0.getDay();
           for (let i = 0; i < n; i++) {
             const d = new Date(d0); d.setDate(d0.getDate() + i * 7);
-            weeks.push({ date: d.toISOString().slice(0, 10), gB: "", gP: "", marks: {}, convOrder: [], format: 8 });
+            weeks.push({ date: d.toISOString().slice(0, 10), gB: "", gP: "", marks: {}, convOrder: [], format: 8, scorers: {} });
           }
         } else {
-          for (let i = 0; i < n; i++) weeks.push({ date: "", gB: "", gP: "", marks: {}, convOrder: [], format: 8 });
+          for (let i = 0; i < n; i++) weeks.push({ date: "", gB: "", gP: "", marks: {}, convOrder: [], format: 8, scorers: {} });
         }
         onCreate({
           id: "s_" + Date.now(),
@@ -954,8 +1027,6 @@ function NewSeasonForm({ base, S, onCreate }) {
     </div>
   );
 }
-
-
 
 function buildRatings(allSeasons) {
   const acc = {};
@@ -1014,6 +1085,12 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
     if (!canW) return;
     const marks = { ...w.marks };
     marks[name] = marks[name] === code ? "C" : code;
+    setWeek({ marks });
+  };
+  const setPlayerTeam = (name, targetTeam) => {
+    if (!canW) return;
+    const marks = { ...w.marks };
+    marks[name] = targetTeam; // "B", "P", or "R"
     setWeek({ marks });
   };
   const cycleTeam = (name) => {
@@ -1076,7 +1153,8 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
     ];
     if (Rs.length) lines.push("", `🪑 Reservas: ${Rs.map(g).join(", ")}`);
     if (desist.length) lines.push(`🚫 Fora: ${desist.map(n => `${n} (${w.marks[n] === "DOE" ? "just." : w.marks[n]})`).join(", ")}`);
-    const txt = lines.join("\n");
+    const txt = lines.join("
+");
     const done = () => { setCopied(true); setTimeout(() => setCopied(false), 2500); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done).catch(() => prompt("Copia o texto:", txt));
     else prompt("Copia o texto:", txt);
@@ -1102,9 +1180,12 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
       }}>{lab}</button>
     );
   };
+
   const teamChip = (name, mk) => (
-    <div key={name} style={{ display: "flex", gap: 4, marginBottom: 4 }}>
-      <button onClick={() => cycleTeam(name)} disabled={!canW} title="Tocar para mover: Branca → Preta → Reserva" style={{
+    <div key={name} draggable={canW}
+      onDragStart={(e) => { e.dataTransfer.setData("text/plain", name); }}
+      style={{ display: "flex", gap: 4, marginBottom: 4, cursor: canW ? "grab" : "default" }}>
+      <button onClick={() => cycleTeam(name)} disabled={!canW} title="Tocar para mover: Branca → Preta → Reserva (ou arrasta)" style={{
         flex: 1, minWidth: 0, textAlign: "left", padding: "6px 8px",
         borderRadius: 8, cursor: canW ? "pointer" : "default", fontFamily: FONT, fontSize: 13.5,
         background: mk === "P" ? C.preta : mk === "B" ? "#fff" : "#FBF3DC",
@@ -1248,25 +1329,61 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
               <button onClick={() => quickAdd("P")} title="Convocar para a Preta" style={{ padding: "7px 10px", borderRadius: 8, border: `1.5px solid ${C.preta}`, background: C.preta, color: "#fff", cursor: "pointer", fontWeight: 700 }}>⚫</button>
             </div>
           )}
-          {(Bs.length + Ps.length) > 0 && (
-            <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
-              {[["⚪ Branca", Bs], ["⚫ Preta", Ps]].map(([lab, arr]) => (
-                <div key={lab} style={{ ...card, flex: 1, padding: 8 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, marginBottom: 6 }}>
-                    <span>{lab} ({arr.length})</span>
-                    <span title="índice de força (média de pontos por jogo)" style={{ color: C.sub }}>{sum(arr).toFixed(1)}</span>
-                  </div>
-                  {arr.map(n => teamChip(n, w.marks[n]))}
-                </div>
-              ))}
+          
+          {/* DRAG AND DROP AREAS */}
+          <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
+            {/* Branca */}
+            <div style={{ ...card, flex: 1, minWidth: 140, padding: 8 }}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const name = e.dataTransfer.getData("text/plain");
+                if (name) setPlayerTeam(name, "B");
+              }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, marginBottom: 6 }}>
+                <span>⚪ Branca ({Bs.length})</span>
+                <span title="índice de força (média de pontos por jogo)" style={{ color: C.sub }}>{sum(Bs).toFixed(1)}</span>
+              </div>
+              <div style={{ minHeight: 60 }}>
+                {Bs.map(n => teamChip(n, "B"))}
+                {Bs.length === 0 && <div style={{ fontSize: 12, color: "#A9ADA6", textAlign: "center", padding: "10px 0" }}>Arrasta para aqui</div>}
+              </div>
             </div>
-          )}
-          {Rs.length > 0 && (
-            <div style={{ ...card, padding: 8, marginBottom: 10 }}>
-              <div style={{ fontFamily: FONT_NUM, fontSize: 14, fontWeight: 700, color: C.sub, marginBottom: 6 }}>🪑 Reservas ({Rs.length})</div>
+
+            {/* Preta */}
+            <div style={{ ...card, flex: 1, minWidth: 140, padding: 8 }}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const name = e.dataTransfer.getData("text/plain");
+                if (name) setPlayerTeam(name, "P");
+              }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_NUM, fontSize: 15, fontWeight: 700, marginBottom: 6 }}>
+                <span>⚫ Preta ({Ps.length})</span>
+                <span title="índice de força (média de pontos por jogo)" style={{ color: C.sub }}>{sum(Ps).toFixed(1)}</span>
+              </div>
+              <div style={{ minHeight: 60 }}>
+                {Ps.map(n => teamChip(n, "P"))}
+                {Ps.length === 0 && <div style={{ fontSize: 12, color: "#A9ADA6", textAlign: "center", padding: "10px 0" }}>Arrasta para aqui</div>}
+              </div>
+            </div>
+          </div>
+
+          {/* Reservas */}
+          <div style={{ ...card, padding: 8, marginBottom: 10 }}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              const name = e.dataTransfer.getData("text/plain");
+              if (name) setPlayerTeam(name, "R");
+            }}>
+            <div style={{ fontFamily: FONT_NUM, fontSize: 14, fontWeight: 700, color: C.sub, marginBottom: 6 }}>🪑 Reservas ({Rs.length}) — Podes arrastar para aqui também</div>
+            <div style={{ minHeight: 40 }}>
               {Rs.map(n => teamChip(n, "R"))}
+              {Rs.length === 0 && <div style={{ fontSize: 12, color: "#A9ADA6", textAlign: "center", padding: "6px 0" }}>Nenhum reserva</div>}
             </div>
-          )}
+          </div>
+
           {(Bs.length + Ps.length) > 0 && (
             <button onClick={copyWhats} style={{
               width: "100%", padding: "11px", borderRadius: 8, border: `1.5px solid ${C.green}`,
@@ -1275,7 +1392,7 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
             }}>{copied ? "✓ Copiado!" : "📋 Copiar equipas para o WhatsApp"}</button>
           )}
           <p style={{ fontSize: 12, color: C.sub, marginTop: 8 }}>
-            Convocatória e equipas estão ligadas: só entram nas equipas jogadores convocados, e o × remove-os de ambas. O gerador equilibra pelo histórico (média de pontos por jogo em todas as épocas; sem histórico = média da liga). Toca num jogador para o mover: Branca → Preta → Reserva.
+            Podes <b>arrastar e largar</b> os jogadores entre a Equipa Branca, Equipa Preta e Reservas para ajustar manualmente as equipas. Também podes tocar no nome para alternar rapidamente.
           </p>
         </div>
       )}
@@ -1299,6 +1416,50 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
               {s.nB} na Branca · {s.nP} na Preta {s.winner ? `· venceu: ${s.winner}` : ""}
             </div>
           </div>
+
+          {/* Marcadores dos Golos por Jogo */}
+          <div style={{ ...card, padding: 14, marginBottom: 10 }}>
+            <div style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 700, marginBottom: 8 }}>⚽ Marcadores dos Golos</div>
+            <p style={{ fontSize: 12, color: C.sub, margin: "0 0 10px" }}>Regista quantos golos cada jogador marcou nesta jornada (alimenta o Top Scorers e os Golos pessoais).</p>
+            
+            {/* Lista de jogadores convocados ou ativos */}
+            {activeConv.length === 0 ? (
+              <div style={{ fontSize: 13, color: C.sub, fontStyle: "italic" }}>Ainda não há jogadores nas equipas para esta jornada.</div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {activeConv.map(n => {
+                  const scorers = w.scorers || {};
+                  const currentGoals = scorers[n] !== undefined ? scorers[n] : "";
+                  const teamColor = w.marks[n] === "B" ? "⚪ Branca" : w.marks[n] === "P" ? "⚫ Preta" : "🪑 Reserva";
+                  return (
+                    <div key={n} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 8px", background: "#F6F8F5", borderRadius: 6, border: `1px solid ${C.line}` }}>
+                      <div>
+                        <span style={{ fontSize: 14, fontWeight: 600 }}>{n}</span>
+                        <span style={{ fontSize: 11, color: C.sub, marginLeft: 6 }}>({teamColor})</span>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <span style={{ fontSize: 12, color: C.sub }}>golos:</span>
+                        <input type="number" min="0" max="30" inputMode="numeric" placeholder="0" disabled={!canW}
+                          value={currentGoals}
+                          onChange={e => {
+                            const val = e.target.value === "" ? "" : Number(e.target.value);
+                            const nextScorers = { ...(w.scorers || {}) };
+                            if (val === "" || val === 0) {
+                              delete nextScorers[n];
+                            } else {
+                              nextScorers[n] = val;
+                            }
+                            setWeek({ scorers: nextScorers });
+                          }}
+                          style={{ ...inp, width: 55, textAlign: "center", fontFamily: FONT_NUM, fontSize: 16, fontWeight: 700 }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           <div style={{ ...card, padding: 12, fontSize: 13, lineHeight: 1.8, color: C.sub }}>
             <b style={{ color: C.ink }}>⚪ Branca:</b> {Bs.map(n => isGuest(n) ? n + " ᶜ" : n).join(", ") || "—"}<br />
             <b style={{ color: C.ink }}>⚫ Preta:</b> {Ps.map(n => isGuest(n) ? n + " ᶜ" : n).join(", ") || "—"}<br />
@@ -1306,7 +1467,7 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
             {desist.length > 0 && <span><b style={{ color: C.ink }}>🚫 Fora:</b> {desist.map(n => `${n} (${w.marks[n] === "DOE" ? "just." : w.marks[n]})`).join(", ")}</span>}
           </div>
           <p style={{ fontSize: 12, color: C.sub, marginTop: 8 }}>
-            Os pontos e golos individuais recalculam-se automaticamente na Classificação assim que o resultado é gravado.
+            Os pontos e golos individuais recalculam-se automaticamente na Classificação e no Top Scorers assim que o resultado e os marcadores são gravados.
           </p>
         </div>
       )}
@@ -1340,7 +1501,7 @@ function Setup({ onDemo }) {
           <ol style={{ margin: "8px 0 0", paddingLeft: 20, fontSize: 13.5, lineHeight: 1.8 }}>
             <li>Na consola: roda dentada ⚙ → <b>Project settings</b> → desce até <b>Your apps</b> → ícone <b>{"</>"}</b> (Web) → dá um nome qualquer → <b>Register app</b> (não é preciso marcar Firebase Hosting).</li>
             <li>Aparece um bloco <span style={code}>const firebaseConfig = {'{...}'}</span> com <b>apiKey</b>, <b>authDomain</b>, <b>databaseURL</b> e <b>projectId</b> — são esses 4 que interessam.</li>
-            <li>Abre este ficheiro (<b>premium_league.html</b>) num editor de texto (Notepad/TextEdit) e cola esses 4 valores no topo, onde diz <span style={code}>FIREBASE_CONFIG</span>, entre as aspas. Se o bloco não mostrar <b>databaseURL</b>, copia o endereço que aparece no topo da página do Realtime Database (algo como https://….firebasedatabase.app).</li>
+            <li>Abre este ficheiro (<b>index.html</b>) num editor de texto (Notepad/TextEdit) e cola esses 4 valores no topo, onde diz <span style={code}>FIREBASE_CONFIG</span>, entre as aspas. Se o bloco não mostrar <b>databaseURL</b>, copia o endereço que aparece no topo da página do Realtime Database (algo como https://….firebasedatabase.app).</li>
           </ol>
         </div>
         <div style={box}>
