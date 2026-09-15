@@ -122,7 +122,6 @@ function computeTopScorers(season) {
   const map = {};
   season.players.filter(p => !p.guest).forEach(p => { map[p.name] = { name: p.name, golos: 0, J: 0 }; });
   season.weeks.forEach(w => {
-    // Computar jogos jogados pelos jogadores na jornada
     const activeInWeek = new Set();
     Object.keys(w.marks || {}).forEach(n => {
       const mk = w.marks[n];
@@ -135,7 +134,6 @@ function computeTopScorers(season) {
       map[n].J += 1;
     });
 
-    // Computar golos dos marcadores
     if (w.scorers) {
       Object.keys(w.scorers).forEach(n => {
         const g = Number(w.scorers[n]) || 0;
@@ -1090,7 +1088,7 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
   const setPlayerTeam = (name, targetTeam) => {
     if (!canW) return;
     const marks = { ...w.marks };
-    marks[name] = targetTeam; // "B", "P", or "R"
+    marks[name] = targetTeam;
     setWeek({ marks });
   };
   const cycleTeam = (name) => {
@@ -1153,8 +1151,7 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
     ];
     if (Rs.length) lines.push("", `🪑 Reservas: ${Rs.map(g).join(", ")}`);
     if (desist.length) lines.push(`🚫 Fora: ${desist.map(n => `${n} (${w.marks[n] === "DOE" ? "just." : w.marks[n]})`).join(", ")}`);
-    const txt = lines.join("
-");
+    const txt = lines.join("\n");
     const done = () => { setCopied(true); setTimeout(() => setCopied(false), 2500); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done).catch(() => prompt("Copia o texto:", txt));
     else prompt("Copia o texto:", txt);
@@ -1422,7 +1419,6 @@ function WeekEditor({ data, season, openWeek, setOpenWeek, setSeason, role, lock
             <div style={{ fontFamily: FONT_NUM, fontSize: 18, fontWeight: 700, marginBottom: 8 }}>⚽ Marcadores dos Golos</div>
             <p style={{ fontSize: 12, color: C.sub, margin: "0 0 10px" }}>Regista quantos golos cada jogador marcou nesta jornada (alimenta o Top Scorers e os Golos pessoais).</p>
             
-            {/* Lista de jogadores convocados ou ativos */}
             {activeConv.length === 0 ? (
               <div style={{ fontSize: 13, color: C.sub, fontStyle: "italic" }}>Ainda não há jogadores nas equipas para esta jornada.</div>
             ) : (
